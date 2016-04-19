@@ -1,4 +1,4 @@
-package com.pk.mdmc.test.utils;
+package com.pk.mdmc.test.mock;
 
 
 import com.pk.mdmc.core.Config;
@@ -8,10 +8,10 @@ import com.pk.mdmc.core.Message;
 /**
  * Created by PavelK on 4/13/2016.
  */
-public class MessageProducerImpl implements IMessageProducer {
+public class SimpleMessageHandlerMock implements IMessageProducer {
     Config cnfg;
 
-    public MessageProducerImpl(Config cnfg){
+    public SimpleMessageHandlerMock(Config cnfg){
         this.cnfg = cnfg;
     }
 

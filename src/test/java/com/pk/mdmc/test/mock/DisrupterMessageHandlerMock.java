@@ -1,4 +1,4 @@
-package com.pk.mdmc.test.utils;
+package com.pk.mdmc.test.mock;
 
 import com.lmax.disruptor.EventHandler;
 import com.pk.mdmc.core.Message;
