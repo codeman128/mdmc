@@ -1,6 +1,6 @@
 package com.pk.mdmc.test.utils;
 
-import com.pk.mdmc.core.Config;
+import com.pk.mdmc.core.IConfig;
 import com.pk.mdmc.core.Packet;
 
 import java.util.ArrayList;
@@ -11,11 +11,11 @@ import java.util.List;
  */
 public class Scenario {
     private final List<Packet> list = new ArrayList<Packet>();
-    private Config cnfg;
+    private IConfig cnfg;
 
     private Scenario() {}
 
-    public Scenario(Config cnfg){
+    public Scenario(IConfig cnfg){
         this.cnfg = cnfg;
     }
 

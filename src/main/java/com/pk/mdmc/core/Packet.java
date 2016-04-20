@@ -28,7 +28,7 @@ public class Packet {
         datagram = null;
     }
 
-    public Packet(Config cnfg) {
+    public Packet(IConfig cnfg) {
         final int size = cnfg.getPacketMaxSize();
         buffer = new byte[size];
         bb = ByteBuffer.wrap(buffer, 0, size);

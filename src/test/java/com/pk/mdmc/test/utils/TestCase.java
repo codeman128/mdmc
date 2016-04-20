@@ -1,7 +1,7 @@
 package com.pk.mdmc.test.utils;
 
 
-import com.pk.mdmc.core.Config;
+import com.pk.mdmc.core.IConfig;
 
 /**
  * Created by PavelK on 4/16/2016.
@@ -13,7 +13,7 @@ public class TestCase {
 
     private TestCase(){}
 
-    public  TestCase(Config cnfg, String name) {
+    public  TestCase(IConfig cnfg, String name) {
         this.name = name;
         scenario = new Scenario(cnfg);
         expectedResults = new ExpectedResults();

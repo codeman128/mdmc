@@ -13,9 +13,9 @@ import java.util.concurrent.Executors;
 /**
  * Created by PavelK on 4/13/2016.
  */
-public class MessageDisruptor implements IMessageProducer {
+public class MessageDisruptor implements IMessageBuffer {
     private final boolean TRACE = true;
-    private final Config cnfg;
+    private final IConfig cnfg;
     private final Disruptor<Message> disruptor;
     private final RingBuffer<Message> ringBuffer;
 
@@ -26,7 +26,7 @@ public class MessageDisruptor implements IMessageProducer {
         }
     };
 
-    public MessageDisruptor(Config cnfg, EventHandler<Message> handler) {
+    public MessageDisruptor(IConfig cnfg, EventHandler<Message> handler) {
         this.cnfg = cnfg;
         Executor executor = Executors.newCachedThreadPool();
 

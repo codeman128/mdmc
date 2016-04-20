@@ -18,7 +18,7 @@ public class Message {
         TRACE = true;
     }
 
-    public Message(Config cnfg){
+    public Message(IConfig cnfg){
         TRACE = cnfg.getNetTraceEnabled();
         packets = new Packet[cnfg.getMsgMaxPackets()];
         isReceived = new boolean[cnfg.getMsgMaxPackets()];
@@ -26,7 +26,7 @@ public class Message {
             packets[i] = new Packet(cnfg);
         }
 
-        init(-1);
+        init(-1);// -1? ot min int?
     }
 
     public void init(long rbSequence) {

@@ -5,8 +5,8 @@ package com.pk.mdmc.core;
  */
 public class Window {
     private long sequence;
-    private final Config cnfg;
-    private final IMessageProducer messageProducer;
+    private final IConfig cnfg;
+    private final IMessageBuffer messageProducer;
     private final int maxWidth;
     private final Message[] list;
     private final boolean TRACE;
@@ -19,7 +19,7 @@ public class Window {
         TRACE = true;
     }
 
-    public Window(Config cnfg, IMessageProducer messageProducer) {
+    public Window(IConfig cnfg, IMessageBuffer messageProducer) {
         TRACE = cnfg.getNetTraceEnabled();
         this.messageProducer = messageProducer;
         this.cnfg = cnfg;

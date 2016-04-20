@@ -1,17 +1,17 @@
 package com.pk.mdmc.test.mock;
 
 
-import com.pk.mdmc.core.Config;
-import com.pk.mdmc.core.IMessageProducer;
+import com.pk.mdmc.core.IConfig;
+import com.pk.mdmc.core.IMessageBuffer;
 import com.pk.mdmc.core.Message;
 
 /**
  * Created by PavelK on 4/13/2016.
  */
-public class SimpleMessageHandlerMock implements IMessageProducer {
-    Config cnfg;
+public class SimpleMessageHandlerMock implements IMessageBuffer {
+    IConfig cnfg;
 
-    public SimpleMessageHandlerMock(Config cnfg){
+    public SimpleMessageHandlerMock(IConfig cnfg){
         this.cnfg = cnfg;
     }
 
