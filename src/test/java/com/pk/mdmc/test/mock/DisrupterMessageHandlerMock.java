@@ -1,6 +1,7 @@
 package com.pk.mdmc.test.mock;
 
 import com.lmax.disruptor.EventHandler;
+import com.pk.mdmc.core.IMessageHandler;
 import com.pk.mdmc.core.Message;
 
 
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * Created by PavelK on 4/13/2016.
  */
-public class DisrupterMessageHandlerMock implements EventHandler<Message> {
+public class DisrupterMessageHandlerMock implements IMessageHandler {
 
     List<Message> list = new ArrayList<Message>(32);
 

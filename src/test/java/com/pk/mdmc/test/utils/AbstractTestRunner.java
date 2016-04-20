@@ -15,8 +15,7 @@ public class AbstractTestRunner {
     protected static final String LINE = "----------------------------------------------------";
     protected IConfig cnfg = new MDMCConfig();
     protected DisrupterMessageHandlerMock eHandler = new DisrupterMessageHandlerMock();
-    protected IMessageBuffer messageProducer = new MessageDisruptor(cnfg, eHandler);//new MessageHandlerImpl(cnfg);
-    protected Window window = new Window(cnfg, messageProducer);
+    protected PacketAssembler assembler  = new PacketAssembler(cnfg, eHandler);
     protected Packet p = new Packet(cnfg);
     protected List<TestCase> list = new ArrayList<TestCase>();
 
@@ -30,11 +29,9 @@ public class AbstractTestRunner {
         boolean result = true;
         for (TestCase testCase: list) {
             eHandler.reset();
-            window.init();
-            System.out.println("\n\nRunning "+testCase.getName()+" ("+testCase.getScenario().getList().size()+" packets) :\n"+LINE);
-            for (Packet p : testCase.getScenario().getList()) {
-                p = window.processPacket(p);
-            }
+            assembler.init();
+            System.out.println("\n\nRunning " + testCase.getName() + " (" + testCase.getScenario().getPacketList().size() + " packets) :\n" + LINE);
+            testCase.getScenario().getPacketList().forEach(assembler::push);
             try {
                 Thread.yield();
                 Thread.sleep(100);

@@ -29,7 +29,7 @@ public class Scenario {
         return p;
     }
 
-    public List<Packet> getList(){
+    public List<Packet> getPacketList(){
         return list;
     }
 }

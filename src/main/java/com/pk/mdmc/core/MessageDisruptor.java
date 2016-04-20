@@ -26,7 +26,7 @@ public class MessageDisruptor implements IMessageBuffer {
         }
     };
 
-    public MessageDisruptor(IConfig cnfg, EventHandler<Message> handler) {
+    public MessageDisruptor(IConfig cnfg, IMessageHandler handler) {
         this.cnfg = cnfg;
         Executor executor = Executors.newCachedThreadPool();
 
