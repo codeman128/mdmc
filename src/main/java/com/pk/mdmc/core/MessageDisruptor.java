@@ -29,14 +29,11 @@ public class MessageDisruptor implements IMessageBuffer {
     public MessageDisruptor(IConfig cnfg, IMessageHandler handler) {
         this.cnfg = cnfg;
         Executor executor = Executors.newCachedThreadPool();
-
         disruptor = new Disruptor<>(factory, cnfg.getDisruptorRingSize(), executor,
                 ProducerType.SINGLE, new BusySpinWaitStrategy());
 
         disruptor.handleEventsWith(handler);
-
         disruptor.start();
-
         this.ringBuffer = disruptor.getRingBuffer();
     }
 

@@ -6,13 +6,13 @@ import com.pk.mdmc.core.IConfig;
  * Created by pkapovski on 4/20/2016.
  */
 public class MDMCConfig implements IConfig{
-    private int windowMaxWidth;
-    private int packetMaxSize;
-    private int msgMaxPackets;
+    protected int windowMaxWidth;
+    protected int packetMaxSize;
+    protected int msgMaxPackets;
 
-    private int disruptorRingSize;
+    protected int disruptorRingSize;
 
-    private boolean netTraceEnabled;
+    protected boolean netTraceEnabled;
 
 
     public int getWindowMaxWidth() { return windowMaxWidth; }
@@ -29,7 +29,7 @@ public class MDMCConfig implements IConfig{
         packetMaxSize = 1024;
         msgMaxPackets = 127;
 
-        disruptorRingSize = 16;
+        disruptorRingSize = 32;
 
         netTraceEnabled = true;
     }
