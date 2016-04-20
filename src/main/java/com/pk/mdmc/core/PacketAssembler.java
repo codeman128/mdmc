@@ -6,7 +6,7 @@ package com.pk.mdmc.core;
 public class PacketAssembler {
     private final IConfig config;
     private final IMessageBuffer messageDisruptor;
-    private Window window;
+    private final Window window;
 
     private PacketAssembler(){
         config = null;
