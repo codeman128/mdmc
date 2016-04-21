@@ -2,7 +2,6 @@ package com.pk.mdmc.test;
 
 import com.pk.mdmc.core.IConfig;
 import com.pk.mdmc.core.Packet;
-import com.pk.mdmc.impl.MDMCConfig;
 import com.pk.mdmc.impl.MDMCServer;
 
 import java.io.IOException;

@@ -16,8 +16,8 @@ public class PacketAssembler {
 
     public PacketAssembler(IConfig config, IMessageHandler handler){
         this.config = config;
-        this.messageDisruptor = new MessageDisruptor(config, handler);
-        this.window = new Window(config, messageDisruptor);
+        messageDisruptor = new MessageDisruptor(config, handler);
+        window = new Window(config, messageDisruptor);
     }
 
     public void init() {

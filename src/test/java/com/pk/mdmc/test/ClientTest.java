@@ -4,7 +4,6 @@ import com.pk.mdmc.core.IConfig;
 import com.pk.mdmc.core.IMessageHandler;
 import com.pk.mdmc.core.Message;
 import com.pk.mdmc.impl.MDMCClient;
-import com.pk.mdmc.impl.MDMCConfig;
 
 import java.io.IOException;
 

@@ -2,7 +2,7 @@ package com.pk.mdmc.test.utils;
 
 
 import com.pk.mdmc.core.*;
-import com.pk.mdmc.impl.MDMCConfig;
+import com.pk.mdmc.test.MDMCConfig;
 import com.pk.mdmc.test.mock.DisrupterMessageHandlerMock;
 
 import java.util.ArrayList;

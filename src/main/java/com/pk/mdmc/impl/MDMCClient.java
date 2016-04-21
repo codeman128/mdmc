@@ -35,6 +35,7 @@ public class MDMCClient {
         socket.setNetworkInterface(config.getNetInterface());
         socket.joinGroup(config.getAddress());
         assembler = new PacketAssembler(config, handler);
+        assembler.init();
     }
 
     public void readPacket() throws IOException {

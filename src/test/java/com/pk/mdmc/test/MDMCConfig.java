@@ -1,4 +1,4 @@
-package com.pk.mdmc.impl;
+package com.pk.mdmc.test;
 
 import com.pk.mdmc.core.IConfig;
 
