@@ -3,6 +3,8 @@ package com.pk.mdmc.impl;
 import com.pk.mdmc.core.IConfig;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 /**
@@ -21,6 +23,8 @@ public class MDMCConfig implements IConfig{
     protected int disruptorRingSize;
 
     protected boolean netTraceEnabled;
+    protected NetworkInterface netInterface;
+    private String mcInterfaceName;
 
     @Override
     public int getWindowMaxWidth() { return windowMaxWidth; }
@@ -49,20 +53,40 @@ public class MDMCConfig implements IConfig{
         return mcAddress;
     }
 
-    public boolean getNetTraceEnabled() { return netTraceEnabled; }
+    @Override
+    public String getNetInterfaceName() {
+        return mcInterfaceName;
+    }
+
+    @Override
+    public NetworkInterface getNetInterface() {
+        return netInterface;
+    }
+
+    @Override
+    public boolean getNetTraceEnabled() {
+        return netTraceEnabled;
+    }
 
 
     protected void init() {
         try {
             mcAddress = InetAddress.getByName(mcHost);
         } catch (UnknownHostException e) {
-            e.printStackTrace(); //todo log
+            e.printStackTrace(); //todo add log
+        }
+
+        try {
+            netInterface = NetworkInterface.getByName(mcInterfaceName);
+        } catch (SocketException e) {
+            e.printStackTrace(); //todo add log
         }
     }
 
     public MDMCConfig() {
         mcPort = 8888;
         mcHost = "224.0.0.3";
+        mcInterfaceName = "eth6";
 
 
         windowMaxWidth = 5;

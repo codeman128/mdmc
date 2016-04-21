@@ -10,12 +10,14 @@ import com.pk.mdmc.core.Packet;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
+import java.net.MulticastSocket;
+import java.net.NetworkInterface;
 import java.net.SocketException;
 
 public class MDMCServer {
     protected final IConfig config;
     protected final Packet packet;
-    protected final DatagramSocket serverSocket;
+    protected final MulticastSocket serverSocket;
 
     private MDMCServer() {
         config = null;
@@ -23,10 +25,11 @@ public class MDMCServer {
         serverSocket = null;
     }
 
-    public MDMCServer(IConfig config) throws SocketException {
+    public MDMCServer(IConfig config) throws IOException {
         this.config = config;
         packet = new Packet(config);
-        serverSocket = new DatagramSocket();   // todo bind to specific interface
+        serverSocket = new MulticastSocket();
+        serverSocket.setNetworkInterface(config.getNetInterface());
     }
 
     public Packet getPacket() {
