@@ -1,5 +1,8 @@
 package com.pk.mdmc.test;
 
+import com.lmax.disruptor.BusySpinWaitStrategy;
+import com.lmax.disruptor.LiteBlockingWaitStrategy;
+import com.lmax.disruptor.WaitStrategy;
 import com.pk.mdmc.IConfig;
 
 import java.net.InetAddress;
@@ -38,6 +41,12 @@ public class MDMCConfig implements IConfig{
 
     @Override
     public int getDisruptorRingSize() { return disruptorRingSize;}
+
+    @Override
+    public WaitStrategy getDisruptorStrategy() {
+        return new LiteBlockingWaitStrategy();
+                //new BusySpinWaitStrategy();
+    }
 
     @Override
     public int getPort() {

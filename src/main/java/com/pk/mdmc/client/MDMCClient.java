@@ -5,10 +5,7 @@ package com.pk.mdmc.client;
  */
 
 import com.pk.mdmc.IConfig;
-import com.pk.mdmc.client.IMessageHandler;
 import com.pk.mdmc.Packet;
-import com.pk.mdmc.client.PacketAssembler;
-
 import java.io.IOException;
 
 import java.net.*;

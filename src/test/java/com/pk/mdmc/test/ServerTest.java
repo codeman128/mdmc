@@ -2,7 +2,7 @@ package com.pk.mdmc.test;
 
 import com.pk.mdmc.IConfig;
 import com.pk.mdmc.Packet;
-import com.pk.mdmc.server.IPacketBuffer;
+import com.pk.mdmc.server.IPacketRingBuffer;
 import com.pk.mdmc.server.MDMCServer;
 
 import java.io.IOException;
@@ -17,13 +17,13 @@ public class ServerTest {
 
         MDMCServer server = new MDMCServer(config);
         Packet packet;
-        IPacketBuffer disruptor = server.getDisruptor();
+        IPacketRingBuffer disruptor = server.getDisruptor();
 
         for (long i = 0; i < 50000000; i++) {
             packet = disruptor.next();
             packet.setSequenceId(i);
             packet.setSegmentCount((short)2);
-            packet.setPayloadSize((short)150);
+            packet.setPayloadSize((short)180);
             packet.setSegmentId((short)1);
             disruptor.publish();
             //System.out.println("Server sent: "+packet);
@@ -31,7 +31,7 @@ public class ServerTest {
             packet = disruptor.next();
             packet.setSequenceId(i);
             packet.setSegmentCount((short)2);
-            packet.setPayloadSize((short)150);
+            packet.setPayloadSize((short)180);
             packet.setSegmentId((short)2);
             disruptor.publish();
             //System.out.println("Server sent: "+packet);

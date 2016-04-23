@@ -8,7 +8,7 @@ import com.pk.mdmc.Packet;
  */
 public class PacketAssembler {
     private final IConfig config;
-    private final IMessageBuffer messageDisruptor;
+    private final IMessageRingBuffer messageDisruptor;
     private final Window window;
 
     private PacketAssembler(){

@@ -2,13 +2,13 @@ package com.pk.mdmc.test.mock;
 
 
 import com.pk.mdmc.IConfig;
-import com.pk.mdmc.client.IMessageBuffer;
-import com.pk.mdmc.client.Message;
+import com.pk.mdmc.client.IMessageRingBuffer;
+import com.pk.mdmc.Message;
 
 /**
  * Created by PavelK on 4/13/2016.
  */
-public class SimpleMessageHandlerMock implements IMessageBuffer {
+public class SimpleMessageHandlerMock implements IMessageRingBuffer {
     IConfig cnfg;
 
     public SimpleMessageHandlerMock(IConfig cnfg){

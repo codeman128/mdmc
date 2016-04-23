@@ -1,6 +1,7 @@
 package com.pk.mdmc.client;
 
 import com.pk.mdmc.IConfig;
+import com.pk.mdmc.Message;
 import com.pk.mdmc.Packet;
 
 /**
@@ -9,7 +10,7 @@ import com.pk.mdmc.Packet;
 public class Window {
     private long sequence;
     private final IConfig cnfg;
-    private final IMessageBuffer messageProducer;
+    private final IMessageRingBuffer messageProducer;
     private final int maxWidth;
     private final Message[] list;
     private final boolean TRACE;
@@ -22,7 +23,7 @@ public class Window {
         TRACE = true;
     }
 
-    public Window(IConfig cnfg, IMessageBuffer messageProducer) {
+    public Window(IConfig cnfg, IMessageRingBuffer messageProducer) {
         TRACE = cnfg.getNetTraceEnabled();
         this.messageProducer = messageProducer;
         this.cnfg = cnfg;

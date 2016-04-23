@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 /**
  * Created by PavelK on 4/23/2016.
  */
-public class PacketDisruptor implements IPacketBuffer{
+public class PacketDisruptor implements IPacketRingBuffer {
     private final IConfig config;
     private final Disruptor<Packet> disruptor;
     private final RingBuffer<Packet> ringBuffer;
@@ -37,7 +37,7 @@ public class PacketDisruptor implements IPacketBuffer{
         this.config = config;
         Executor executor = Executors.newCachedThreadPool();
         disruptor = new Disruptor<>(factory, config.getDisruptorRingSize(), executor,
-                ProducerType.SINGLE, new BusySpinWaitStrategy());
+                ProducerType.SINGLE, config.getDisruptorStrategy());
 
         disruptor.handleEventsWith(handler);
         disruptor.start();

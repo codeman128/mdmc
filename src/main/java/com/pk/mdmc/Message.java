@@ -1,4 +1,4 @@
-package com.pk.mdmc.client;
+package com.pk.mdmc;
 
 import com.pk.mdmc.IConfig;
 import com.pk.mdmc.Packet;

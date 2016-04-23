@@ -1,7 +1,7 @@
 package com.pk.mdmc.test.mock;
 
 import com.pk.mdmc.client.IMessageHandler;
-import com.pk.mdmc.client.Message;
+import com.pk.mdmc.Message;
 
 
 import java.util.ArrayList;

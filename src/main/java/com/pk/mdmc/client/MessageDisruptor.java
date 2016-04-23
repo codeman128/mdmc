@@ -1,11 +1,11 @@
 package com.pk.mdmc.client;
 
-import com.lmax.disruptor.BusySpinWaitStrategy;
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.pk.mdmc.IConfig;
+import com.pk.mdmc.Message;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -13,30 +13,30 @@ import java.util.concurrent.Executors;
 /**
  * Created by PavelK on 4/13/2016.
  */
-public class MessageDisruptor implements IMessageBuffer {
+public class MessageDisruptor implements IMessageRingBuffer {
     private final boolean TRACE = false;
-    private final IConfig cnfg;
+    private final IConfig config;
     private final Disruptor<Message> disruptor;
     private final RingBuffer<Message> ringBuffer;
 
     private final EventFactory<Message> factory = new EventFactory<Message>() {
         @Override
         public Message newInstance() {
-            return new Message(cnfg);
+            return new Message(config);
         }
     };
 
     private MessageDisruptor() {
-        cnfg = null;
+        config = null;
         disruptor = null;
         ringBuffer = null;
     }
 
     public MessageDisruptor(IConfig cnfg, IMessageHandler handler) {
-        this.cnfg = cnfg;
+        this.config = cnfg;
         Executor executor = Executors.newCachedThreadPool();
         disruptor = new Disruptor<>(factory, cnfg.getDisruptorRingSize(), executor,
-                ProducerType.SINGLE, new BusySpinWaitStrategy());
+                ProducerType.SINGLE, cnfg.getDisruptorStrategy());
 
         disruptor.handleEventsWith(handler);
         disruptor.start();

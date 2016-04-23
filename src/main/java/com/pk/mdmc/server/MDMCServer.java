@@ -37,7 +37,7 @@ public class MDMCServer {
         disruptor = new PacketDisruptor(config, handler);
     }
 
-    public IPacketBuffer getDisruptor() {
+    public IPacketRingBuffer getDisruptor() {
         return disruptor;
     }
 
