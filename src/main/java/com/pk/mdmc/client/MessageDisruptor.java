@@ -1,11 +1,11 @@
-package com.pk.mdmc.core;
+package com.pk.mdmc.client;
 
 import com.lmax.disruptor.BusySpinWaitStrategy;
 import com.lmax.disruptor.EventFactory;
-import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
+import com.pk.mdmc.IConfig;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -25,6 +25,12 @@ public class MessageDisruptor implements IMessageBuffer {
             return new Message(cnfg);
         }
     };
+
+    private MessageDisruptor() {
+        cnfg = null;
+        disruptor = null;
+        ringBuffer = null;
+    }
 
     public MessageDisruptor(IConfig cnfg, IMessageHandler handler) {
         this.cnfg = cnfg;

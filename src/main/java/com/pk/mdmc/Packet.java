@@ -1,7 +1,8 @@
-package com.pk.mdmc.core;
+package com.pk.mdmc;
+
+import com.pk.mdmc.IConfig;
 
 import java.net.DatagramPacket;
-import java.net.InetAddress;
 import java.nio.ByteBuffer;
 
 /**

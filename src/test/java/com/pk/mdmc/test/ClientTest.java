@@ -1,9 +1,9 @@
 package com.pk.mdmc.test;
 
-import com.pk.mdmc.core.IConfig;
-import com.pk.mdmc.core.IMessageHandler;
-import com.pk.mdmc.core.Message;
-import com.pk.mdmc.impl.MDMCClient;
+import com.pk.mdmc.IConfig;
+import com.pk.mdmc.client.IMessageHandler;
+import com.pk.mdmc.client.Message;
+import com.pk.mdmc.client.MDMCClient;
 
 import java.io.IOException;
 

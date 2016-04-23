@@ -1,7 +1,7 @@
 package com.pk.mdmc.test.utils;
 
-import com.pk.mdmc.core.IConfig;
-import com.pk.mdmc.core.Packet;
+import com.pk.mdmc.IConfig;
+import com.pk.mdmc.Packet;
 
 import java.util.ArrayList;
 import java.util.List;

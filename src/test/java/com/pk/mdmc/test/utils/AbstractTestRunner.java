@@ -1,7 +1,9 @@
 package com.pk.mdmc.test.utils;
 
 
-import com.pk.mdmc.core.*;
+import com.pk.mdmc.IConfig;
+import com.pk.mdmc.Packet;
+import com.pk.mdmc.client.PacketAssembler;
 import com.pk.mdmc.test.MDMCConfig;
 import com.pk.mdmc.test.mock.DisrupterMessageHandlerMock;
 

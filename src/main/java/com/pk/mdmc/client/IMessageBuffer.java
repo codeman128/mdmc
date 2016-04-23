@@ -1,4 +1,4 @@
-package com.pk.mdmc.core;
+package com.pk.mdmc.client;
 
 /**
  * Created by PavelK on 4/13/2016.

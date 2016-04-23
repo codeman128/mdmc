@@ -1,13 +1,13 @@
-package com.pk.mdmc.impl;
+package com.pk.mdmc.client;
 
 /**
  * Created by PavelK on 3/6/2016.
  */
 
-import com.pk.mdmc.core.IConfig;
-import com.pk.mdmc.core.IMessageHandler;
-import com.pk.mdmc.core.Packet;
-import com.pk.mdmc.core.PacketAssembler;
+import com.pk.mdmc.IConfig;
+import com.pk.mdmc.client.IMessageHandler;
+import com.pk.mdmc.Packet;
+import com.pk.mdmc.client.PacketAssembler;
 
 import java.io.IOException;
 

@@ -1,7 +1,7 @@
 package com.pk.mdmc.test.utils;
 
 
-import com.pk.mdmc.core.Message;
+import com.pk.mdmc.client.Message;
 
 import java.util.ArrayList;
 import java.util.List;

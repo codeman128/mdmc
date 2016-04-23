@@ -1,4 +1,4 @@
-package com.pk.mdmc.core;
+package com.pk.mdmc;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;

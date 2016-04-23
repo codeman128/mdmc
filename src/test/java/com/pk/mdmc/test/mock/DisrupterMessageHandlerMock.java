@@ -1,8 +1,7 @@
 package com.pk.mdmc.test.mock;
 
-import com.lmax.disruptor.EventHandler;
-import com.pk.mdmc.core.IMessageHandler;
-import com.pk.mdmc.core.Message;
+import com.pk.mdmc.client.IMessageHandler;
+import com.pk.mdmc.client.Message;
 
 
 import java.util.ArrayList;

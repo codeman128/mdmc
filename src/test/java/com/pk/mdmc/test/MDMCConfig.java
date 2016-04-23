@@ -1,6 +1,6 @@
 package com.pk.mdmc.test;
 
-import com.pk.mdmc.core.IConfig;
+import com.pk.mdmc.IConfig;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;

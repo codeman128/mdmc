@@ -1,4 +1,7 @@
-package com.pk.mdmc.core;
+package com.pk.mdmc.client;
+
+import com.pk.mdmc.IConfig;
+import com.pk.mdmc.Packet;
 
 /**
  * Created by PavelK on 4/8/2016.

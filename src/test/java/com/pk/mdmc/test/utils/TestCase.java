@@ -1,7 +1,7 @@
 package com.pk.mdmc.test.utils;
 
 
-import com.pk.mdmc.core.IConfig;
+import com.pk.mdmc.IConfig;
 
 /**
  * Created by PavelK on 4/16/2016.

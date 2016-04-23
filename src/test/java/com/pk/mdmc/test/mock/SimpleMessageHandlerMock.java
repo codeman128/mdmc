@@ -1,9 +1,9 @@
 package com.pk.mdmc.test.mock;
 
 
-import com.pk.mdmc.core.IConfig;
-import com.pk.mdmc.core.IMessageBuffer;
-import com.pk.mdmc.core.Message;
+import com.pk.mdmc.IConfig;
+import com.pk.mdmc.client.IMessageBuffer;
+import com.pk.mdmc.client.Message;
 
 /**
  * Created by PavelK on 4/13/2016.

@@ -1,4 +1,4 @@
-package com.pk.mdmc.core;
+package com.pk.mdmc.client;
 
 import com.lmax.disruptor.EventHandler;
 
