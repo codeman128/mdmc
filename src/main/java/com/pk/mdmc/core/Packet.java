@@ -43,7 +43,8 @@ public class Packet {
     public void  setSegmentCount(short count) { bb.putShort(OFFSET_SEGMENT_COUNT, count); }
     public short getSegmentCount() {     return bb.getShort(OFFSET_SEGMENT_COUNT);        }
 
-    public void  setPayloadSize(short size) { bb.putShort(OFFSET_PAYLOAD_SIZE, size); }
+    public void  setPayloadSize(short size) { bb.putShort(OFFSET_PAYLOAD_SIZE, size);
+        datagram.setLength(OFFSET_PAYLOAD_SIZE+2+size);  }
     public short getPayloadSize() {    return bb.getShort(OFFSET_PAYLOAD_SIZE);       }
 
     public DatagramPacket getDatagram() {

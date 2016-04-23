@@ -43,5 +43,9 @@ public class MDMCClient {
         packet = assembler.push(packet);
     }
 
+    public void close() throws IOException {
+        socket.leaveGroup(config.getAddress());
+    }
+
 
 }

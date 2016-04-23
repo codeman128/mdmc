@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
  * Created by PavelK on 4/13/2016.
  */
 public class MessageDisruptor implements IMessageBuffer {
-    private final boolean TRACE = true;
+    private final boolean TRACE = false;
     private final IConfig cnfg;
     private final Disruptor<Message> disruptor;
     private final RingBuffer<Message> ringBuffer;

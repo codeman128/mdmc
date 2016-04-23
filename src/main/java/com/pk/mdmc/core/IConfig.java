@@ -18,6 +18,7 @@ public interface IConfig {
     InetAddress getAddress();
     String getNetInterfaceName();
     NetworkInterface getNetInterface();
+    int getTTL();
 
     boolean getNetTraceEnabled();
 }

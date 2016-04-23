@@ -17,21 +17,21 @@ public class ServerTest {
         MDMCServer server = new MDMCServer(config);
         Packet packet = server.getPacket();
 
-        for (long i = 0; i < 5000000; i++) {
+        for (long i = 0; i < 50000000; i++) {
 
             packet.setSequenceId(i);
             packet.setSegmentCount((short)2);
-            packet.setPayloadSize((short)123);
+            packet.setPayloadSize((short)150);
             packet.setSegmentId((short)1);
 
             server.send();
-            System.out.println("Server sent: "+packet);
+            //System.out.println("Server sent: "+packet);
 
             packet.setSegmentId((short)2);
             server.send();
 
-            System.out.println("Server sent: "+packet);
-            Thread.sleep(500);
+            //System.out.println("Server sent: "+packet);
+            //Thread.sleep(1);
         }
 
     }

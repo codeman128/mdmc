@@ -12,12 +12,22 @@ import java.io.IOException;
  */
 public class ClientTest {
 
+
     public static void main(String[] args) throws IOException {
         IConfig config = new MDMCConfig();
         IMessageHandler handler = new IMessageHandler() {
+            long counter =0;
+            long sTime = System.currentTimeMillis();
+
             @Override
             public void onEvent(Message message, long l, boolean b) throws Exception {
-                System.out.println("!!!! "+message);
+                counter++;
+                if (counter==30000) {
+                    long t = System.currentTimeMillis();
+                    System.out.println(counter+ " messages received "+(t-sTime));
+                    counter =  0;
+                    sTime = t;
+                }
             }
         };
 

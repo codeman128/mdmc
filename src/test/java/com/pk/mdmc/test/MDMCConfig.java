@@ -15,6 +15,7 @@ public class MDMCConfig implements IConfig{
     private int mcPort;
     private String mcHost;
     private InetAddress mcAddress;
+    protected int mcTTL;
 
     protected int windowMaxWidth;
     protected int packetMaxSize;
@@ -64,6 +65,9 @@ public class MDMCConfig implements IConfig{
     }
 
     @Override
+    public int getTTL() { return mcTTL; }
+
+    @Override
     public boolean getNetTraceEnabled() {
         return netTraceEnabled;
     }
@@ -86,7 +90,8 @@ public class MDMCConfig implements IConfig{
     public MDMCConfig() {
         mcPort = 8888;
         mcHost = "224.0.0.3";
-        mcInterfaceName = "eth6";
+        mcInterfaceName = "eth3";//eth6
+        mcTTL = 2;
 
 
         windowMaxWidth = 5;
@@ -95,7 +100,7 @@ public class MDMCConfig implements IConfig{
 
         disruptorRingSize = 32;
 
-        netTraceEnabled = true;
+        netTraceEnabled = false;
 
         init();
     }
