@@ -3,7 +3,7 @@ package com.pk.mdmc.test;
 import com.pk.mdmc.IConfig;
 import com.pk.mdmc.client.IMessageHandler;
 import com.pk.mdmc.Message;
-import com.pk.mdmc.client.MDMCClient;
+import com.pk.mdmc.client.Client;
 
 import java.io.IOException;
 
@@ -14,7 +14,7 @@ public class ClientTest {
 
 
     public static void main(String[] args) throws IOException {
-        IConfig config = new MDMCConfig();
+        IConfig config = new TestConfig();
         IMessageHandler handler = new IMessageHandler() {
             long counter =0;
             long sTime = System.currentTimeMillis();
@@ -31,7 +31,7 @@ public class ClientTest {
             }
         };
 
-        MDMCClient client = new MDMCClient(config, handler);
+        Client client = new Client(config, handler);
 
         while (true) {
             client.readPacket();

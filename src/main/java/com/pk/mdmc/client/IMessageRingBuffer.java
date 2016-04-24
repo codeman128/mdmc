@@ -7,5 +7,6 @@ import com.pk.mdmc.Message;
  */
 public interface IMessageRingBuffer {
     Message next();
+
     void push(Message msg);
 }

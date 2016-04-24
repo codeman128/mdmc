@@ -4,7 +4,7 @@ package com.pk.mdmc.test.utils;
 import com.pk.mdmc.IConfig;
 import com.pk.mdmc.Packet;
 import com.pk.mdmc.client.PacketAssembler;
-import com.pk.mdmc.test.MDMCConfig;
+import com.pk.mdmc.test.TestConfig;
 import com.pk.mdmc.test.mock.DisrupterMessageHandlerMock;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class AbstractTestRunner {
     protected static final String LINE = "----------------------------------------------------";
-    protected IConfig cnfg = new MDMCConfig();
+    protected IConfig cnfg = new TestConfig();
     protected DisrupterMessageHandlerMock eHandler = new DisrupterMessageHandlerMock();
     protected PacketAssembler assembler  = new PacketAssembler(cnfg, eHandler);
     protected Packet p = new Packet(cnfg);

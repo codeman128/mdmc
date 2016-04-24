@@ -1,7 +1,5 @@
 package com.pk.mdmc;
 
-import com.pk.mdmc.IConfig;
-
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 
@@ -10,15 +8,14 @@ import java.nio.ByteBuffer;
  */
 public class Packet {
 
+    private final static int OFFSET_SEQUENCE_ID = 0;
+    private final static int OFFSET_SEGMENT_ID = OFFSET_SEQUENCE_ID + 8;
+    private final static int OFFSET_SEGMENT_COUNT = OFFSET_SEGMENT_ID + 2;
+    private final static int OFFSET_PAYLOAD_SIZE = OFFSET_SEGMENT_COUNT + 2;
+    private final static int OFFSET_PAYLOAD = OFFSET_PAYLOAD_SIZE + 2;
     private final byte[] buffer;
     private final ByteBuffer bb;
     private final DatagramPacket datagram;
-
-    private final static int OFFSET_SEQUENCE_ID   = 0;
-    private final static int OFFSET_SEGMENT_ID    = OFFSET_SEQUENCE_ID + 8;
-    private final static int OFFSET_SEGMENT_COUNT = OFFSET_SEGMENT_ID + 2;
-    private final static int OFFSET_PAYLOAD_SIZE  = OFFSET_SEGMENT_COUNT + 2;
-    private final static int OFFSET_PAYLOAD       = OFFSET_PAYLOAD_SIZE + 2;
 
     private Packet() {
         buffer = null;
@@ -35,24 +32,44 @@ public class Packet {
         datagram.setPort(cnfg.getPort());
     }
 
-    public void setSequenceId(long id) { bb.putLong(OFFSET_SEQUENCE_ID, id); }
-    public long getSequenceId() { return bb.getLong(OFFSET_SEQUENCE_ID);     }
+    public long getSequenceId() {
+        return bb.getLong(OFFSET_SEQUENCE_ID);
+    }
 
-    public void  setSegmentId(short id) { bb.putShort(OFFSET_SEGMENT_ID, id); }
-    public short getSegmentId() {  return bb.getShort(OFFSET_SEGMENT_ID);     }
+    public void setSequenceId(long id) {
+        bb.putLong(OFFSET_SEQUENCE_ID, id);
+    }
 
-    public void  setSegmentCount(short count) { bb.putShort(OFFSET_SEGMENT_COUNT, count); }
-    public short getSegmentCount() {     return bb.getShort(OFFSET_SEGMENT_COUNT);        }
+    public short getSegmentId() {
+        return bb.getShort(OFFSET_SEGMENT_ID);
+    }
 
-    public void  setPayloadSize(short size) { bb.putShort(OFFSET_PAYLOAD_SIZE, size);
-        datagram.setLength(OFFSET_PAYLOAD_SIZE+2+size);  }
-    public short getPayloadSize() {    return bb.getShort(OFFSET_PAYLOAD_SIZE);       }
+    public void setSegmentId(short id) {
+        bb.putShort(OFFSET_SEGMENT_ID, id);
+    }
+
+    public short getSegmentCount() {
+        return bb.getShort(OFFSET_SEGMENT_COUNT);
+    }
+
+    public void setSegmentCount(short count) {
+        bb.putShort(OFFSET_SEGMENT_COUNT, count);
+    }
+
+    public short getPayloadSize() {
+        return bb.getShort(OFFSET_PAYLOAD_SIZE);
+    }
+
+    public void setPayloadSize(short size) {
+        bb.putShort(OFFSET_PAYLOAD_SIZE, size);
+        datagram.setLength(OFFSET_PAYLOAD_SIZE + 2 + size);
+    }
 
     public DatagramPacket getDatagram() {
         return datagram;
     }
 
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder(120);
         sb.append("Packet [").append(getSequenceId()).append("] ").
                 append(getSegmentId()).append("-").append(getSegmentCount()).

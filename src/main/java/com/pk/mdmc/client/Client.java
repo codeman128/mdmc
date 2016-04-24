@@ -10,21 +10,21 @@ import java.io.IOException;
 
 import java.net.*;
 
-public class MDMCClient {
+public class Client {
     protected final IConfig config;
     protected final IMessageHandler handler;
     protected final MulticastSocket socket;
     protected final PacketAssembler assembler;
     protected Packet packet;
 
-    private MDMCClient() {
+    private Client() {
         config = null;
         handler = null;
         socket = null;
         assembler = null;
     }
 
-    public MDMCClient(IConfig config, IMessageHandler handler) throws IOException {
+    public Client(IConfig config, IMessageHandler handler) throws IOException {
         this.config = config;
         this.handler = handler;
         packet = new Packet(config);

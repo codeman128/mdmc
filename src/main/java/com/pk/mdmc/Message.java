@@ -1,18 +1,15 @@
 package com.pk.mdmc;
 
-import com.pk.mdmc.IConfig;
-import com.pk.mdmc.Packet;
-
 /**
  * Created by PavelK on 3/26/2016.
  */
 public class Message {
-    private long sid;
-    private short packetsExpected;
-    private short packetsReceived;
     private final Packet[] packets;
     private final boolean[] isReceived;
     private final boolean TRACE;
+    private long sid;
+    private short packetsExpected;
+    private short packetsReceived;
     private long rbSequence;
 
     private Message() {
@@ -21,11 +18,11 @@ public class Message {
         TRACE = true;
     }
 
-    public Message(IConfig cnfg){
+    public Message(IConfig cnfg) {
         TRACE = cnfg.getNetTraceEnabled();
         packets = new Packet[cnfg.getMsgMaxPackets()];
         isReceived = new boolean[cnfg.getMsgMaxPackets()];
-        for (int i=0; i<packets.length; i++) {
+        for (int i = 0; i < packets.length; i++) {
             packets[i] = new Packet(cnfg);
         }
 
@@ -37,8 +34,8 @@ public class Message {
         packetsExpected = 0;
         packetsReceived = 0;
         this.rbSequence = rbSequence;
-        for (int i=0; i<packets.length; i++) {
-            isReceived[i]= false;
+        for (int i = 0; i < packets.length; i++) {
+            isReceived[i] = false;
         }
     }
 
@@ -46,8 +43,8 @@ public class Message {
         final short segment = packet.getSegmentId();
         if (!isReceived[segment]) {
             // set segment id (first packet after init)
-            if (packetsExpected ==0) {
-                sid=packet.getSequenceId();
+            if (packetsExpected == 0) {
+                sid = packet.getSequenceId();
                 packetsExpected = packet.getSegmentCount();
             }
             // mark segment as received
@@ -58,21 +55,25 @@ public class Message {
             packets[segment] = packet;
             return oldPacket;
         } else {
-             // duplicate packet received - ignore todo log trace
+            // duplicate packet received - ignore todo log trace
             return packet;
         }
     }
 
     public boolean isFilled() {
-        return (packetsExpected !=0 && packetsExpected == packetsReceived);
+        return (packetsExpected != 0 && packetsExpected == packetsReceived);
     }
 
-    public String toString(){
+    public String toString() {
         String state;
-        if (packetsExpected==0) { state = "INIT"; } else
-            if (packetsReceived==0) { state = "EMPTY";} else
-                if (isFilled()) { state="FILLED ";} else
-                    state = "PARTIAL";
+        if (packetsExpected == 0) {
+            state = "INIT";
+        } else if (packetsReceived == 0) {
+            state = "EMPTY";
+        } else if (isFilled()) {
+            state = "FILLED ";
+        } else
+            state = "PARTIAL";
 
 
         StringBuilder sb = new StringBuilder(127);

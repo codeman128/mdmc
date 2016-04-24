@@ -11,17 +11,25 @@ import java.net.NetworkInterface;
 public interface IConfig {
 
     int getWindowMaxWidth();
+
     int getPacketMaxSize();
+
     int getMsgMaxPackets();
 
     int getDisruptorRingSize();
+
     WaitStrategy getDisruptorStrategy();
 
     int getPort();
+
     String getHost();
+
     InetAddress getAddress();
+
     String getNetInterfaceName();
+
     NetworkInterface getNetInterface();
+
     int getTTL();
 
     boolean getNetTraceEnabled();

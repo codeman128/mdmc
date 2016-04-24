@@ -11,7 +11,7 @@ import com.pk.mdmc.Packet;
 import java.io.IOException;
 import java.net.MulticastSocket;
 
-public class MDMCServer {
+public class Server {
     protected final IConfig config;
     protected final MulticastSocket socket;
     protected final PacketDisruptor disruptor;
@@ -22,13 +22,13 @@ public class MDMCServer {
         }
     };
 
-    private MDMCServer() {
+    private Server() {
         config = null;
         socket = null;
         disruptor = null;
     }
 
-    public MDMCServer(IConfig config) throws IOException {
+    public Server(IConfig config) throws IOException {
         this.config = config;
         socket = new MulticastSocket();
         socket.setNetworkInterface(config.getNetInterface());

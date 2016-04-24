@@ -55,9 +55,9 @@ public class MessageDisruptor implements IMessageRingBuffer {
     public void push(Message msg) {
         final long rbSequence = msg.getRbSequence();
         if (msg.isFilled()) {
-            if (TRACE) System.out.println("RB ["+rbSequence+"] --->>>  push "+msg);
+            if (TRACE) System.out.println("RB [" + rbSequence + "] --->>>  push " + msg);
         } else {
-            if (TRACE) System.out.println("RB ["+rbSequence+"] --->>>  drop "+msg);
+            if (TRACE) System.out.println("RB [" + rbSequence + "] --->>>  drop " + msg);
         }
         ringBuffer.publish(rbSequence);
     }

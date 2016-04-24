@@ -7,5 +7,6 @@ import com.pk.mdmc.Packet;
  */
 public interface IPacketRingBuffer {
     Packet next();
+
     void publish();
 }
