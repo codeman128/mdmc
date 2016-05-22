@@ -6,16 +6,18 @@ import java.net.ServerSocket;
 /**
  * Created by PavelK on 5/21/2016.
  */
-public class Publisher {
+public class Publisher  {
     protected ServerSocket server;
     protected final IPublisherConfig config;
     public final Feeder[] feeders; //make protected/private
     protected final Acceptor acceptor;
+    protected final MessageDisruptor disruptor;
 
     private Publisher(){
         config = null;
         feeders = null;
         acceptor = null;
+        disruptor = null;
     }
 
     public Publisher(IPublisherConfig config){
@@ -33,6 +35,9 @@ public class Publisher {
             e.printStackTrace(); //todo proper error log handling
         }
 
+        // init disruptor
+        disruptor = new MessageDisruptor(this);
+
         // init acceptor
         acceptor = new Acceptor(this);
 
@@ -43,7 +48,7 @@ public class Publisher {
         return config;
     }
 
-    public ClientConnection getAvailableConnection() {
+    protected ClientConnection getAvailableConnection() {
         int maxAvailable = 0;
         Feeder lazy = null;
         for (int i = 0; i < feeders.length; i++) {
@@ -56,5 +61,13 @@ public class Publisher {
             return lazy.getFirstAvailable();
         }
         return null;
+    }
+
+    public Message getNext(){
+        return disruptor.next();
+    }
+
+    public void publish(Message message) {
+        disruptor.push(message);
     }
 }

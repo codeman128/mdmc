@@ -40,6 +40,7 @@ public class ClientConnection {
             return false;
         }
         if (!state.compareAndSet(STATE.MARKED, STATE.INIT)) return false;
+        System.out.println("Connection assigned: "+this+" "+feeder);
         return true;
     }
 

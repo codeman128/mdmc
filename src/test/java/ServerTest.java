@@ -1,11 +1,9 @@
+import com.lmax.disruptor.LiteBlockingWaitStrategy;
+import com.lmax.disruptor.WaitStrategy;
 import com.pk.publisher.IPublisherConfig;
 import com.pk.publisher.Message;
 import com.pk.publisher.Publisher;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
 
 /**
  * Created by PavelK on 5/21/2016.
@@ -19,26 +17,42 @@ public class ServerTest {
 
         @Override
         public int getFeederCount() {
-            return 1;
+            return 2;
         }
 
         @Override
         public int getMaxClientConnection() {
-            return 5;
+            return 2;
         }
 
         @Override
         public int getAcceptorMaxRetry() {
             return 3;
         }
+
+        @Override
+        public int getDisruptorRingSize() {
+           return 128;
+    }
+
+        @Override
+        public int getMaxMessageSize() {
+            return 2048;
+        }
+
+        @Override
+        public WaitStrategy getDisruptorStrategy() {
+            return new LiteBlockingWaitStrategy();
+            //new BusySpinWaitStrategy();
+        }
     };
 
 
-    public static void main(String[] args) throws IOException {
+        public static void main(String[] args) throws Exception {
         Publisher publisher = new Publisher(config);
 
         long time;
-        Message msg = new Message(1024*5);
+        Message msg;
 
         while (true){
             time = System.currentTimeMillis();
@@ -46,15 +60,17 @@ public class ServerTest {
             String snapshot_str = "SNAPSHOT "+time+"\n";
 
 
+            msg = publisher.getNext();
             System.arraycopy(update_str.getBytes(), 0, msg.getData(), 0, update_str.length());
             msg.length = update_str.length();
             msg.type = Message.TYPE.UPDATE;
-            publisher.feeders[0].publish(msg);
+            publisher.publish(msg);
 
+            msg = publisher.getNext();
             System.arraycopy(snapshot_str.getBytes(), 0, msg.getData(), 0, snapshot_str.length());
             msg.length = snapshot_str.length();
             msg.type = Message.TYPE.SNAPSHOT;
-            publisher.feeders[0].publish(msg);
+            publisher.publish(msg);
 
             try {
                 Thread.sleep(1000);

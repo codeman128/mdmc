@@ -56,7 +56,7 @@ public class Acceptor implements Runnable{
             ClientConnection connection;
             while (retry<config.getAcceptorMaxRetry()){
                 connection = publisher.getAvailableConnection();
-                if (connection.assign(clientSocket)) break;
+                if (connection!=null && connection.assign(clientSocket)) break;
             }
             if (retry>=config.getAcceptorMaxRetry()){
                 //todo log no slots available

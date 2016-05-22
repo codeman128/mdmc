@@ -1,11 +1,13 @@
 package com.pk.publisher;
 
+import com.lmax.disruptor.EventHandler;
+
 import java.util.Random;
 
 /**
  * Created by PavelK on 5/21/2016.
  */
-public class Feeder {
+public class Feeder implements EventHandler<Message> {
     protected final Random random = new Random(System.currentTimeMillis());
     protected final IPublisherConfig config;
     protected final int[] pubOrder;
@@ -48,13 +50,6 @@ public class Feeder {
         }
     }
 
-    public void publish(Message message){
-        for (int i=0; i<maxConnection; i++){
-            clients[pubOrder[i]].sendData(message);
-        }
-        shuffle();
-    }
-
     public int countAvailable(){
         int counter = 0;
         for (int i=0; i<clients.length; i++) {
@@ -70,5 +65,13 @@ public class Feeder {
             }
         }
         return null;
+    }
+
+    @Override
+    public void onEvent(Message message, long l, boolean b) throws Exception {
+        for (int i=0; i<maxConnection; i++){
+            clients[pubOrder[i]].sendData(message);
+        }
+        shuffle();
     }
 }

@@ -8,6 +8,7 @@ public class Message {
     public TYPE type;
     protected final byte[] data;
     public int length = 0;
+    protected long dSequence;
 
     private Message(){
         data = null;
@@ -21,5 +22,13 @@ public class Message {
         return data;
     }
 
+    public void init(long dSequence) {
+        this.dSequence = dSequence;
+        length = 0;
+    }
+
+    public long getDSequence(){
+        return dSequence;
+    }
 
 }
