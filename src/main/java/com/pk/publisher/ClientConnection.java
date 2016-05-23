@@ -49,24 +49,26 @@ public class ClientConnection {
             switch (state.get()) {
                 case ASSIGNED : {
                     if (msg.type == Message.TYPE.UPDATE || msg.type == Message.TYPE.HEARTBEAT) {
-                        stream.write(msg.getData(), 0, msg.length);
+                        stream.write(msg.getBuffer(), 0, msg.length);
                     }
                     break;
                 }
                 case INIT: {
                     if (msg.type == Message.TYPE.SNAPSHOT) {
-                        stream.write(msg.getData(), 0, msg.length);
+                        stream.write(msg.getBuffer(), 0, msg.length);
                         state.compareAndSet(STATE.INIT, STATE.ASSIGNED);
                     }
                     break;
                 }
                 case AVAILABLE: {
                     //todo consider put some "delay" for fairness...
+                    break;
                 }
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // to do
+            state.set(STATE.AVAILABLE);
             safelyCloseConnection();
             return false;
         }
@@ -74,8 +76,19 @@ public class ClientConnection {
     }
 
     protected void safelyCloseConnection(){
-        try { socket.close();} catch (IOException e) {}
-        state.set(STATE.AVAILABLE);
+        try {
+            socket.close();
+        } catch (IOException e) {
+
+        } finally {
+            state.set(STATE.AVAILABLE);
+        }
     }
+
+    // for logging .. method is pubic - this is problematic
+    public Socket getSocket() {
+        return socket;
+    }
+
 
 }

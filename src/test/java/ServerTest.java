@@ -1,14 +1,41 @@
 import com.lmax.disruptor.LiteBlockingWaitStrategy;
 import com.lmax.disruptor.WaitStrategy;
-import com.pk.publisher.IPublisherConfig;
-import com.pk.publisher.Message;
-import com.pk.publisher.Publisher;
+import com.pk.publisher.*;
+
+import java.io.IOException;
+import java.net.Socket;
 
 
 /**
  * Created by PavelK on 5/21/2016.
  */
 public class ServerTest {
+    static AbstractEventEmitter eventEmitter = new AbstractEventEmitter() {
+
+        @Override
+        public void onConnectionAccepted(ClientConnection connection) {
+            Socket s = connection.getSocket();
+            System.out.println("New connection accepted from ["+ s.getInetAddress()+":"+s.getPort());
+        }
+
+        @Override
+        public void onConnectionRejected_Invalid() {
+
+        }
+
+        @Override
+        public void onConnectionRejected_Busy() {
+
+        }
+
+        @Override
+        public void onBindFailed(int port, IOException e) {
+            System.out.println("Bind to port "+port+" failed.");
+            e.printStackTrace();
+        }
+
+    };
+
     static IPublisherConfig config = new IPublisherConfig() {
         @Override
         public int getPort() {
@@ -49,7 +76,7 @@ public class ServerTest {
 
 
         public static void main(String[] args) throws Exception {
-        Publisher publisher = new Publisher(config);
+        Publisher publisher = new Publisher(config, eventEmitter);
 
         long time;
         Message msg;
@@ -61,15 +88,17 @@ public class ServerTest {
 
 
             msg = publisher.getNext();
-            System.arraycopy(update_str.getBytes(), 0, msg.getData(), 0, update_str.length());
+            System.arraycopy(update_str.getBytes(), 0, msg.getBuffer(), 0, update_str.length());
             msg.length = update_str.length();
             msg.type = Message.TYPE.UPDATE;
+            msg.eventTime = System.nanoTime();
             publisher.publish(msg);
 
             msg = publisher.getNext();
-            System.arraycopy(snapshot_str.getBytes(), 0, msg.getData(), 0, snapshot_str.length());
+            System.arraycopy(snapshot_str.getBytes(), 0, msg.getBuffer(), 0, snapshot_str.length());
             msg.length = snapshot_str.length();
             msg.type = Message.TYPE.SNAPSHOT;
+            msg.eventTime = System.nanoTime();
             publisher.publish(msg);
 
             try {

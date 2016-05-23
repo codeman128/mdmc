@@ -9,24 +9,28 @@ import java.net.Socket;
  */
 public class Acceptor implements Runnable{
     private final Publisher publisher;
-    protected final IPublisherConfig config;
-    protected final Thread thread;
+    private final IPublisherConfig config;
+    private final AbstractEventEmitter eventEmitter;
+    private final Thread thread;
 
     private Acceptor(){
         publisher = null;
         config = null;
+        eventEmitter = null;
         thread = null;
     }
 
     public Acceptor(Publisher publisher) {
         this.publisher = publisher;
         config = publisher.config;
+        eventEmitter = publisher.eventEmitter;
         thread = new Thread(this);
         thread.setName("ACCEPTOR"); //todo add id;
         thread.start();
     }
 
     protected boolean validateNewConnection(Socket socket) {
+        if (1==2) eventEmitter.onConnectionRejected_Invalid();
         return true;
     }
 
@@ -43,12 +47,7 @@ public class Acceptor implements Runnable{
 
             // validate new connection request
             if (!validateNewConnection(clientSocket)) {
-                try {
-                    clientSocket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Connection refused!"); //todo proper handling
+                closeQuietly(clientSocket);
             }
 
             // let's try to find free slot
@@ -56,16 +55,22 @@ public class Acceptor implements Runnable{
             ClientConnection connection;
             while (retry<config.getAcceptorMaxRetry()){
                 connection = publisher.getAvailableConnection();
-                if (connection!=null && connection.assign(clientSocket)) break;
-            }
-            if (retry>=config.getAcceptorMaxRetry()){
-                //todo log no slots available
-                try {
-                    clientSocket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (connection!=null && connection.assign(clientSocket)) {
+                    eventEmitter.onConnectionAccepted(connection);
+                    break;
                 }
             }
+            if (retry>=config.getAcceptorMaxRetry()){
+                eventEmitter.onConnectionRejected_Busy();
+                closeQuietly(clientSocket);
+            }
+        }
+    }
+
+    private void closeQuietly(Socket socket){
+        try {
+            socket.close();
+        } catch (IOException e) {
         }
     }
 }

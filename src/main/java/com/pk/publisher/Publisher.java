@@ -9,19 +9,22 @@ import java.net.ServerSocket;
 public class Publisher  {
     protected ServerSocket server;
     protected final IPublisherConfig config;
-    public final Feeder[] feeders; //make protected/private
+    protected final AbstractEventEmitter eventEmitter;
+    protected final Feeder[] feeders; //make protected/private
     protected final Acceptor acceptor;
     protected final MessageDisruptor disruptor;
 
     private Publisher(){
         config = null;
+        eventEmitter = null;
         feeders = null;
         acceptor = null;
         disruptor = null;
     }
 
-    public Publisher(IPublisherConfig config){
+    public Publisher(IPublisherConfig config, AbstractEventEmitter eventEmitter){
         this.config = config;
+        this.eventEmitter = eventEmitter;
 
         // init feeders
         feeders = new Feeder[config.getFeederCount()];
@@ -29,14 +32,15 @@ public class Publisher  {
             feeders[i] = new Feeder(this);
         }
 
+        // init disruptor
+        disruptor = new MessageDisruptor(this);
+
         try {
             server = new ServerSocket(config.getPort(), 1); //todo proper bind
         } catch (IOException e) {
-            e.printStackTrace(); //todo proper error log handling
+            eventEmitter.onBindFailed(config.getPort(), e);
+            System.exit(-1);
         }
-
-        // init disruptor
-        disruptor = new MessageDisruptor(this);
 
         // init acceptor
         acceptor = new Acceptor(this);
@@ -69,5 +73,9 @@ public class Publisher  {
 
     public void publish(Message message) {
         disruptor.push(message);
+    }
+
+    public AbstractEventEmitter getEventEmitter(){
+        return eventEmitter;
     }
 }

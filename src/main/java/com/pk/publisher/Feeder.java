@@ -72,6 +72,10 @@ public class Feeder implements EventHandler<Message> {
         for (int i=0; i<maxConnection; i++){
             clients[pubOrder[i]].sendData(message);
         }
+        //debug --------------------------------------------
+        long delta = System.nanoTime() - message.eventTime;
+        //System.out.println((double)delta/1000000);
+        //--------------------------------------------------
         shuffle();
     }
 }
