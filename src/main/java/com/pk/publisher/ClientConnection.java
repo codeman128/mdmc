@@ -9,18 +9,21 @@ import java.util.concurrent.atomic.AtomicReference;
  * Created by PavelK on 5/21/2016.
  */
 public class ClientConnection {
-    enum STATE {UNKNOWN, MARKED, AVAILABLE, INIT, ASSIGNED}
-    protected final AtomicReference<STATE> state = new AtomicReference<>(STATE.UNKNOWN);
-    protected final Feeder feeder;
-    protected Socket socket;
-    protected OutputStream stream;
+    enum STATE {UNKNOWN, AVAILABLE, MARKED, INIT, ASSIGNED}
+    private final AtomicReference<STATE> state = new AtomicReference<>(STATE.UNKNOWN);
+    private final Feeder feeder;
+    private final AbstractEventEmitter eventEmitter;
+    private Socket socket;
+    private OutputStream stream;
 
     private ClientConnection(){
         feeder = null;
+        eventEmitter = null;
     }
 
     public ClientConnection(Feeder feeder) {
         this.feeder = feeder;
+        this.eventEmitter = feeder.getPublisher().getEventEmitter();
         state.set(STATE.AVAILABLE);
     }
 
@@ -39,9 +42,7 @@ public class ClientConnection {
             state.compareAndSet(STATE.MARKED, STATE.AVAILABLE);
             return false;
         }
-        if (!state.compareAndSet(STATE.MARKED, STATE.INIT)) return false;
-        System.out.println("Connection assigned: "+this+" "+feeder);
-        return true;
+        return state.compareAndSet(STATE.MARKED, STATE.INIT);
     }
 
     public boolean sendData(Message msg) {
@@ -66,7 +67,7 @@ public class ClientConnection {
                 }
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace(); // to do
             state.set(STATE.AVAILABLE);
             safelyCloseConnection();

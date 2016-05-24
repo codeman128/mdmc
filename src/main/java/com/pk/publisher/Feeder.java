@@ -8,6 +8,7 @@ import java.util.Random;
  * Created by PavelK on 5/21/2016.
  */
 public class Feeder implements EventHandler<Message> {
+    private final Publisher publisher;
     protected final Random random = new Random(System.currentTimeMillis());
     protected final IPublisherConfig config;
     protected final int[] pubOrder;
@@ -16,6 +17,7 @@ public class Feeder implements EventHandler<Message> {
 
 
     private Feeder(){
+        publisher = null;
         config = null;
         maxConnection = -1;
         pubOrder = null;
@@ -23,6 +25,7 @@ public class Feeder implements EventHandler<Message> {
     }
 
     public Feeder(Publisher publisher){
+        this.publisher = publisher;
         config = publisher.getConfig();
         maxConnection = config.getMaxClientConnection();
 
@@ -77,5 +80,9 @@ public class Feeder implements EventHandler<Message> {
         //System.out.println((double)delta/1000000);
         //--------------------------------------------------
         shuffle();
+    }
+
+    public Publisher getPublisher(){
+        return publisher;
     }
 }

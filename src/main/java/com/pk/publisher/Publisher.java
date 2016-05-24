@@ -7,14 +7,16 @@ import java.net.ServerSocket;
  * Created by PavelK on 5/21/2016.
  */
 public class Publisher  {
-    protected ServerSocket server;
-    protected final IPublisherConfig config;
-    protected final AbstractEventEmitter eventEmitter;
+    private final byte[] name;
+    private final IPublisherConfig config;
+    private final AbstractEventEmitter eventEmitter;
     protected final Feeder[] feeders; //make protected/private
     protected final Acceptor acceptor;
     protected final MessageDisruptor disruptor;
+    protected ServerSocket server;
 
     private Publisher(){
+        name = null;
         config = null;
         eventEmitter = null;
         feeders = null;
@@ -22,7 +24,8 @@ public class Publisher  {
         disruptor = null;
     }
 
-    public Publisher(IPublisherConfig config, AbstractEventEmitter eventEmitter){
+    public Publisher(byte[] name, IPublisherConfig config, AbstractEventEmitter eventEmitter){
+        this.name = name;
         this.config = config;
         this.eventEmitter = eventEmitter;
 
@@ -44,8 +47,10 @@ public class Publisher  {
 
         // init acceptor
         acceptor = new Acceptor(this);
+    }
 
-
+    public byte[] getName(){
+        return name;
     }
 
     public IPublisherConfig getConfig(){

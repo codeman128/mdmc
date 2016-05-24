@@ -29,10 +29,17 @@ public class ServerTest {
         }
 
         @Override
+        public void onUnexpectedAcceptorError(Exception e) {
+            System.out.println("onUnexpectedAcceptorError\n");
+            e.printStackTrace();
+        }
+
+        @Override
         public void onBindFailed(int port, IOException e) {
             System.out.println("Bind to port "+port+" failed.");
             e.printStackTrace();
         }
+
 
     };
 
@@ -76,7 +83,7 @@ public class ServerTest {
 
 
         public static void main(String[] args) throws Exception {
-        Publisher publisher = new Publisher(config, eventEmitter);
+        Publisher publisher = new Publisher("L1 PUBLISHER".getBytes(), config, eventEmitter);
 
         long time;
         Message msg;

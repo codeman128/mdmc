@@ -8,6 +8,7 @@ import java.net.Socket;
  * Created by PavelK on 5/21/2016.
  */
 public class Acceptor implements Runnable{
+    private final static String THREAD_NAME_SUFFIX = " - ACCEPTOR";
     private final Publisher publisher;
     private final IPublisherConfig config;
     private final AbstractEventEmitter eventEmitter;
@@ -22,15 +23,15 @@ public class Acceptor implements Runnable{
 
     public Acceptor(Publisher publisher) {
         this.publisher = publisher;
-        config = publisher.config;
-        eventEmitter = publisher.eventEmitter;
+        config = publisher.getConfig();
+        eventEmitter = publisher.getEventEmitter();
         thread = new Thread(this);
-        thread.setName("ACCEPTOR"); //todo add id;
+        thread.setName(new String(publisher.getName())+THREAD_NAME_SUFFIX);
         thread.start();
     }
 
     protected boolean validateNewConnection(Socket socket) {
-        if (1==2) eventEmitter.onConnectionRejected_Invalid();
+        if (1==2) eventEmitter.onConnectionRejected_Invalid();//todo implement
         return true;
     }
 
@@ -40,8 +41,9 @@ public class Acceptor implements Runnable{
             Socket clientSocket = null;
             try {
                 clientSocket = publisher.server.accept();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                eventEmitter.onUnexpectedAcceptorError(e);
+                System.exit(-1);
                 break;
             }
 
