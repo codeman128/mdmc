@@ -5,7 +5,7 @@ package com.pk.publisher;
  */
 public class Message {
     public enum TYPE {UNKNOWN, SNAPSHOT, UPDATE, HEARTBEAT}
-    public TYPE type;
+    public TYPE type = TYPE.UNKNOWN;
     protected final byte[] buffer;
     protected long dSequence;
     public int length = 0;
@@ -19,11 +19,12 @@ public class Message {
         buffer = new byte[size];
     }
 
-    public byte[] getBuffer(){
+    public byte[] getBuffer() {
         return buffer;
     }
 
     public void init(long dSequence) {
+        type = TYPE.UNKNOWN;
         this.dSequence = dSequence;
         length = 0;
         eventTime = 0;

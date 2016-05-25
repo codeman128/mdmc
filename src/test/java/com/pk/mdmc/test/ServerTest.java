@@ -12,7 +12,7 @@ import java.io.IOException;
  */
 public class ServerTest {
     static long messagesToSend = 1000*1000*1000;
-    static int segmentCount = 1;
+    static int segmentCount = 2;
 
 
     public static void main(String[] args) throws IOException, InterruptedException {

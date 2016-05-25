@@ -15,7 +15,8 @@ public class ServerTest {
         @Override
         public void onConnectionAccepted(ClientConnection connection) {
             Socket s = connection.getSocket();
-            System.out.println("New connection accepted from ["+ s.getInetAddress()+":"+s.getPort());
+            System.out.println("New connection accepted from ["+ s.getInetAddress()+":"+s.getPort()+"] assigned to C["
+            +connection.getId()+"] F["+connection.getFeeder().getId()+"]");
         }
 
         @Override
@@ -25,6 +26,7 @@ public class ServerTest {
 
         @Override
         public void onConnectionRejected_Busy() {
+            System.out.println("Connection Rejected - Busy");
 
         }
 
@@ -37,6 +39,18 @@ public class ServerTest {
         @Override
         public void onBindFailed(int port, IOException e) {
             System.out.println("Bind to port "+port+" failed.");
+            e.printStackTrace();
+        }
+
+        @Override
+        public void onConnectionAssignError(ClientConnection clientConnection, IOException e) {
+            System.out.println("Connection Assign Error");
+            e.printStackTrace();
+        }
+
+        @Override
+        public void onConnectionWriteError(ClientConnection clientConnection, Exception e) {
+            System.out.println("Connection Write Error, connection closed and released");
             e.printStackTrace();
         }
 

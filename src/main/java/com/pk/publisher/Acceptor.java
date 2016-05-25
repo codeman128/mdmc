@@ -40,7 +40,7 @@ public class Acceptor implements Runnable{
         while (true) {
             Socket clientSocket = null;
             try {
-                clientSocket = publisher.server.accept();
+                clientSocket = publisher.getServerSocket().accept();
             } catch (Exception e) {
                 eventEmitter.onUnexpectedAcceptorError(e);
                 System.exit(-1);
@@ -56,12 +56,15 @@ public class Acceptor implements Runnable{
             int retry = 1;
             ClientConnection connection;
             while (retry<config.getAcceptorMaxRetry()){
+                retry++;
                 connection = publisher.getAvailableConnection();
                 if (connection!=null && connection.assign(clientSocket)) {
                     eventEmitter.onConnectionAccepted(connection);
                     break;
                 }
             }
+
+            // handle no available spot found
             if (retry>=config.getAcceptorMaxRetry()){
                 eventEmitter.onConnectionRejected_Busy();
                 closeQuietly(clientSocket);

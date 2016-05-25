@@ -23,4 +23,9 @@ public abstract class AbstractEventEmitter {
     /** Publisher - Bind failed, address already in use **/
     public abstract void onBindFailed(int port, IOException e);
 
-   }
+    /** Client Connection - Connection assign error **/
+    public abstract void onConnectionAssignError(ClientConnection clientConnection, IOException e);
+
+    /** Client Connection - Connection write error, connection will be closed **/
+    public abstract void onConnectionWriteError(ClientConnection clientConnection, Exception e);
+}

@@ -11,17 +11,20 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ClientConnection {
     enum STATE {UNKNOWN, AVAILABLE, MARKED, INIT, ASSIGNED}
     private final AtomicReference<STATE> state = new AtomicReference<>(STATE.UNKNOWN);
+    private final byte id;
     private final Feeder feeder;
     private final AbstractEventEmitter eventEmitter;
     private Socket socket;
     private OutputStream stream;
 
     private ClientConnection(){
+        id = -1;
         feeder = null;
         eventEmitter = null;
     }
 
-    public ClientConnection(Feeder feeder) {
+    public ClientConnection(byte id, Feeder feeder) {
+        this.id = id;
         this.feeder = feeder;
         this.eventEmitter = feeder.getPublisher().getEventEmitter();
         state.set(STATE.AVAILABLE);
@@ -37,7 +40,7 @@ public class ClientConnection {
         try {
             stream = socket.getOutputStream();
         } catch (IOException e) {
-            e.printStackTrace(); //todo;
+            eventEmitter.onConnectionAssignError(this, e);
             safelyCloseConnection();
             state.compareAndSet(STATE.MARKED, STATE.AVAILABLE);
             return false;
@@ -68,7 +71,7 @@ public class ClientConnection {
             }
 
         } catch (Exception e) {
-            e.printStackTrace(); // to do
+            eventEmitter.onConnectionWriteError(this, e);
             state.set(STATE.AVAILABLE);
             safelyCloseConnection();
             return false;
@@ -80,16 +83,22 @@ public class ClientConnection {
         try {
             socket.close();
         } catch (IOException e) {
-
+            // close quietly
         } finally {
             state.set(STATE.AVAILABLE);
         }
     }
 
-    // for logging .. method is pubic - this is problematic
     public Socket getSocket() {
         return socket;
     }
 
+    public byte getId(){
+        return id;
+    }
+
+    public Feeder getFeeder(){
+        return feeder;
+    }
 
 }

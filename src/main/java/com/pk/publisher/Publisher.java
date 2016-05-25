@@ -2,6 +2,7 @@ package com.pk.publisher;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 
 /**
  * Created by PavelK on 5/21/2016.
@@ -10,10 +11,10 @@ public class Publisher  {
     private final byte[] name;
     private final IPublisherConfig config;
     private final AbstractEventEmitter eventEmitter;
-    protected final Feeder[] feeders; //make protected/private
-    protected final Acceptor acceptor;
-    protected final MessageDisruptor disruptor;
-    protected ServerSocket server;
+    private final Feeder[] feeders;
+    private final Acceptor acceptor;
+    private final MessageDisruptor disruptor;
+    private ServerSocket serverSocket;
 
     private Publisher(){
         name = null;
@@ -31,15 +32,15 @@ public class Publisher  {
 
         // init feeders
         feeders = new Feeder[config.getFeederCount()];
-        for (int i=0; i<feeders.length; i++) {
-            feeders[i] = new Feeder(this);
+        for (byte i=0; i<feeders.length; i++) {
+            feeders[i] = new Feeder(i, this);
         }
 
         // init disruptor
         disruptor = new MessageDisruptor(this);
 
         try {
-            server = new ServerSocket(config.getPort(), 1); //todo proper bind
+            serverSocket = new ServerSocket(config.getPort(), 1); //todo proper bind
         } catch (IOException e) {
             eventEmitter.onBindFailed(config.getPort(), e);
             System.exit(-1);
@@ -78,6 +79,14 @@ public class Publisher  {
 
     public void publish(Message message) {
         disruptor.push(message);
+    }
+
+    public Feeder[] getFeeders(){
+        return feeders;
+    }
+
+    protected ServerSocket getServerSocket(){
+        return serverSocket;
     }
 
     public AbstractEventEmitter getEventEmitter(){

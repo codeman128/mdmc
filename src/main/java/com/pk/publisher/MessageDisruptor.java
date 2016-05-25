@@ -36,7 +36,7 @@ public class MessageDisruptor {
         disruptor = new Disruptor<>(factory, config.getDisruptorRingSize(), executor,
                 ProducerType.SINGLE, config.getDisruptorStrategy());
 
-        disruptor.handleEventsWith(publisher.feeders);
+        disruptor.handleEventsWith(publisher.getFeeders());
         disruptor.start();
         this.ringBuffer = disruptor.getRingBuffer();
     }

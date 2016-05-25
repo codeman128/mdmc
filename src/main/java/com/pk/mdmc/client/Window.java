@@ -8,7 +8,7 @@ import com.pk.mdmc.Packet;
  * Created by PavelK on 4/8/2016.
  */
 public class Window {
-    private final IConfig cnfg;
+    private final IConfig config;
     private final IMessageRingBuffer messageProducer;
     private final int maxWidth;
     private final Message[] list;
@@ -17,18 +17,18 @@ public class Window {
 
     private Window() {
         maxWidth = 0;
-        cnfg = null;
+        config = null;
         messageProducer = null;
         list = null;
         TRACE = true;
     }
 
-    public Window(IConfig cnfg, IMessageRingBuffer messageProducer) {
-        TRACE = cnfg.getNetTraceEnabled();
+    public Window(IConfig config, IMessageRingBuffer messageProducer) {
+        TRACE = config.getNetTraceEnabled();
         this.messageProducer = messageProducer;
-        this.cnfg = cnfg;
+        this.config = config;
         sequence = Integer.MIN_VALUE;
-        maxWidth = cnfg.getWindowMaxWidth();
+        maxWidth = config.getWindowMaxWidth();
         list = new Message[maxWidth];
         for (int i = 0; i < maxWidth; i++) {
             list[i] = messageProducer.next();
@@ -58,13 +58,13 @@ public class Window {
             sequence = pSequence;
         }
 
-        // Check if late packet, message already sent* (out of the window)
+        // Check if "late" packet, message already sent (i.e. "out" of the window)
         if (pSequence < sequence) {
             if (TRACE) System.out.println("WINDOW " + sequence + "> Drop late " + packet);
             return packet;
         }
 
-        // Check if messages in frame still relevant and if not roll the window
+        // Check if messages in window still relevant and if not roll the window
         while (pSequence > (sequence + maxWidth - 1)) {
             roll();
         }
@@ -74,7 +74,7 @@ public class Window {
         final Message msg = list[index];
         final Packet p2return = msg.addPacket(packet);
 
-        // if message is filled roll the window (message will be sent)
+        // if message is filled, roll the window (message will be sent)
         if (msg.isFilled()) {
             for (int i = 0; i <= index; i++) {
                 roll();
