@@ -1,39 +1,16 @@
 package com.pk.publisher;
 
-import com.lmax.disruptor.LiteBlockingWaitStrategy;
-import com.lmax.disruptor.WaitStrategy;
-
-
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Enumeration;
-import java.util.Properties;
+
 
 
 /**
  * Created by PavelK on 5/21/2016.
  */
 public class ServerTest {
-    static Properties properties;
-    static{
-        try {
-            String configPath = System.getProperty("user.dir").replace("\\", "/");
-            configPath = configPath + "/publisher.cnfg";
-            System.out.println("Load configuration: " + configPath);
 
-            FileInputStream file = new FileInputStream(configPath);
-            properties = new Properties();
-            properties.load(file);
-            file.close();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-
-        //System.out.println(properties.getProperty("publisher.acceptor.port", "8080"));
-    }
 
     static AbstractEventEmitter eventEmitter = new AbstractEventEmitter() {
 
@@ -82,59 +59,24 @@ public class ServerTest {
 
     };
 
-    static IPublisherConfig config = new IPublisherConfig() {
 
-
-        @Override
-        public int getPort() {
-            //return Integer.getInteger(properties.getProperty("publisher.acceptor.port", "8080"));
-            return 8080;
-        }
-
-        @Override
-        public int getFeederCount() {
-            return 2;
-        }
-
-        @Override
-        public int getMaxClientConnection() {
-            return 2;
-        }
-
-        @Override
-        public int getAcceptorMaxRetry() {
-            return 3;
-        }
-
-        @Override
-        public int getDisruptorRingSize() {
-           return 128;
-    }
-
-        @Override
-        public int getMaxMessageSize() {
-            return 2048;
-        }
-
-        @Override
-        public WaitStrategy getDisruptorStrategy() {
-            return new LiteBlockingWaitStrategy();
-            //new BusySpinWaitStrategy();
-        }
-    };
 
 
         public static void main(String[] args) throws Exception {
+            String configPath = null;
+            try {
+                configPath = System.getProperty("user.dir").replace("\\", "/");
+                configPath = configPath + "/publisher.cnfg";
+                System.out.println("Load configuration: " + configPath);
 
-
-            System.out.println("-------------------------------------------------------------------------");
-            Enumeration keys = properties.keys();
-            while (keys.hasMoreElements()) {
-                String key = (String)keys.nextElement();
-                String value = (String)properties.get(key);
-                System.out.println(key + ": " + value);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(-1);
             }
-            System.out.println("-------------------------------------------------------------------------");
+
+
+
+            IPublisherConfig config = new PublisherConfig(configPath);
 
         Publisher publisher = new Publisher("L1 PUBLISHER".getBytes(), config, eventEmitter);
 
