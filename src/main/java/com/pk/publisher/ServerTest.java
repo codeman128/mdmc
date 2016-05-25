@@ -1,6 +1,8 @@
+package com.pk.publisher;
+
 import com.lmax.disruptor.LiteBlockingWaitStrategy;
 import com.lmax.disruptor.WaitStrategy;
-import com.pk.publisher.*;
+
 
 import java.io.IOException;
 import java.net.Socket;
@@ -21,7 +23,7 @@ public class ServerTest {
 
         @Override
         public void onConnectionRejected_Invalid() {
-
+            System.out.println("Connection Rejected - Invalid");
         }
 
         @Override
@@ -58,6 +60,8 @@ public class ServerTest {
     };
 
     static IPublisherConfig config = new IPublisherConfig() {
+
+
         @Override
         public int getPort() {
             return 8080;
