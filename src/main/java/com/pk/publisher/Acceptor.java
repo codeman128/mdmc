@@ -1,7 +1,6 @@
 package com.pk.publisher;
 
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
@@ -11,7 +10,7 @@ public class Acceptor implements Runnable{
     private final static String THREAD_NAME_SUFFIX = " - ACCEPTOR";
     private final Publisher publisher;
     private final IPublisherConfig config;
-    private final AbstractEventEmitter eventEmitter;
+    private final IEventCollector eventEmitter;
     private final Thread thread;
 
     private Acceptor(){

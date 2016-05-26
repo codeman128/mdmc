@@ -13,7 +13,7 @@ public class ClientConnection {
     private final AtomicReference<STATE> state = new AtomicReference<>(STATE.UNKNOWN);
     private final byte id;
     private final Feeder feeder;
-    private final AbstractEventEmitter eventEmitter;
+    private final IEventCollector eventEmitter;
     private Socket socket;
     private OutputStream stream;
 

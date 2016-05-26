@@ -2,7 +2,6 @@ package com.pk.publisher;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 
 /**
  * Created by PavelK on 5/21/2016.
@@ -10,7 +9,7 @@ import java.net.Socket;
 public class Publisher  {
     private final byte[] name;
     private final IPublisherConfig config;
-    private final AbstractEventEmitter eventEmitter;
+    private final IEventCollector eventEmitter;
     private final Feeder[] feeders;
     private final Acceptor acceptor;
     private final MessageDisruptor disruptor;
@@ -25,7 +24,7 @@ public class Publisher  {
         disruptor = null;
     }
 
-    public Publisher(byte[] name, IPublisherConfig config, AbstractEventEmitter eventEmitter){
+    public Publisher(byte[] name, IPublisherConfig config, IEventCollector eventEmitter){
         this.name = name;
         this.config = config;
         this.eventEmitter = eventEmitter;
@@ -89,7 +88,7 @@ public class Publisher  {
         return serverSocket;
     }
 
-    public AbstractEventEmitter getEventEmitter(){
+    public IEventCollector getEventEmitter(){
         return eventEmitter;
     }
 }
