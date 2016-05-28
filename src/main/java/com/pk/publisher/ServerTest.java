@@ -1,5 +1,6 @@
 package com.pk.publisher;
 
+import com.pk.publisher.testutils.ClientTest;
 import com.pk.publisher.testutils.EventCollectorStub;
 import com.pk.publisher.testutils.PublisherConfig;
 
@@ -11,6 +12,12 @@ import com.pk.publisher.testutils.PublisherConfig;
 public class ServerTest {
 
      public static void main(String[] args) throws Exception {
+
+        if (args.length>0 && args[0].equalsIgnoreCase("client")){
+            ClientTest.runTest();
+            System.exit(0);
+        }
+
         IPublisherConfig config = new PublisherConfig();
         Publisher publisher = new Publisher("L1".getBytes(), config, new EventCollectorStub());
 

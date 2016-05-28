@@ -2,6 +2,10 @@ package com.pk.publisher;
 
 import com.lmax.disruptor.WaitStrategy;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+
 /**
  * Created by PavelK on 5/21/2016.
  */
@@ -16,4 +20,6 @@ public interface IPublisherConfig {
     int getMaxMessageSize();
 
     WaitStrategy getDisruptorStrategy();
+
+    InetAddress getAddress() throws UnknownHostException;
 }

@@ -1,6 +1,7 @@
 package com.pk.publisher;
 
 import java.io.IOException;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 
 /**
@@ -39,7 +40,7 @@ public class Publisher  {
         disruptor = new MessageDisruptor(this);
 
         try {
-            serverSocket = new ServerSocket(config.getPort(), 1); //todo proper bind
+            serverSocket = new ServerSocket(config.getPort(), 1, config.getAddress());
         } catch (IOException e) {
             eventEmitter.onBindFailed(config.getPort(), e);
             System.exit(-1);

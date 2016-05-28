@@ -5,6 +5,10 @@ import com.lmax.disruptor.WaitStrategy;
 import com.pk.publisher.IPublisherConfig;
 
 import java.io.FileInputStream;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -15,29 +19,7 @@ public class PublisherConfig implements IPublisherConfig {
     protected Properties properties;
 
     public PublisherConfig() throws Exception {
-        String path = null;
-        try {
-            path = System.getProperty("user.dir").replace("\\", "/");
-            path = path + "/server.cnfg";
-            System.out.println("Load configuration: " + path);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-        FileInputStream file = new FileInputStream(path);
-        properties = new Properties();
-        properties.load(file);
-        file.close();
-
-        System.out.println("-------------------------------------------------------------------------");
-        Enumeration keys = properties.keys();
-        while (keys.hasMoreElements()) {
-            String key = (String)keys.nextElement();
-            String value = (String)properties.get(key);
-            System.out.println(key + ": " + value);
-        }
-        System.out.println("-------------------------------------------------------------------------");
+        properties = Utils.loadConfig("server");
     }
 
     @Override
@@ -75,5 +57,10 @@ public class PublisherConfig implements IPublisherConfig {
     public WaitStrategy getDisruptorStrategy() {
         return new LiteBlockingWaitStrategy();
         //new BusySpinWaitStrategy();
+    }
+
+    @Override
+    public InetAddress getAddress() throws UnknownHostException {
+        return InetAddress.getByName(properties.getProperty("publisher.acceptor.address"));
     }
 }
