@@ -23,6 +23,7 @@ public class ClientTest {
         int sleep = Integer.parseInt(properties.getProperty("test.sleep.nanos"));
         int count = Integer.parseInt(properties.getProperty("test.connection.count"));
         SocketChannel[] channels = new SocketChannel[count];
+        long[] readData = new long[count];
 
         for (int i=0; i<count; i++) {
             try {
@@ -34,13 +35,15 @@ public class ClientTest {
         }
 
         ByteBuffer buf = ByteBuffer.allocate(1024*200);
+        int outCounter =50;
         while (1==1) {
             for (int i = 0; i < count; i++) {
                 buf.position(0);
                 SocketChannel channel = channels[i];
                 if (channel!=null) {
                     try {
-                        int size = channel.read(buf);
+                        readData[i] += channel.read(buf);
+
                     } catch (IOException e) {
                         System.out.println("Error reading from connection "+i);
                         e.printStackTrace();
@@ -51,6 +54,14 @@ public class ClientTest {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+            }
+            outCounter++;
+            if (outCounter>50) {
+                outCounter=0;
+                for (int i = 0; i < count; i++) {
+                    System.out.print(/*"["+i+"] = */"["+readData[i]/1024+"]   ");
+                }
+                System.out.println();
             }
         }
 

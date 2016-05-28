@@ -18,33 +18,38 @@ public class ServerTest {
             System.exit(0);
         }
 
-        IPublisherConfig config = new PublisherConfig();
+         PublisherConfig config = new PublisherConfig();
         Publisher publisher = new Publisher("L1".getBytes(), config, new EventCollectorStub());
 
         long time;
         Message msg;
+        System.gc();
 
+        int snapshotTickCounter=0;
         while (true){
             time = System.currentTimeMillis();
-            String update_str = "UPDATE "+time+"\n";
-            String snapshot_str = "SNAPSHOT "+time+"\n";
 
             msg = publisher.getNext();
-            System.arraycopy(update_str.getBytes(), 0, msg.getBuffer(), 0, update_str.length());
-            msg.length = update_str.length();
+            System.arraycopy(config.update, 0, msg.getBuffer(), 0, config.update.length);
+            msg.length = config.update.length;
             msg.type = Message.TYPE.UPDATE;
             msg.eventTime = System.nanoTime();
             publisher.publish(msg);
 
-            msg = publisher.getNext();
-            System.arraycopy(snapshot_str.getBytes(), 0, msg.getBuffer(), 0, snapshot_str.length());
-            msg.length = snapshot_str.length();
-            msg.type = Message.TYPE.SNAPSHOT;
-            msg.eventTime = System.nanoTime();
-            publisher.publish(msg);
+            if (snapshotTickCounter==config.snapshotTick) {
+                snapshotTickCounter = 0;
+                msg = publisher.getNext();
+                System.arraycopy(config.snapshot, 0, msg.getBuffer(), 0, config.snapshot.length);
+                msg.length = config.snapshot.length;
+                msg.type = Message.TYPE.SNAPSHOT;
+                msg.eventTime = System.nanoTime();
+                publisher.publish(msg);
+            } else {
+                snapshotTickCounter++;
+            }
 
             try {
-                Thread.sleep(1000);
+                Thread.sleep(config.tick);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

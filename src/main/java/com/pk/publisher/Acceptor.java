@@ -2,6 +2,7 @@ package com.pk.publisher;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 
 /**
  * Created by PavelK on 5/21/2016.
@@ -40,6 +41,7 @@ public class Acceptor implements Runnable{
             Socket clientSocket = null;
             try {
                 clientSocket = publisher.getServerSocket().accept();
+                clientSocket.setSoTimeout(10);
             } catch (Exception e) {
                 eventEmitter.onUnexpectedAcceptorError(e);
                 System.exit(-1);

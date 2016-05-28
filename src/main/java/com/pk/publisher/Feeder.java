@@ -16,6 +16,11 @@ public class Feeder implements EventHandler<Message> {
     private final ClientConnection[] clients;
     private final int maxConnCount;
 
+    private long statSigma;
+    private long statCounter;
+    private long statMin;
+    private long statMax;
+
 
     private Feeder(){
         id = -1;
@@ -82,7 +87,18 @@ public class Feeder implements EventHandler<Message> {
         }
         //debug --------------------------------------------
         long delta = System.nanoTime() - message.eventTime;
-        //System.out.println((double)delta/1000000);
+        statMin = Math.min(statMin, delta);
+        statMax = Math.max(statMax, delta);
+        statSigma += delta;
+        statCounter++;
+        if (statCounter>30) {
+            System.out.println("Ave: ["+(double)statSigma/(statCounter*1000000)+"] Min: ["+(double)statMin/1000000+"] Max: ["+(double)statMax/1000000+"]");
+            statMax = 0;
+            statMin = 0;
+            statCounter = 0;
+            statSigma = 0;
+        }
+
         //--------------------------------------------------
         shuffle();
     }

@@ -6,5 +6,10 @@ publisher.disruptor.ringSize=128
 publisher.message.maxSize=10240
 
 publisher.feeder.count=2
-publisher.feeder.connection.max=2
+publisher.feeder.connection.max=40
+
+publisher.test.tick=50
+publisher.test.snapshotIntervalInTicks=20
+publisher.test.snapshot=snapshot.txt
+publisher.test.update=update.txt
 

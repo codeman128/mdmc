@@ -25,6 +25,7 @@ public class Utils {
         properties = new Properties();
         properties.load(file);
         file.close();
+        properties.put("config.path", System.getProperty("user.dir").replace("\\", "/")+"/");
 
         System.out.println("-------------------------------------------------------------------------");
         Enumeration keys = properties.keys();

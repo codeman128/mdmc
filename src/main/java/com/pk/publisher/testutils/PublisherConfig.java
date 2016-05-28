@@ -9,6 +9,9 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -17,9 +20,21 @@ import java.util.Properties;
  */
 public class PublisherConfig implements IPublisherConfig {
     protected Properties properties;
+    public byte[] snapshot;
+    public byte[] update;
+    public int tick;
+    public int snapshotTick;
 
     public PublisherConfig() throws Exception {
         properties = Utils.loadConfig("server");
+
+        String appPath = properties.getProperty("config.path");
+        snapshot = Files.readAllBytes(Paths.get(appPath + properties.get("publisher.test.snapshot")));
+        System.out.println("Snapshot loaded ("+snapshot.length+ " bytes)");
+        update = Files.readAllBytes(Paths.get(appPath + properties.get("publisher.test.update")));
+        System.out.println("Update loaded ("+update.length+ " bytes)");
+        tick = Integer.parseInt(properties.getProperty("publisher.test.tick"));
+        snapshotTick =Integer.parseInt(properties.getProperty("publisher.test.snapshotIntervalInTicks"));
     }
 
     @Override
