@@ -2,7 +2,6 @@ package com.pk.publisher;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.net.SocketException;
 
 /**
  * Created by PavelK on 5/21/2016.
@@ -11,27 +10,27 @@ public class Acceptor implements Runnable{
     private final static String THREAD_NAME_SUFFIX = " - ACCEPTOR";
     private final Publisher publisher;
     private final IPublisherConfig config;
-    private final IEventCollector eventEmitter;
+    private final IEventCollector eventCollector;
     private final Thread thread;
 
     private Acceptor(){
         publisher = null;
         config = null;
-        eventEmitter = null;
+        eventCollector = null;
         thread = null;
     }
 
     public Acceptor(Publisher publisher) {
         this.publisher = publisher;
         config = publisher.getConfig();
-        eventEmitter = publisher.getEventEmitter();
+        eventCollector = publisher.getEventCollector();
         thread = new Thread(this);
         thread.setName(new String(publisher.getName())+THREAD_NAME_SUFFIX);
         thread.start();
     }
 
     protected boolean validateNewConnection(Socket socket) {
-        if (1==2) eventEmitter.onConnectionRejected_Invalid();//todo implement
+        if (1==2) eventCollector.onConnectionRejected_Invalid();//todo implement
         return true;
     }
 
@@ -43,7 +42,7 @@ public class Acceptor implements Runnable{
                 clientSocket = publisher.getServerSocket().accept();
                 clientSocket.setSoTimeout(10);
             } catch (Exception e) {
-                eventEmitter.onUnexpectedAcceptorError(e);
+                eventCollector.onUnexpectedAcceptorError(e);
                 System.exit(-1);
                 break;
             }
@@ -60,14 +59,14 @@ public class Acceptor implements Runnable{
                 retry++;
                 connection = publisher.getAvailableConnection();
                 if (connection!=null && connection.assign(clientSocket)) {
-                    eventEmitter.onConnectionAccepted(connection);
+                    eventCollector.onConnectionAccepted(connection);
                     break;
                 }
             }
 
             // handle no available spot found
             if (retry>=config.getAcceptorMaxRetry()){
-                eventEmitter.onConnectionRejected_Busy();
+                eventCollector.onConnectionRejected_Busy();
                 closeQuietly(clientSocket);
             }
         }

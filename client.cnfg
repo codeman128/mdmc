@@ -1,4 +1,4 @@
 test.publisher.host=localhost
 test.publisher.port=8080
-test.connection.count=46
+test.connection.count=60
 test.sleep.nanos=1

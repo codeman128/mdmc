@@ -16,6 +16,9 @@ public class Feeder implements EventHandler<Message> {
     private final ClientConnection[] clients;
     private final int maxConnCount;
 
+    protected ClientConnection monConnection;
+    protected long monTime;
+
     private long statSigma;
     private long statCounter;
     private long statMin;

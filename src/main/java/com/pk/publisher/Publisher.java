@@ -10,25 +10,27 @@ import java.net.ServerSocket;
 public class Publisher  {
     private final byte[] name;
     private final IPublisherConfig config;
-    private final IEventCollector eventEmitter;
+    private final IEventCollector eventCollector;
     private final Feeder[] feeders;
     private final Acceptor acceptor;
+    private final Monitor monitor;
     private final MessageDisruptor disruptor;
     private ServerSocket serverSocket;
 
     private Publisher(){
         name = null;
         config = null;
-        eventEmitter = null;
+        eventCollector = null;
         feeders = null;
         acceptor = null;
+        monitor = null;
         disruptor = null;
     }
 
-    public Publisher(byte[] name, IPublisherConfig config, IEventCollector eventEmitter){
+    public Publisher(byte[] name, IPublisherConfig config, IEventCollector eventCollector){
         this.name = name;
         this.config = config;
-        this.eventEmitter = eventEmitter;
+        this.eventCollector = eventCollector;
 
         // init feeders
         feeders = new Feeder[config.getFeederCount()];
@@ -42,9 +44,12 @@ public class Publisher  {
         try {
             serverSocket = new ServerSocket(config.getPort(), 1, config.getAddress());
         } catch (IOException e) {
-            eventEmitter.onBindFailed(config.getPort(), e);
+            eventCollector.onBindFailed(config.getPort(), e);
             System.exit(-1);
         }
+
+        // init monitor
+        monitor = new Monitor(this);
 
         // init acceptor
         acceptor = new Acceptor(this);
@@ -89,7 +94,7 @@ public class Publisher  {
         return serverSocket;
     }
 
-    public IEventCollector getEventEmitter(){
-        return eventEmitter;
+    public IEventCollector getEventCollector(){
+        return eventCollector;
     }
 }

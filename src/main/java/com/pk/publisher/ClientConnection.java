@@ -26,7 +26,7 @@ public class ClientConnection {
     public ClientConnection(byte id, Feeder feeder) {
         this.id = id;
         this.feeder = feeder;
-        this.eventEmitter = feeder.getPublisher().getEventEmitter();
+        this.eventEmitter = feeder.getPublisher().getEventCollector();
         state.set(STATE.AVAILABLE);
     }
 
@@ -48,33 +48,45 @@ public class ClientConnection {
         return state.compareAndSet(STATE.MARKED, STATE.INIT);
     }
 
-    public boolean sendData(Message msg) {
+    private boolean send(Message msg) {
+        feeder.monConnection = this;
+        feeder.monTime = System.nanoTime();
         try {
-            switch (state.get()) {
-                case ASSIGNED : {
-                    if (msg.type == Message.TYPE.UPDATE || msg.type == Message.TYPE.HEARTBEAT) {
-                        stream.write(msg.getBuffer(), 0, msg.length);
-                    }
-                    break;
-                }
-                case INIT: {
-                    if (msg.type == Message.TYPE.SNAPSHOT) {
-                        stream.write(msg.getBuffer(), 0, msg.length);
-                        state.compareAndSet(STATE.INIT, STATE.ASSIGNED);
-                    }
-                    break;
-                }
-                case AVAILABLE: {
-                    //todo consider put some "delay" for fairness...
-                    break;
-                }
-            }
-
-        } catch (Exception e) {
+            stream.write(msg.getBuffer(), 0, msg.length);
+            return true;
+        } catch (IOException e) {
             eventEmitter.onConnectionWriteError(this, e);
             state.set(STATE.AVAILABLE);
             safelyCloseConnection();
             return false;
+        } finally {
+            feeder.monConnection = null;
+            feeder.monTime = 0;
+        }
+    }
+
+    public boolean sendData(Message msg) {
+
+        switch (state.get()) {
+            case ASSIGNED : {
+                if (msg.type == Message.TYPE.UPDATE || msg.type == Message.TYPE.HEARTBEAT) {
+                    return send(msg);
+                }
+                break;
+            }
+            case INIT: {
+                if (msg.type == Message.TYPE.SNAPSHOT) {
+                    if (send(msg)) {
+                        state.compareAndSet(STATE.INIT, STATE.ASSIGNED);
+                        return true;
+                    } else return false;
+                }
+                break;
+            }
+            case AVAILABLE: {
+                //todo consider put some "delay" for fairness...
+                break;
+            }
         }
         return true;
     }

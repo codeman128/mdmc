@@ -15,6 +15,9 @@ public interface IPublisherConfig {
     int getMaxClientConnection();
     int getAcceptorMaxRetry();
 
+    int getMonitorWriteTimeout();
+    int getMonitorSleep();
+
     int getDisruptorRingSize();
 
     int getMaxMessageSize();

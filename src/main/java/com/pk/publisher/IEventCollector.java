@@ -28,4 +28,7 @@ public interface IEventCollector {
 
     /** Client Connection - Connection write error, connection will be closed **/
     void onConnectionWriteError(ClientConnection clientConnection, Exception e);
+
+    /** Monitor - Write timeout detected **/
+    void onMonitorWriteTimeout(ClientConnection clientConnection, long timeNano);
 }

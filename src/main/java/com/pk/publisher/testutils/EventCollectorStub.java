@@ -51,4 +51,9 @@ public class EventCollectorStub implements IEventCollector {
         System.out.println("Connection Write Error, connection closed and released");
         e.printStackTrace();
     }
+
+    @Override
+    public void onMonitorWriteTimeout(ClientConnection clientConnection, long timeNano) {
+        System.out.println("Monitor - write timeout detected, stale for "+timeNano);
+    }
 }
