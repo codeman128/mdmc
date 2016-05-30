@@ -1,6 +1,7 @@
-package com.pk.publisher;
+package com.pk.publisher.core;
 
 import com.lmax.disruptor.EventHandler;
+import com.pk.publisher.Publisher;
 
 import java.util.Random;
 
@@ -16,8 +17,8 @@ public class Feeder implements EventHandler<Message> {
     private final ClientConnection[] clients;
     private final int maxConnCount;
 
-    protected ClientConnection monConnection;
-    protected long monTime;
+    ClientConnection monConnection;
+    long monTime;
 
     private long statSigma;
     private long statCounter;
@@ -112,5 +113,13 @@ public class Feeder implements EventHandler<Message> {
 
     public byte getId() {
         return id;
+    }
+
+    public ClientConnection getMonConnection() {
+        return monConnection;
+    }
+
+    public long getMonTime() {
+        return monTime;
     }
 }

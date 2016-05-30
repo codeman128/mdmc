@@ -1,4 +1,4 @@
-package com.pk.publisher;
+package com.pk.publisher.core;
 
 /**
  * Created by PavelK on 5/21/2016.

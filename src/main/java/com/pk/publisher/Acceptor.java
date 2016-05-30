@@ -1,5 +1,9 @@
 package com.pk.publisher;
 
+import com.pk.publisher.core.ClientConnection;
+import com.pk.publisher.core.IEventCollector;
+import com.pk.publisher.core.IPublisherConfig;
+
 import java.io.IOException;
 import java.net.Socket;
 

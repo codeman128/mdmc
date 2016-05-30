@@ -1,4 +1,4 @@
-package com.pk.publisher;
+package com.pk.publisher.core;
 
 import com.lmax.disruptor.WaitStrategy;
 

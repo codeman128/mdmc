@@ -1,5 +1,10 @@
 package com.pk.publisher;
 
+import com.pk.publisher.core.ClientConnection;
+import com.pk.publisher.core.Feeder;
+import com.pk.publisher.core.IEventCollector;
+import com.pk.publisher.core.IPublisherConfig;
+
 import java.io.IOException;
 
 /**
@@ -12,6 +17,7 @@ public class Monitor implements Runnable{
     private final IEventCollector eventCollector;
     private final Thread thread;
     private final long writeTimeout;
+
     private volatile int syncPoint;
 
     private Monitor(){
@@ -31,6 +37,7 @@ public class Monitor implements Runnable{
         thread.setName(THREAD_NAME);
         thread.start();
     }
+
     @Override
     public void run() {
         Feeder feeder;
@@ -38,12 +45,13 @@ public class Monitor implements Runnable{
             syncPoint++;
             for (int i = 0; i < publisher.getFeeders().length; i++) {
                 feeder = publisher.getFeeders()[i];
-                if (feeder.monConnection!=null ) {
-                    long delta = System.nanoTime()-feeder.monTime;
+                ClientConnection monConnection = feeder.getMonConnection();
+                if (monConnection!=null ) {
+                    long delta = System.nanoTime()-feeder.getMonTime();
                     if (delta > writeTimeout) {
-                        eventCollector.onMonitorWriteTimeout(feeder.monConnection, delta);
+                        eventCollector.onMonitorWriteTimeout(monConnection, delta);
                         try {
-                            feeder.monConnection.getSocket().close();
+                            monConnection.getSocket().close();
                         } catch (IOException e) {
                             e.printStackTrace();//todo
                         }

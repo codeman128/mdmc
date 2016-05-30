@@ -1,5 +1,6 @@
 package com.pk.publisher;
 
+import com.pk.publisher.core.Message;
 import com.pk.publisher.testutils.ClientTest;
 import com.pk.publisher.testutils.EventCollectorStub;
 import com.pk.publisher.testutils.PublisherConfig;

@@ -2,17 +2,12 @@ package com.pk.publisher.testutils;
 
 import com.lmax.disruptor.LiteBlockingWaitStrategy;
 import com.lmax.disruptor.WaitStrategy;
-import com.pk.publisher.IPublisherConfig;
+import com.pk.publisher.core.IPublisherConfig;
 
-import java.io.FileInputStream;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Enumeration;
 import java.util.Properties;
 
 /**

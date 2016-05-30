@@ -1,7 +1,8 @@
-package com.pk.publisher;
+package com.pk.publisher.core;
+
+import com.pk.publisher.core.ClientConnection;
 
 import java.io.IOException;
-import java.net.Socket;
 
 /**
  * Created by PavelK on 5/23/2016.

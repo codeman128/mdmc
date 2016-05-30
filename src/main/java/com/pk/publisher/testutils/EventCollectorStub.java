@@ -1,7 +1,7 @@
 package com.pk.publisher.testutils;
 
-import com.pk.publisher.ClientConnection;
-import com.pk.publisher.IEventCollector;
+import com.pk.publisher.core.ClientConnection;
+import com.pk.publisher.core.IEventCollector;
 
 import java.io.IOException;
 import java.net.Socket;

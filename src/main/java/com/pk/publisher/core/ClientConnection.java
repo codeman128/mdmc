@@ -1,4 +1,4 @@
-package com.pk.publisher;
+package com.pk.publisher.core;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * Created by PavelK on 5/21/2016.
  */
 public class ClientConnection {
-    enum STATE {UNKNOWN, AVAILABLE, MARKED, INIT, ASSIGNED}
+    public enum STATE {UNKNOWN, AVAILABLE, MARKED, INIT, ASSIGNED}
     private final AtomicReference<STATE> state = new AtomicReference<>(STATE.UNKNOWN);
     private final byte id;
     private final Feeder feeder;
