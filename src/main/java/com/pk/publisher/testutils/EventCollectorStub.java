@@ -56,4 +56,9 @@ public class EventCollectorStub implements IEventCollector {
     public void onMonitorWriteTimeout(ClientConnection clientConnection, long timeNano) {
         System.out.println("Monitor - write timeout detected, stale for "+timeNano);
     }
+
+    @Override
+    public void onMonitorShutdown() {
+        System.out.println("Monitor shutdown");
+    }
 }

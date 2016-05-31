@@ -32,6 +32,7 @@ public class ClientTest {
                 System.out.println("Error establishing connection "+i);
                 e.printStackTrace();
             }
+            Thread.sleep(5);
         }
 
         ByteBuffer buf = ByteBuffer.allocate(1024*200);

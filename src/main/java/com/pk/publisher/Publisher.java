@@ -33,10 +33,14 @@ public class Publisher  {
         this.config = config;
         this.eventCollector = eventCollector;
 
+        // init monitor
+        monitor = new Monitor(config, eventCollector);
+
         // init feeders
         feeders = new Feeder[config.getFeederCount()];
         for (byte i=0; i<feeders.length; i++) {
             feeders[i] = new Feeder(i, this);
+            monitor.register(feeders[i]); //todo move to feeder constructor
         }
 
         // init disruptor
@@ -49,8 +53,7 @@ public class Publisher  {
             System.exit(-1);
         }
 
-        // init monitor
-        monitor = new Monitor(this);
+
 
         // init acceptor
         acceptor = new Acceptor(this);

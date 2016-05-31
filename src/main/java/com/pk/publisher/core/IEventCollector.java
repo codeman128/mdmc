@@ -32,4 +32,7 @@ public interface IEventCollector {
 
     /** Monitor - Write timeout detected **/
     void onMonitorWriteTimeout(ClientConnection clientConnection, long timeNano);
+
+    /** Monitor shutdown event **/
+    void onMonitorShutdown();
 }

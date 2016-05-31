@@ -91,7 +91,7 @@ public class ClientConnection {
         return true;
     }
 
-    protected void safelyCloseConnection(){
+    public void safelyCloseConnection(){
         try {
             socket.close();
         } catch (IOException e) {
