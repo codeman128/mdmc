@@ -4,7 +4,18 @@ package com.pk.publisher.core;
  * Created by PavelK on 5/21/2016.
  */
 public class Message {
-    public enum TYPE {UNKNOWN, SNAPSHOT, UPDATE, HEARTBEAT}
+    public enum TYPE {UNKNOWN(0), SNAPSHOT(1), UPDATE(2), HEARTBEAT(3);
+        final int id;
+
+        TYPE(int id) {
+            this.id = id;
+        }
+
+        public int getId(){
+            return id;
+        }
+
+    }
     public TYPE type = TYPE.UNKNOWN;
     protected final byte[] buffer;
     protected long dSequence;

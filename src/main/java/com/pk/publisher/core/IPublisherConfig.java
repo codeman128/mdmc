@@ -22,8 +22,6 @@ public interface IPublisherConfig {
 
     int getMaxMessageSize();
 
-    byte[] getMsgHeader();
-
     /** Return - new offset **/
     int addMsgSeqId(byte[] buffer, int offset, long id);
 

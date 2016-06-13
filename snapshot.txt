@@ -1,4 +1,3 @@
-<snapshot>
 In the beginning when God created* the heavens and the earth, 2the earth was a formless void and darkness covered the face of the deep, while a wind from God* swept over the face of the waters. 3Then God said, ‘Let there be light’; and there was light. 4And God saw that the light was good; and God separated the light from the darkness. 5God called the light Day, and the darkness he called Night. And there was evening and there was morning, the first day.
 
 6 And God said, ‘Let there be a dome in the midst of the waters, and let it separate the waters from the waters.’ 7So God made the dome and separated the waters that were under the dome from the waters that were above the dome. And it was so. 8God called the dome Sky. And there was evening and there was morning, the second day.
@@ -16,4 +15,3 @@ In the beginning when God created* the heavens and the earth, 2the earth was a f
    in the image of God he created them;*
    male and female he created them.
 28God blessed them, and God said to them, ‘Be fruitful and multiply, and fill the earth and subdue it; and have dominion over the fish of the sea and over the birds of the air and over every living thing that moves upon the earth.’ 29God said, ‘See, I have given you every plant yielding seed that is upon the face of all the earth, and every tree with seed in its fruit; you shall have them for food. 30And to every beast of the earth, and to every bird of the air, and to everything that creeps on the earth, everything that has the breath of life, I have given every green plant for food.’ And it was so. 31God saw everything that he had made, and indeed, it was very good. And there was evening and there was morning, the sixth day.
-</snapshot>

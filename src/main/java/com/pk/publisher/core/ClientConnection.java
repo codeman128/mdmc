@@ -14,8 +14,7 @@ public class ClientConnection {
     private final byte id;
     private final Feeder feeder;
     private  final IPublisherConfig config;
-    private final byte[] header;
-    private final int headerSize;
+    private final Header header;
     private final IEventCollector eventEmitter;
     private Socket socket;
     private OutputStream stream;
@@ -27,18 +26,13 @@ public class ClientConnection {
         config = null;
         eventEmitter = null;
         header = null;
-        headerSize = 0;
     }
 
     public ClientConnection(byte id, Feeder feeder) {
         this.id = id;
         this.feeder = feeder;
         this.config = feeder.getPublisher().getConfig();
-        this.headerSize = config.getMsgHeader().length;
-        // Init local copy of the header and reserve some space for message id.
-        this.header = new byte[headerSize+20];
-        System.arraycopy(config.getMsgHeader(), 0, header, 0, headerSize);
-
+        this.header = new Header(config);
         this.eventEmitter = feeder.getPublisher().getEventCollector();
         state.set(STATE.AVAILABLE);
     }
@@ -65,8 +59,7 @@ public class ClientConnection {
         feeder.monConnection = this;
         feeder.monTime = System.nanoTime();
         try {
-            int newLength = config.addMsgSeqId(header, headerSize, msgSequenceId);
-            stream.write(header, 0, newLength);
+            header.write(stream, msg.type, msgSequenceId);
             stream.write(msg.getBuffer(), 0, msg.length);
             msgSequenceId++;
             return true;

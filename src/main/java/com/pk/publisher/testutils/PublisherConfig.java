@@ -14,7 +14,6 @@ import java.util.Properties;
  * Created by pkapovski on 5/25/2016.
  */
 public class PublisherConfig implements IPublisherConfig {
-    private final byte[] HEADER = "<blabla><id>".getBytes();
 
     protected Properties properties;
     public byte[] snapshot;
@@ -73,11 +72,6 @@ public class PublisherConfig implements IPublisherConfig {
     @Override
     public int getMaxMessageSize() {
         return Integer.parseInt(properties.getProperty("publisher.message.maxSize", "10240"));
-    }
-
-    @Override
-    public byte[] getMsgHeader() {
-        return HEADER;
     }
 
     @Override
