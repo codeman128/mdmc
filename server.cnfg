@@ -8,7 +8,7 @@ publisher.message.maxSize=10240
 publisher.monitor.WriteTimeout=3
 
 publisher.feeder.count=2
-publisher.feeder.connection.max=35
+publisher.feeder.connection.max=10
 
 publisher.test.tick=50
 publisher.test.snapshotIntervalInTicks=20
