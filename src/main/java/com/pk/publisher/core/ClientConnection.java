@@ -59,8 +59,7 @@ public class ClientConnection {
         feeder.monConnection = this;
         feeder.monTime = System.nanoTime();
         try {
-            header.write(stream, msg.type, msgSequenceId);
-            stream.write(msg.getBuffer(), 0, msg.length);
+            header.addHeaderAndWrite(stream, msg, msgSequenceId);
             msgSequenceId++;
             return true;
         } catch (IOException e) {

@@ -14,7 +14,6 @@ public class Publisher  {
     private final IEventCollector eventCollector;
     private final Feeder[] feeders;
     private final Acceptor acceptor;
-    private final Monitor monitor;
     private final MessageDisruptor disruptor;
     private ServerSocket serverSocket;
 
@@ -24,23 +23,20 @@ public class Publisher  {
         eventCollector = null;
         feeders = null;
         acceptor = null;
-        monitor = null;
         disruptor = null;
     }
 
-    public Publisher(byte[] name, IPublisherConfig config, IEventCollector eventCollector){
+    public Publisher(byte[] name, IPublisherConfig config, IEventCollector eventCollector, Monitor monitor){
         this.name = name;
         this.config = config;
         this.eventCollector = eventCollector;
 
-        // init monitor
-        monitor = new Monitor(config, eventCollector);
 
         // init feeders
         feeders = new Feeder[config.getFeederCount()];
         for (byte i=0; i<feeders.length; i++) {
             feeders[i] = new Feeder(i, this);
-            monitor.register(feeders[i]); //todo move to feeder constructor
+            monitor.register(feeders[i]);
         }
 
         // init disruptor

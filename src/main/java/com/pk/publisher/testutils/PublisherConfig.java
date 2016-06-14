@@ -59,11 +59,6 @@ public class PublisherConfig implements IPublisherConfig {
     }
 
     @Override
-    public int getMonitorSleep() {
-        return Integer.parseInt(properties.getProperty("publisher.monitor.sleep", "500"));
-    }
-
-    @Override
     public int getDisruptorRingSize() {
         return Integer.parseInt(properties.getProperty("publisher.disruptor.ringSize", "128"));
 

@@ -19,6 +19,7 @@ public class Message {
     public TYPE type = TYPE.UNKNOWN;
     protected final byte[] buffer;
     protected long dSequence;
+    public int offset = 0;
     public int length = 0;
     public long eventTime; //arb time
 

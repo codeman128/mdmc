@@ -13,28 +13,25 @@ import java.util.List;
  */
 public class Monitor implements Runnable{
     private final static String THREAD_NAME = "MONITOR";
-    private final IPublisherConfig config;
     private final IEventCollector eventCollector;
     private final Thread thread;
-    private final long writeTimeout;
     private final List<Feeder> feeders;
+    private final int sleep;
 
     private volatile int syncPoint;
     private volatile boolean exitFlag;
 
     private Monitor(){
-        config = null;
         eventCollector = null;
         thread = null;
-        writeTimeout = 0;
         feeders = null;
+        sleep = 0;
     }
 
-    public Monitor(IPublisherConfig config, IEventCollector eventCollector) {
+    public Monitor(int sleep,IEventCollector eventCollector) {
         exitFlag = false;
-        this.config = config;
+        this.sleep = sleep;
         this.eventCollector = eventCollector;
-        writeTimeout = config.getMonitorWriteTimeout();
         thread = new Thread(this);
         thread.setName(THREAD_NAME);
         thread.start();
@@ -57,14 +54,14 @@ public class Monitor implements Runnable{
                     con = feeder.getMonConnection();
                     if (con != null) {
                         long delta = System.nanoTime() - feeder.getMonTime();
-                        if (delta > writeTimeout) {
+                        if (delta > feeder.getMonitorWriteTimeout()) {
                             eventCollector.onMonitorWriteTimeout(con, delta);
                             con.safelyCloseConnection();
                         }
                     }
                 }
                 try {
-                    Thread.sleep(0, config.getMonitorSleep());
+                    Thread.sleep(0, sleep);
                 } catch (InterruptedException e) {
                     // quietly?
                 }

@@ -16,6 +16,7 @@ public class Feeder implements EventHandler<Message> {
     private final int[] pubOrder;
     private final ClientConnection[] clients;
     private final int maxConnCount;
+    private final long writeTimeout;
 
     ClientConnection monConnection;
     long monTime;
@@ -33,6 +34,7 @@ public class Feeder implements EventHandler<Message> {
         maxConnCount = -1;
         pubOrder = null;
         clients = null;
+        writeTimeout = 0;
     }
 
     public Feeder(byte id, Publisher publisher){
@@ -40,6 +42,7 @@ public class Feeder implements EventHandler<Message> {
         this.publisher = publisher;
         config = publisher.getConfig();
         maxConnCount = config.getMaxClientConnection();
+        writeTimeout = config.getMonitorWriteTimeout();
 
         // Initialize publication order
         pubOrder = new int[maxConnCount];
@@ -111,7 +114,7 @@ public class Feeder implements EventHandler<Message> {
         return publisher;
     }
 
-    public byte getId() {
+    public final byte getId() {
         return id;
     }
 
@@ -119,7 +122,11 @@ public class Feeder implements EventHandler<Message> {
         return monConnection;
     }
 
-    public long getMonTime() {
+    public final long getMonTime() {
         return monTime;
+    }
+
+    public final long getMonitorWriteTimeout(){
+        return writeTimeout;
     }
 }

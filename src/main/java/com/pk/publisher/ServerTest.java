@@ -1,5 +1,6 @@
 package com.pk.publisher;
 
+import com.pk.publisher.core.IEventCollector;
 import com.pk.publisher.core.Message;
 import com.pk.publisher.testutils.ClientTest;
 import com.pk.publisher.testutils.EventCollectorStub;
@@ -19,8 +20,13 @@ public class ServerTest {
             System.exit(0);
         }
 
+
+         IEventCollector ec = new EventCollectorStub();
+         DistributionLayer dl = new DistributionLayer(ec);
+
          PublisherConfig config = new PublisherConfig();
-        Publisher publisher = new Publisher("L1".getBytes(), config, new EventCollectorStub());
+         Publisher publisher = dl.addPublisher("L1".getBytes(), config);
+
 
         long time;
         Message msg;
@@ -32,6 +38,7 @@ public class ServerTest {
 
             msg = publisher.getNext();
             System.arraycopy(config.update, 0, msg.getBuffer(), 0, config.update.length);
+            msg.offset = 0;
             msg.length = config.update.length;
             msg.type = Message.TYPE.UPDATE;
             msg.eventTime = System.nanoTime();
@@ -41,6 +48,7 @@ public class ServerTest {
                 snapshotTickCounter = 0;
                 msg = publisher.getNext();
                 System.arraycopy(config.snapshot, 0, msg.getBuffer(), 0, config.snapshot.length);
+                msg.offset = 0;
                 msg.length = config.snapshot.length;
                 msg.type = Message.TYPE.SNAPSHOT;
                 msg.eventTime = System.nanoTime();
