@@ -97,4 +97,8 @@ public class Publisher  {
     public IEventCollector getEventCollector(){
         return eventCollector;
     }
+
+    public void shutdown() {
+        //todo implement
+    }
 }

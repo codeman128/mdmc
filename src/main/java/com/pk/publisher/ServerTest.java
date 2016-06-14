@@ -25,7 +25,7 @@ public class ServerTest {
          DistributionLayer dl = new DistributionLayer(ec);
 
          PublisherConfig config = new PublisherConfig();
-         Publisher publisher = dl.addPublisher("L1".getBytes(), config);
+         Publisher publisher_L2 = dl.addPublisher("L1".getBytes(), config);
 
 
         long time;
@@ -36,23 +36,21 @@ public class ServerTest {
         while (true){
             time = System.currentTimeMillis();
 
-            msg = publisher.getNext();
-            System.arraycopy(config.update, 0, msg.getBuffer(), 0, config.update.length);
-            msg.offset = 0;
+            msg = publisher_L2.getNext();
+            System.arraycopy(config.update, 0, msg.getBuffer(), msg.offset+82, config.update.length);
             msg.length = config.update.length;
             msg.type = Message.TYPE.UPDATE;
             msg.eventTime = System.nanoTime();
-            publisher.publish(msg);
+            publisher_L2.publish(msg);
 
             if (snapshotTickCounter==config.snapshotTick) {
                 snapshotTickCounter = 0;
-                msg = publisher.getNext();
-                System.arraycopy(config.snapshot, 0, msg.getBuffer(), 0, config.snapshot.length);
-                msg.offset = 0;
+                msg = publisher_L2.getNext();
+                System.arraycopy(config.snapshot, 0, msg.getBuffer(), msg.offset+82, config.snapshot.length);
                 msg.length = config.snapshot.length;
                 msg.type = Message.TYPE.SNAPSHOT;
                 msg.eventTime = System.nanoTime();
-                publisher.publish(msg);
+                publisher_L2.publish(msg);
             } else {
                 snapshotTickCounter++;
             }

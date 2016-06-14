@@ -38,6 +38,9 @@ public class DistributionLayer {
     }
 
     public void shutdown() {
+        for (int i=0; i< publishers.size();i++) {
+            publishers.get(i).shutdown();
+        }
         monitor.shutdown();
 
     }
