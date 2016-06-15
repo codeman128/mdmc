@@ -126,6 +126,10 @@ public class Feeder implements EventHandler<Message> {
         return monTime;
     }
 
+    public final void setMonTime(long monTime){
+        this.monTime = monTime;
+    }
+
     public final long getMonitorWriteTimeout(){
         return writeTimeout;
     }

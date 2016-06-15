@@ -25,14 +25,17 @@ public class Header {
         this.config = config;
         addHeader(Message.TYPE.SNAPSHOT, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><rates_update type=\"snapshot\"><sequence_number>");
         addHeader(Message.TYPE.UPDATE,   "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><rates_update type=\"update\"><sequence_number>");
-        addHeader(Message.TYPE.HEARTBEAT,"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><rates_update type=\"heartbeat\"><sequence_number>");
+        addHeader(Message.TYPE.HEARTBEAT, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><rates_update type=\"heartbeat\"><sequence_number>");
     }
 
     public final int addHeaderAndWrite(OutputStream stream, Message msg, long msgSeqId) throws IOException {
-        final byte[] b = buffer[msg.type.getId()];
-        final int newLength = config.addMsgSeqId(b, size[msg.type.getId()], msgSeqId);
-        System.arraycopy(b, 0, msg.buffer, msg.offset-newLength, newLength);
-        stream.write(msg.getBuffer(), msg.offset - newLength, msg.length + newLength);
+        final byte[] mainBuffer = msg.buffer;
+        final byte[] headerBuffer = buffer[msg.type.getId()];
+
+        final int newLength = config.addMsgSeqId(headerBuffer, size[msg.type.getId()], msgSeqId);
+
+        System.arraycopy(headerBuffer, 0, mainBuffer, msg.offset-newLength, newLength);
+        stream.write(mainBuffer, msg.offset - newLength, msg.length + newLength);
         return msg.length;
     }
 }

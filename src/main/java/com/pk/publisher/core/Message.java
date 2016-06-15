@@ -35,7 +35,7 @@ public class Message {
         System.arraycopy(MSG_PREFIX, 0, buffer, offset, MSG_PREFIX.length);
     }
 
-    public byte[] getBuffer() {
+    public final byte[] getBuffer() {
         return buffer;
     }
 

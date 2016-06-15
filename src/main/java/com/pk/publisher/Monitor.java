@@ -53,9 +53,15 @@ public class Monitor implements Runnable{
                     syncPoint++;
                     con = feeder.getMonConnection();
                     if (con != null) {
-                        long delta = System.nanoTime() - feeder.getMonTime();
-                        //todo handle nanos overflow bug.
-                        if (delta > feeder.getMonitorWriteTimeout()) {
+                        long now = System.nanoTime();
+                        long monTime = feeder.getMonTime();
+                        long delta = now - monTime;
+
+                        // there are overflow and other possible sync issues that need to be handled
+                        if (delta<0||delta>1000000000L) { //<0 or >1 sec
+                            feeder.setMonTime(now);
+                        } else
+                        if (delta > feeder.getMonitorWriteTimeout() && monTime!=0) {
                             eventCollector.onMonitorWriteTimeout(con, delta);
                             con.safelyCloseConnection();
                         }
