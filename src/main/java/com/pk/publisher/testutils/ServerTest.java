@@ -1,5 +1,7 @@
-package com.pk.publisher;
+package com.pk.publisher.testutils;
 
+import com.pk.publisher.DistributionLayer;
+import com.pk.publisher.Publisher;
 import com.pk.publisher.core.IEventCollector;
 import com.pk.publisher.core.Message;
 import com.pk.publisher.testutils.ClientTest;

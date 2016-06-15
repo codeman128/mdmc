@@ -7,12 +7,19 @@ import java.net.InetSocketAddress;
 import java.nio.*;
 import java.nio.channels.SocketChannel;
 import java.nio.file.ProviderMismatchException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
  * Created by PavelK on 5/28/2016.
  */
 public class ClientTest {
+    static int sleep;
+    static int count;
+    static long[] readData;
+    static List<SocketChannel> channels;
+    static ByteBuffer buf = ByteBuffer.allocate(1024*2000);
 
     public static void runTest() throws Exception {
         Properties properties = Utils.loadConfig("client");
@@ -20,44 +27,29 @@ public class ClientTest {
         InetSocketAddress address = new InetSocketAddress(properties.getProperty("test.publisher.host"),
                 Integer.parseInt(properties.getProperty("test.publisher.port")));
 
-        int sleep = Integer.parseInt(properties.getProperty("test.sleep.nanos"));
-        int count = Integer.parseInt(properties.getProperty("test.connection.count"));
-        SocketChannel[] channels = new SocketChannel[count];
-        long[] readData = new long[count];
+        sleep = Integer.parseInt(properties.getProperty("test.sleep.nanos"));
+        count = Integer.parseInt(properties.getProperty("test.connection.count"));
+        channels = new ArrayList<>();
+        readData = new long[count];
 
         for (int i=0; i<count; i++) {
             try {
-                channels[i] = SocketChannel.open(address);
+                SocketChannel sc = SocketChannel.open(address);
+                sc.configureBlocking(false);
+                channels.add(sc);
             } catch (IOException e) {
                 System.out.println("Error establishing connection "+i);
                 e.printStackTrace();
             }
-            Thread.sleep(50);
+            read();
         }
 
-        ByteBuffer buf = ByteBuffer.allocate(1024*200);
-        int outCounter =50;
-        while (1==1) {
-            for (int i = 0; i < count; i++) {
-                buf.position(0);
-                SocketChannel channel = channels[i];
-                if (channel!=null) {
-                    try {
-                        readData[i] += channel.read(buf);
 
-                    } catch (IOException e) {
-                        System.out.println("Error reading from connection "+i);
-                        e.printStackTrace();
-                    }
-                }
-                try {
-                    Thread.sleep(0, sleep);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+        int outCounter = 1;
+        while (1==1) {
+            read();
             outCounter++;
-            if (outCounter>50) {
+            if (outCounter>1000) {
                 outCounter=0;
                 for (int i = 0; i < count; i++) {
                     System.out.print(/*"["+i+"] = */"["+readData[i]/1024+"]   ");
@@ -66,6 +58,25 @@ public class ClientTest {
             }
         }
 
+    }
+
+    private static void read() {
+        for (int i = 0; i < channels.size(); i++) {
+            buf.position(0);
+            try {
+                readData[i] += channels.get(i).read(buf);
+            } catch (IOException e) {
+                System.out.println("Error reading from connection "+i);
+                channels.remove(i);
+                e.printStackTrace();
+            }
+
+        }
+        try {
+            Thread.sleep(0, sleep);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 

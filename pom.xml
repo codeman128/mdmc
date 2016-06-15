@@ -62,7 +62,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.pk.publisher.ServerTest</mainClass>
+                            <mainClass>com.pk.publisher.testutils.ServerTest</mainClass>
                             <classpathPrefix>lib</classpathPrefix>
                         </manifest>
                         <manifestEntries>

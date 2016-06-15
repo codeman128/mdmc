@@ -54,6 +54,7 @@ public class Monitor implements Runnable{
                     con = feeder.getMonConnection();
                     if (con != null) {
                         long delta = System.nanoTime() - feeder.getMonTime();
+                        //todo handle nanos overflow bug.
                         if (delta > feeder.getMonitorWriteTimeout()) {
                             eventCollector.onMonitorWriteTimeout(con, delta);
                             con.safelyCloseConnection();
