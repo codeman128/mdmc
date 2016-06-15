@@ -15,18 +15,28 @@ import com.pk.publisher.testutils.PublisherConfig;
  */
 public class ServerTest {
 
-     public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
+        int idx = 0;
+        String configPath = null;
+        if (args.length>0) {
 
-        if (args.length>0 && args[0].equalsIgnoreCase("client")){
-            ClientTest.runTest();
-            System.exit(0);
+            if (args[idx].startsWith("path=")){
+                configPath = args[idx].substring(5);
+                System.out.println("found config param: "+configPath);
+                idx++;
+            }
+
+            if ((idx<args.length) && args[idx].equalsIgnoreCase("client")) {
+                ClientTest.runTest(configPath);
+                System.exit(0);
+            }
         }
 
 
          IEventCollector ec = new EventCollectorStub();
          DistributionLayer dl = new DistributionLayer(ec);
 
-         PublisherConfig config = new PublisherConfig();
+         PublisherConfig config = new PublisherConfig(configPath);
          Publisher publisher_L2 = dl.addPublisher("L1".getBytes(), config);
 
 

@@ -21,8 +21,8 @@ public class PublisherConfig implements IPublisherConfig {
     public int tick;
     public int snapshotTick;
 
-    public PublisherConfig() throws Exception {
-        properties = Utils.loadConfig("server");
+    public PublisherConfig(String configPath) throws Exception {
+        properties = Utils.loadConfig("server", configPath);
 
         String appPath = properties.getProperty("config.path");
         snapshot = Files.readAllBytes(Paths.get(appPath + properties.get("publisher.test.snapshot")));

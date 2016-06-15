@@ -1,12 +1,9 @@
 package com.pk.publisher.testutils;
 
-import org.omg.CORBA.UNKNOWN;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.*;
 import java.nio.channels.SocketChannel;
-import java.nio.file.ProviderMismatchException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -21,8 +18,8 @@ public class ClientTest {
     static List<SocketChannel> channels;
     static ByteBuffer buf = ByteBuffer.allocate(1024*2000);
 
-    public static void runTest() throws Exception {
-        Properties properties = Utils.loadConfig("client");
+    public static void runTest(String configPath) throws Exception {
+        Properties properties = Utils.loadConfig("client", configPath);
 
         InetSocketAddress address = new InetSocketAddress(properties.getProperty("test.publisher.host"),
                 Integer.parseInt(properties.getProperty("test.publisher.port")));
@@ -81,7 +78,7 @@ public class ClientTest {
 
 
     public static void main(String[] args) throws Exception {
-        runTest();
+        runTest(null);
     }
 
 

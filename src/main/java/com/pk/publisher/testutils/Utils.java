@@ -9,18 +9,25 @@ import java.util.Properties;
  */
 public class Utils {
 
-    public static Properties loadConfig (String name) throws Exception {
+    public static Properties loadConfig (String name, String fullName) throws Exception {
         Properties properties = null;
         String path = null;
-        try {
-            path = System.getProperty("user.dir").replace("\\", "/");
-            path = path + "/"+name+".cnfg";
-            System.out.println("Load configuration: " + path);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
+        if (fullName==null) {
+            try {
+                path = System.getProperty("user.dir").replace("\\", "/");
+                path = path + "/" + name + ".cnfg";
+                System.out.println("Load (default location) configuration: " + path);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(-1);
+            }
+        } else {
+            path = fullName;
+            System.out.println("Load from: "+path);
         }
+
         FileInputStream file = new FileInputStream(path);
         properties = new Properties();
         properties.load(file);
