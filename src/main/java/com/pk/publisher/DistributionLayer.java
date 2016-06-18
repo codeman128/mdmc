@@ -2,6 +2,7 @@ package com.pk.publisher;
 
 import com.pk.publisher.core.IEventCollector;
 import com.pk.publisher.core.IPublisherConfig;
+import com.pk.publisher.sd.ConsumerManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,24 +14,30 @@ public class DistributionLayer {
     private final Monitor monitor;
     private final List<Publisher> publishers;
     private final IEventCollector eventCollector;
+    private final ConsumerManager consumerManager;
 
     private DistributionLayer(){
         monitor = null;
         publishers = null;
         eventCollector = null;
+        consumerManager = null;
     }
 
     public DistributionLayer(IEventCollector eventCollector){
         this.eventCollector = eventCollector;
-        monitor = new Monitor(1000, eventCollector);
-
+        consumerManager = new ConsumerManager(this);
+        monitor = new Monitor(100000, eventCollector);
         publishers = new ArrayList<>();
     }
 
-    public Publisher addPublisher(byte[] name, IPublisherConfig config) {
-        Publisher p = new Publisher(name, config, eventCollector, monitor);
+    public final Publisher addPublisher(byte[] name, IPublisherConfig config) {
+        Publisher p = new Publisher(name, config, eventCollector, monitor, consumerManager);
         publishers.add(p);
         return p;
+    }
+
+    public final ConsumerManager getConsumerManager(){
+        return consumerManager;
     }
 
     public Monitor getMonitor(){

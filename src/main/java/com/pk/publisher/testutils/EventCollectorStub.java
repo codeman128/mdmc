@@ -2,6 +2,7 @@ package com.pk.publisher.testutils;
 
 import com.pk.publisher.core.ClientConnection;
 import com.pk.publisher.core.IEventCollector;
+import com.pk.publisher.sd.ConnectionMetadata;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -18,14 +19,19 @@ public class EventCollectorStub implements IEventCollector {
     }
 
     @Override
-    public void onConnectionRejected_Invalid() {
-        System.out.println("Connection Rejected - Invalid");
+    public void onConnectionRejected_UnknownConsumer(String address) {
+        System.out.println("Connection Rejected - Unknown from address: "+address);
     }
 
     @Override
-    public void onConnectionRejected_Busy() {
-        System.out.println("Connection Rejected - Busy");
+    public void onConnectionRejected_Busy(ConnectionMetadata mData) {
+        System.out.println("Connection from "+mData+" Rejected - Busy");
 
+    }
+
+    @Override
+    public void onConnectionRejected_LimitReached(ConnectionMetadata mData) {
+        System.out.println("Connection from "+mData +" rejected, simulations connection limit reached "+mData.getConsumer().getSimConnLimit());
     }
 
     @Override
@@ -41,15 +47,14 @@ public class EventCollectorStub implements IEventCollector {
     }
 
     @Override
-    public void onConnectionAssignError(ClientConnection clientConnection, IOException e) {
+    public void onConnectionAssignError(ClientConnection clientConnection, ConnectionMetadata mData, IOException e) {
         System.out.println("Connection Assign Error");
         e.printStackTrace();
     }
 
     @Override
-    public void onConnectionWriteError(ClientConnection clientConnection, Exception e) {
+    public void onConnectionWriteError(ClientConnection clientConnection, ConnectionMetadata mData, Exception e) {
         System.out.println("Connection Write Error, connection closed and released");
-        e.printStackTrace();
     }
 
     @Override
@@ -60,5 +65,11 @@ public class EventCollectorStub implements IEventCollector {
     @Override
     public void onMonitorShutdown() {
         System.out.println("Monitor shutdown");
+    }
+
+    @Override
+    public void onMonitorException(Exception e) {
+        System.out.println("Monitor - Unknown Exception - "+e.toString());
+        e.printStackTrace();
     }
 }

@@ -1,6 +1,6 @@
 
 publisher.acceptor.port=8080
-publisher.acceptor.address=localhost
+publisher.acceptor.address=192.168.1.115
 publisher.acceptor.maxRetry=3
 publisher.disruptor.ringSize=128
 publisher.message.maxSize=10240

@@ -45,33 +45,59 @@ public class Monitor implements Runnable{
     @Override
     public void run() {
         Feeder feeder;
-        ClientConnection con;
+        ClientConnection session, prevSession= null;
+        long now;
+        long monTime, prevMonTime = 0;
+        long delta;
+
+
         try {
             while (!exitFlag) {
                 for (int i = 0; i < feeders.size(); i++) {
-                    feeder = feeders.get(i);
-                    syncPoint++;
-                    con = feeder.getMonConnection();
-                    if (con != null) {
-                        long now = System.nanoTime();
-                        long monTime = feeder.getMonTime();
-                        long delta = now - monTime;
+                    try {
+                        feeder = feeders.get(i);
+                        syncPoint++;
+                        session = feeder.getMonConnection();
+                        if (session != null) {
+                            now = System.nanoTime();
+                            monTime = feeder.getMonTime();
+                            delta = now - monTime;
 
-                        // there are overflow and other possible sync issues that need to be handled
-                        if (delta<0||delta>1000000000L) { //<0 or >1 sec
-                            feeder.setMonTime(now);
-                        } else
-                        if (delta > feeder.getMonitorWriteTimeout() && monTime!=0) {
-                            eventCollector.onMonitorWriteTimeout(con, delta);
-                            con.safelyCloseConnection();
+                            // there are overflow and other possible sync issues that need to be handled
+                            if (delta < 0 || delta > 1000000000L) { //<0 or >1 sec
+                                feeder.setMonTime(now);
+                            } else
+                            if (delta > feeder.getMonitorWriteTimeout() && monTime != 0) {
+
+                                if (session==prevSession && monTime==prevMonTime) {
+                                    // This is to handle funny multithreading issue
+                                    // Monitor calling session.safelyCloseConnection() below and continue (this will
+                                    // call socket.close(), the socket writing thread is blocker on write() which exit
+                                    // with IOException and will call session.safelyCloseConnection() from wring thread
+                                    // again etc. Monitor, however, will not wait for it and may "test" same session again
+                                    // a specially if there is only one active session, will find same session and will
+                                    // try to close it again... we will simply ignore it until it will be cleared off.
+                                } else {
+                                    eventCollector.onMonitorWriteTimeout(session, delta);
+                                    prevSession = session;
+                                    prevMonTime = monTime;
+                                    session.safelyCloseConnection();
+                                }
+                            }  else {
+                                prevSession = null;
+                            }
                         }
+                        try {
+                            Thread.sleep(0, sleep);
+                        } catch (InterruptedException e) {
+                            // quietly?
+                        }
+                    } catch (Exception e){
+                        e.printStackTrace();
+                         eventCollector.onMonitorException(e);
                     }
                 }
-                try {
-                    Thread.sleep(0, sleep);
-                } catch (InterruptedException e) {
-                    // quietly?
-                }
+
             }
         } finally {
             eventCollector.onMonitorShutdown();

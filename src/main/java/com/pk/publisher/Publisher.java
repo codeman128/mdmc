@@ -1,6 +1,7 @@
 package com.pk.publisher;
 
 import com.pk.publisher.core.*;
+import com.pk.publisher.sd.ConsumerManager;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -15,6 +16,7 @@ public class Publisher  {
     private final Feeder[] feeders;
     private final Acceptor acceptor;
     private final MessageDisruptor disruptor;
+    private final ConsumerManager consumerManager;
     private ServerSocket serverSocket;
 
     private Publisher(){
@@ -24,12 +26,15 @@ public class Publisher  {
         feeders = null;
         acceptor = null;
         disruptor = null;
+        consumerManager = null;
     }
 
-    public Publisher(byte[] name, IPublisherConfig config, IEventCollector eventCollector, Monitor monitor){
+    public Publisher(byte[] name, IPublisherConfig config, IEventCollector eventCollector, Monitor monitor,
+                     ConsumerManager consumerManager){
         this.name = name;
         this.config = config;
         this.eventCollector = eventCollector;
+        this.consumerManager = consumerManager;
 
 
         // init feeders
@@ -96,6 +101,10 @@ public class Publisher  {
 
     public IEventCollector getEventCollector(){
         return eventCollector;
+    }
+
+    public ConsumerManager getConsumerManager(){
+        return consumerManager;
     }
 
     public void shutdown() {

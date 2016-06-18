@@ -1,6 +1,7 @@
 package com.pk.publisher.core;
 
 import com.pk.publisher.core.ClientConnection;
+import com.pk.publisher.sd.ConnectionMetadata;
 
 import java.io.IOException;
 
@@ -13,10 +14,14 @@ public interface IEventCollector {
     /** Acceptor - New connection accepted  **/
     void onConnectionAccepted(ClientConnection connection);
 
-    void onConnectionRejected_Invalid();
+    void onConnectionRejected_UnknownConsumer(String address);
 
-    /** Acceptor - Server reached maximum number of connection. **/
-    void onConnectionRejected_Busy();
+    /** Acceptor - Server reached maximum number of connection.
+     * @param mData**/
+    void onConnectionRejected_Busy(ConnectionMetadata mData);
+
+    /** Number of simultaneous connection reached limit */
+    void onConnectionRejected_LimitReached(ConnectionMetadata mData);
 
     /** Acceptor - Unexpected error **/
     void onUnexpectedAcceptorError(Exception e);
@@ -25,14 +30,18 @@ public interface IEventCollector {
     void onBindFailed(int port, IOException e);
 
     /** Client Connection - Connection assign error **/
-    void onConnectionAssignError(ClientConnection clientConnection, IOException e);
+    void onConnectionAssignError(ClientConnection clientConnection, ConnectionMetadata mData, IOException e);
 
     /** Client Connection - Connection write error, connection will be closed **/
-    void onConnectionWriteError(ClientConnection clientConnection, Exception e);
+    void onConnectionWriteError(ClientConnection clientConnection, ConnectionMetadata mData, Exception e);
 
     /** Monitor - Write timeout detected **/
     void onMonitorWriteTimeout(ClientConnection clientConnection, long timeNano);
 
     /** Monitor shutdown event **/
     void onMonitorShutdown();
+
+    /** Monitor - Unknown Exception */
+    void onMonitorException(Exception e);
+
 }

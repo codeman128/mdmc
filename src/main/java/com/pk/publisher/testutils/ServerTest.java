@@ -4,6 +4,9 @@ import com.pk.publisher.DistributionLayer;
 import com.pk.publisher.Publisher;
 import com.pk.publisher.core.IEventCollector;
 import com.pk.publisher.core.Message;
+import com.pk.publisher.sd.Consumer;
+import com.pk.publisher.sd.ConsumerManager;
+import com.pk.publisher.sd.Institution;
 import com.pk.publisher.testutils.ClientTest;
 import com.pk.publisher.testutils.EventCollectorStub;
 import com.pk.publisher.testutils.PublisherConfig;
@@ -35,6 +38,13 @@ public class ServerTest {
 
          IEventCollector ec = new EventCollectorStub();
          DistributionLayer dl = new DistributionLayer(ec);
+
+        ConsumerManager cm = dl.getConsumerManager();
+        Institution i1 = cm.addInstitution("EBS");
+        Consumer c1 = i1.addConsumer("L1", 20); // 20 - number of simultaneously supported connection
+        c1.addConnection("192.168.1.115",5); // 5 - is heartbeat in # of ticks, if arb tick is every 50 ms heartbeat will be sent every 250 msec
+
+
 
          PublisherConfig config = new PublisherConfig(configPath);
          Publisher publisher_L2 = dl.addPublisher("L1".getBytes(), config);
