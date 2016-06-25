@@ -2,10 +2,11 @@
 publisher.acceptor.port=8080
 publisher.acceptor.address=192.168.1.115
 publisher.acceptor.maxRetry=3
-publisher.disruptor.ringSize=128
-publisher.message.maxSize=10240
+publisher.disruptor.ringSize=16
+publisher.message.maxSize=204800
 
 publisher.monitor.WriteTimeout=4
+publisher.monitor.SnapshotWriteTimeout=50
 
 publisher.feeder.count=2
 publisher.feeder.connection.max=10

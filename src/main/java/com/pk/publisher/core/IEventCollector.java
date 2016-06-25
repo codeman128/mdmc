@@ -36,7 +36,7 @@ public interface IEventCollector {
     void onConnectionWriteError(ClientConnection clientConnection, ConnectionMetadata mData, Exception e);
 
     /** Monitor - Write timeout detected **/
-    void onMonitorWriteTimeout(ClientConnection clientConnection, long timeNano);
+    void onMonitorWriteTimeout(ClientConnection clientConnection, long timeNano, long timeout, Message.TYPE msgType);
 
     /** Monitor shutdown event **/
     void onMonitorShutdown();

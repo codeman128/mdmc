@@ -2,6 +2,7 @@ package com.pk.publisher.testutils;
 
 import com.pk.publisher.core.ClientConnection;
 import com.pk.publisher.core.IEventCollector;
+import com.pk.publisher.core.Message;
 import com.pk.publisher.sd.ConnectionMetadata;
 
 import java.io.IOException;
@@ -58,8 +59,8 @@ public class EventCollectorStub implements IEventCollector {
     }
 
     @Override
-    public void onMonitorWriteTimeout(ClientConnection clientConnection, long timeNano) {
-        System.out.println("Monitor - write timeout detected, stale for "+timeNano);
+    public void onMonitorWriteTimeout(ClientConnection clientConnection, long timeNano, long timeout, Message.TYPE msgType) {
+        System.out.println("Monitor - write timeout detected, stale for "+timeNano+" expected "+timeout+" when publishing "+msgType.name());
     }
 
     @Override

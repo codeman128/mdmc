@@ -74,6 +74,7 @@ public class ClientConnection {
     private boolean send(Message msg) {
         feeder.monConnection = this;
         feeder.monTime = System.nanoTime();
+        feeder.monMessageType = msg.type;
         try {
             header.addHeaderAndWrite(stream, msg, msgSequenceId);
             msgSequenceId++;
@@ -86,6 +87,7 @@ public class ClientConnection {
         } finally {
             feeder.monConnection = null;
             feeder.monTime = 0;
+            feeder.monMessageType = null;
         }
     }
 

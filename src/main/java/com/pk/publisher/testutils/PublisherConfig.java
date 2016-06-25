@@ -59,6 +59,11 @@ public class PublisherConfig implements IPublisherConfig {
     }
 
     @Override
+    public int getMonitorSnapshotWriteTimeout() {
+        return Integer.parseInt(properties.getProperty("publisher.monitor.SnapshotWriteTimeout", "25"))*1000000;
+    }
+
+    @Override
     public int getDisruptorRingSize() {
         return Integer.parseInt(properties.getProperty("publisher.disruptor.ringSize", "128"));
 

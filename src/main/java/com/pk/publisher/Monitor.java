@@ -3,7 +3,6 @@ package com.pk.publisher;
 import com.pk.publisher.core.ClientConnection;
 import com.pk.publisher.core.Feeder;
 import com.pk.publisher.core.IEventCollector;
-import com.pk.publisher.core.IPublisherConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +77,7 @@ public class Monitor implements Runnable{
                                     // a specially if there is only one active session, will find same session and will
                                     // try to close it again... we will simply ignore it until it will be cleared off.
                                 } else {
-                                    eventCollector.onMonitorWriteTimeout(session, delta);
+                                    eventCollector.onMonitorWriteTimeout(session, delta, feeder.getMonitorWriteTimeout(), feeder.getMonMessageType());
                                     prevSession = session;
                                     prevMonTime = monTime;
                                     session.safelyCloseConnection();

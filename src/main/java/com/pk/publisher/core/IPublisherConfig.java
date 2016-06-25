@@ -16,6 +16,7 @@ public interface IPublisherConfig {
     int getAcceptorMaxRetry();
 
     int getMonitorWriteTimeout();
+    int getMonitorSnapshotWriteTimeout();
 
 
     int getDisruptorRingSize();

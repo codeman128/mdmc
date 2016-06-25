@@ -17,9 +17,11 @@ public class Feeder implements EventHandler<Message> {
     private final ClientConnection[] clients;
     private final int maxConnCount;
     private final long writeTimeout;
+    private final long snapshotWriteTimeout;
 
     ClientConnection monConnection;
     long monTime;
+    Message.TYPE monMessageType;
 
     private long statSigma;
     private long statCounter;
@@ -35,6 +37,7 @@ public class Feeder implements EventHandler<Message> {
         pubOrder = null;
         clients = null;
         writeTimeout = 0;
+        snapshotWriteTimeout = 0;
     }
 
     public Feeder(byte id, Publisher publisher){
@@ -43,6 +46,7 @@ public class Feeder implements EventHandler<Message> {
         config = publisher.getConfig();
         maxConnCount = config.getMaxClientConnection();
         writeTimeout = config.getMonitorWriteTimeout();
+        snapshotWriteTimeout = config.getMonitorSnapshotWriteTimeout();
 
         // Initialize publication order
         pubOrder = new int[maxConnCount];
@@ -130,7 +134,18 @@ public class Feeder implements EventHandler<Message> {
         this.monTime = monTime;
     }
 
+    public final Message.TYPE getMonMessageType(){
+        return monMessageType;
+    }
+
     public final long getMonitorWriteTimeout(){
+        try {
+            //System.out.println(monMessageType.name()+ " "+snapshotWriteTimeout);
+            if (monMessageType != null && monMessageType == Message.TYPE.SNAPSHOT) {
+                return snapshotWriteTimeout;
+            } else return writeTimeout;
+        } catch (Exception e) {
+        }
         return writeTimeout;
     }
 }
