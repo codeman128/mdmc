@@ -62,7 +62,9 @@ public class EventCollectorStub implements IEventCollector {
 
     @Override
     public void onMonitorWriteTimeout(ClientConnection clientConnection, long timeNano, long timeout, Message.TYPE msgType) {
-        System.out.println("Monitor - write timeout detected, stale for "+timeNano+" expected "+timeout+" when publishing "+msgType.name());
+        String msgName = "NULL";
+        if (msgType!=null) msgName = msgType.name();
+        System.out.println("Monitor - write timeout detected, stale for "+timeNano+" expected "+timeout+" when publishing "+msgName);
     }
 
     @Override
@@ -72,22 +74,25 @@ public class EventCollectorStub implements IEventCollector {
 
     @Override
     public void onMonitorException(Exception e) {
-        System.out.println("Monotor - Exception "+e.getMessage());
+        System.out.println("Monitor - Exception "+e.getMessage());
         e.printStackTrace();
     }
 
     @Override
     public void onPublishStats(Message message, ClientConnection cc) {
         ConnectionMetadata cmd = cc.getMetadata();
-        /*
-        System.out.println((new Date(message.eventTime)).toString()+ ", "+
+        /**/
+        System.out.println((new Date(message.eventTime)).toString()+ ", " +
+                           cc.getId()+", " +
                            cmd.getConsumer().getName()+ ", " +
                            cmd.getIpString()+ ", " +
                            (cc.getNextMsgSequenceId()-1)+", " +
                            message.type +", " +
                            message.length +", " + // without header!! fix latter
-                           ""
+                           //(double)(cc.getStartTimeNano()-message.publishNano)/1000000+", " +
+                           (double)(cc.getFinishTimeNano()-message.publishNano)/1000000 +", " +
+                           (double)(cc.getFinishTimeNano()-cc.getStartTimeNano())/1000000
 
-        );*/
+        );/**/
     }
 }

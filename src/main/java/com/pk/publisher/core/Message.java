@@ -27,7 +27,7 @@ public class Message {
     public long eventTime;   // arb tick time (copy) - arb time!
     public long captureTime; // System.currentTimeMillis() that should be taken upon receiving tick message from MSL and before processing.
     public long captureNano; // System.nanoTime() that should be taken upon receiving tick message from MSL and before processing.
-           long publishNano; // automatically set by disruptor, do not touch
+    public long publishNano; // automatically set by disruptor, do not touch
 
     private Message(){
         buffer = null;

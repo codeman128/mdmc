@@ -21,7 +21,6 @@ public class Feeder implements EventHandler<Message> {
     private final IEventCollector eventCollector;
 
     ClientConnection monConnection;
-    long monTime;
     Message.TYPE monMessageType;
 
     private long statSigma;
@@ -97,8 +96,12 @@ public class Feeder implements EventHandler<Message> {
     @Override
     public void onEvent(Message message, long l, boolean b) throws Exception {
         for (int i=0; i< maxConnCount; i++){
-            clients[pubOrder[i]].sendData(message);
+            //clients[pubOrder[i]].sendData(message);
+
+            monConnection = clients[pubOrder[i]];
+            monConnection.sendData(message);
         }
+        monConnection = null;
 
         for (int i=0; i< maxConnCount; i++){
             ClientConnection cc = clients[pubOrder[i]];
@@ -108,6 +111,7 @@ public class Feeder implements EventHandler<Message> {
         }
 
         //debug --------------------------------------------
+        /*
         long delta = System.nanoTime() - message.eventTime;
         statMin = Math.min(statMin, delta);
         statMax = Math.max(statMax, delta);
@@ -120,7 +124,7 @@ public class Feeder implements EventHandler<Message> {
             statCounter = 0;
             statSigma = 0;
         }
-
+           */
         //--------------------------------------------------
         shuffle();
     }
@@ -135,14 +139,6 @@ public class Feeder implements EventHandler<Message> {
 
     public ClientConnection getMonConnection() {
         return monConnection;
-    }
-
-    public final long getMonTime() {
-        return monTime;
-    }
-
-    public final void setMonTime(long monTime){
-        this.monTime = monTime;
     }
 
     public final Message.TYPE getMonMessageType(){

@@ -35,7 +35,8 @@ public class Header {
         final int newLength = config.addMsgSeqId(headerBuffer, size[msg.type.getId()], msgSeqId);
 
         System.arraycopy(headerBuffer, 0, mainBuffer, msg.offset-newLength, newLength);
-        stream.write(mainBuffer, msg.offset - newLength, msg.length + newLength);
-        return msg.length;
+        final int msgLength = msg.length + newLength;
+        stream.write(mainBuffer, msg.offset - newLength, msgLength);
+        return msgLength;
     }
 }

@@ -57,14 +57,15 @@ public class Monitor implements Runnable{
                         feeder = feeders.get(i);
                         syncPoint++;
                         session = feeder.getMonConnection();
-                        if (session != null) {
+                        if (session != null && ((session.getState()== ClientConnection.STATE.ASSIGNED)||
+                                                (session.getState()== ClientConnection.STATE.INIT))) {
                             now = System.nanoTime();
-                            monTime = feeder.getMonTime();
+                            monTime = feeder.getMonConnection().getStartTimeNano();
                             delta = now - monTime;
 
                             // there are overflow and other possible sync issues that need to be handled
                             if (delta < 0 || delta > 1000000000L) { //<0 or >1 sec
-                                feeder.setMonTime(now);
+                                feeder.getMonConnection().setStartTimeNano(now);
                             } else
                             if (delta > feeder.getMonitorWriteTimeout() && monTime != 0) {
 

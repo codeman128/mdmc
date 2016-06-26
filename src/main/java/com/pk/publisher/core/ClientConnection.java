@@ -25,6 +25,9 @@ public class ClientConnection {
     private long msgSequenceId;
     private int heartbeatCounter;
 
+    long startTimeNano;
+    long finishTimeNano;
+
     private ClientConnection(){
         id = -1;
         feeder = null;
@@ -42,15 +45,15 @@ public class ClientConnection {
         state.set(STATE.AVAILABLE);
     }
 
-    public STATE getState() {
+    public final STATE getState() {
         return state.get();
     }
 
-    public ConnectionMetadata getMetadata(){
+    public final ConnectionMetadata getMetadata(){
         return mData;
     }
 
-    public boolean assign(Socket socket, ConnectionMetadata mData){
+    public final boolean assign(Socket socket, ConnectionMetadata mData){
         if (!state.compareAndSet(STATE.AVAILABLE, STATE.MARKED)) return false;
         if (!setDate(socket, mData)) return false;
         try {
@@ -72,21 +75,21 @@ public class ClientConnection {
     }
 
     private boolean send(Message msg) {
-        feeder.monConnection = this;
-        feeder.monTime = System.nanoTime();
+        //feeder.monConnection = this;
         feeder.monMessageType = msg.type;
+        startTimeNano = System.nanoTime();
         try {
             header.addHeaderAndWrite(stream, msg, msgSequenceId);
+            finishTimeNano = System.nanoTime();
             msgSequenceId++;
             return true;
         } catch (IOException e) {
-            eventEmitter.onConnectionWriteError(this, mData, e);
             safelyCloseConnection();
             state.set(STATE.AVAILABLE);
+            eventEmitter.onConnectionWriteError(this, mData, e);
             return false;
         } finally {
-            feeder.monConnection = null;
-            feeder.monTime = 0;
+            //feeder.monConnection = null;
             feeder.monMessageType = null;
         }
     }
@@ -157,5 +160,17 @@ public class ClientConnection {
 
     public final long getNextMsgSequenceId() {
         return msgSequenceId;
+    }
+
+    public final long getStartTimeNano() {
+        return startTimeNano;
+    }
+
+    public final void setStartTimeNano(long startTimeNano) {
+        this.startTimeNano = startTimeNano;
+    }
+
+    public final long getFinishTimeNano() {
+        return finishTimeNano;
     }
 }
