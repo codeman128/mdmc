@@ -52,6 +52,7 @@ public class MessageDisruptor {
 
     public void push(Message msg) {
         final long rbSequence = msg.getDSequence();
+        msg.publishNano = System.nanoTime();
         ringBuffer.publish(rbSequence);
     }
 
