@@ -44,4 +44,7 @@ public interface IEventCollector {
     /** Monitor - Unknown Exception */
     void onMonitorException(Exception e);
 
+    /** Stats */
+    void onPublishStats(Message message, ClientConnection cc);
+
 }

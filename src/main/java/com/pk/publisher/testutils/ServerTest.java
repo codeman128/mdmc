@@ -62,7 +62,9 @@ public class ServerTest {
             System.arraycopy(config.update, 0, msg.getBuffer(), msg.offset+82, config.update.length);
             msg.length = config.update.length;
             msg.type = Message.TYPE.UPDATE;
-            msg.eventTime = System.nanoTime();
+            msg.eventTime = System.currentTimeMillis();
+            msg.captureTime = System.currentTimeMillis();
+            msg.captureNano = System.nanoTime();
             publisher_L2.publish(msg);
 
             if (snapshotTickCounter==config.snapshotTick) {
@@ -71,7 +73,9 @@ public class ServerTest {
                 System.arraycopy(config.snapshot, 0, msg.getBuffer(), msg.offset+82, config.snapshot.length);
                 msg.length = config.snapshot.length;
                 msg.type = Message.TYPE.SNAPSHOT;
-                msg.eventTime = System.nanoTime();
+                msg.eventTime = System.currentTimeMillis();
+                msg.captureTime = System.currentTimeMillis();
+                msg.captureNano = System.nanoTime();
                 publisher_L2.publish(msg);
             } else {
                 snapshotTickCounter++;

@@ -7,6 +7,8 @@ import com.pk.publisher.sd.ConnectionMetadata;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.sql.Time;
+import java.util.Date;
 
 /**
  * Created by pkapovski on 5/26/2016.
@@ -70,7 +72,22 @@ public class EventCollectorStub implements IEventCollector {
 
     @Override
     public void onMonitorException(Exception e) {
-        System.out.println("Monitor - Unknown Exception - "+e.toString());
+        System.out.println("Monotor - Exception "+e.getMessage());
         e.printStackTrace();
+    }
+
+    @Override
+    public void onPublishStats(Message message, ClientConnection cc) {
+        ConnectionMetadata cmd = cc.getMetadata();
+        /*
+        System.out.println((new Date(message.eventTime)).toString()+ ", "+
+                           cmd.getConsumer().getName()+ ", " +
+                           cmd.getIpString()+ ", " +
+                           (cc.getNextMsgSequenceId()-1)+", " +
+                           message.type +", " +
+                           message.length +", " + // without header!! fix latter
+                           ""
+
+        );*/
     }
 }

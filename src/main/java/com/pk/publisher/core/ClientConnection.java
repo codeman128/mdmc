@@ -143,16 +143,19 @@ public class ClientConnection {
         }
     }
 
-    public Socket getSocket() {
+    public final Socket getSocket() {
         return socket;
     }
 
-    public byte getId(){
+    public final byte getId(){
         return id;
     }
 
-    public Feeder getFeeder(){
+    public final Feeder getFeeder(){
         return feeder;
     }
 
+    public final long getNextMsgSequenceId() {
+        return msgSequenceId;
+    }
 }
