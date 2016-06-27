@@ -60,7 +60,7 @@ public class Monitor implements Runnable{
                         if (session != null && ((session.getState()== ClientConnection.STATE.ASSIGNED)||
                                                 (session.getState()== ClientConnection.STATE.INIT))) {
                             now = System.nanoTime();
-                            monTime = feeder.getMonConnection().getStartTimeNano();
+                            monTime = session.getStartTimeNano();
                             delta = now - monTime;
 
                             // there are overflow and other possible sync issues that need to be handled
@@ -93,7 +93,6 @@ public class Monitor implements Runnable{
                             // quietly?
                         }
                     } catch (Exception e){
-                        e.printStackTrace();
                          eventCollector.onMonitorException(e);
                     }
                 }
