@@ -53,7 +53,7 @@ public class Acceptor implements Runnable{
             eventCollector.onConnectionRejected_LimitReached(mData);
             return null;
         }
-        System.out.println("Acceptor-validate "+mData.getConsumer().getConnCount());
+        // System.out.println("Acceptor-validate "+mData.getConsumer().getConnCount());
         return mData;
     }
 

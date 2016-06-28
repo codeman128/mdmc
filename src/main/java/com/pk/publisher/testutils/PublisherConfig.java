@@ -101,4 +101,9 @@ public class PublisherConfig implements IPublisherConfig {
     public InetAddress getAddress() throws UnknownHostException {
         return InetAddress.getByName(properties.getProperty("publisher.acceptor.address"));
     }
+
+    @Override
+    public boolean isPerfLogEnabled() {
+        return true;
+    }
 }

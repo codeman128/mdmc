@@ -105,7 +105,7 @@ public class Feeder implements EventHandler<Message> {
 
         for (int i=0; i< maxConnCount; i++){
             ClientConnection cc = clients[pubOrder[i]];
-            if (cc.getState()== ClientConnection.STATE.ASSIGNED && !(cc.getNextMsgSequenceId()>2 && message.type== Message.TYPE.SNAPSHOT)) {
+            if (config.isPerfLogEnabled() && cc.getState()== ClientConnection.STATE.ASSIGNED && !(cc.getNextMsgSequenceId()>2 && message.type== Message.TYPE.SNAPSHOT)) {
                 eventCollector.onPublishStats(message, cc);
             }
         }
