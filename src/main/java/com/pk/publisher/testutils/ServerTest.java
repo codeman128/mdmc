@@ -43,7 +43,7 @@ public class ServerTest {
         Institution i1 = cm.addInstitution("EBS");
         Consumer c1 = i1.addConsumer("L1", 20); // 20 - number of simultaneously supported connection
         c1.addConnection("192.168.1.115",5); // 5 - is heartbeat in # of ticks, if arb tick is every 50 ms heartbeat will be sent every 250 msec
-
+        c1.addConnection("10.72.2.185",5); // 5 - is heartbeat in # of ticks, if arb tick is every 50 ms heartbeat will be sent every 250 msec
 
 
          PublisherConfig config = new PublisherConfig(configPath);

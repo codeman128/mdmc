@@ -26,6 +26,9 @@ public interface IPublisherConfig {
     /** Return - new offset **/
     int addMsgSeqId(byte[] buffer, int offset, long id);
 
+    /** Nagle's Algorithm **/
+    boolean getTcpNoDelay();
+
     WaitStrategy getDisruptorStrategy();
 
     InetAddress getAddress() throws UnknownHostException;

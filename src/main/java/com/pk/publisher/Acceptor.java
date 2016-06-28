@@ -65,6 +65,7 @@ public class Acceptor implements Runnable{
                 try {
                     clientSocket = publisher.getServerSocket().accept();
                     clientSocket.setSoTimeout(10);
+                    clientSocket.setTcpNoDelay(true);
                 } catch (Exception e) {
                     eventCollector.onUnexpectedAcceptorError(e);
                     System.exit(-1);

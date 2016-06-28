@@ -80,6 +80,11 @@ public class PublisherConfig implements IPublisherConfig {
         return offset;
     }
 
+    @Override
+    public boolean getTcpNoDelay() {
+        return false;
+    }
+
 
     @Override
     public WaitStrategy getDisruptorStrategy() {

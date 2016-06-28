@@ -82,16 +82,16 @@ public class EventCollectorStub implements IEventCollector {
     public void onPublishStats(Message message, ClientConnection cc) {
         ConnectionMetadata cmd = cc.getMetadata();
         /**/
-        System.out.println((new Date(message.eventTime)).toString()+ ", " +
-                           cc.getId()+", " +
-                           cmd.getConsumer().getName()+ ", " +
-                           cmd.getIpString()+ ", " +
-                           (cc.getNextMsgSequenceId()-1)+", " +
-                           message.type +", " +
-                           message.length +", " + // without header!! fix latter
-                           //(double)(cc.getStartTimeNano()-message.publishNano)/1000000+", " +
-                           (double)(cc.getFinishTimeNano()-message.publishNano)/1000000 +", " +
-                           (double)(cc.getFinishTimeNano()-cc.getStartTimeNano())/1000000
+        System.out.println((new Date(message.eventTime)).toString()+ ", " +                            // arb time with ms
+                           cc.getFeeder().getId()+"_"+cc.getId()+", " +                                 // feeder + connection id
+                           cmd.getConsumer().getName()+ ", " +                                         // consumer name
+                           cmd.getIpString()+ ", " +                                                   // consumer ip
+                           (cc.getNextMsgSequenceId()-1)+", " +                                        // message sequence id
+                           message.type +", " +                                                        // message type
+                           message.length +", " + // without header!! fix latter                       // message length
+                           //(double)(cc.getStartTimeNano()-message.publishNano)/1000000+", " +        //
+                           (double)(cc.getFinishTimeNano()-message.publishNano)/1000000 +", " +        // total time
+                           (double)(cc.getFinishTimeNano()-cc.getStartTimeNano())/1000000              // write time
 
         );/**/
     }
