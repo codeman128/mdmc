@@ -28,6 +28,7 @@ public interface IPublisherConfig {
 
     /** Nagle's Algorithm **/
     boolean getTcpNoDelay();
+    int getSendBufferSize();
 
     WaitStrategy getDisruptorStrategy();
 

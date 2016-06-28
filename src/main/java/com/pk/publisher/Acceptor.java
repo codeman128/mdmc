@@ -59,16 +59,21 @@ public class Acceptor implements Runnable{
 
     @Override
     public void run() {
+        int sndbuf_old = 0;
+        int sndbuf_new = 0;
         try {
             while (true) {
                 Socket clientSocket = null;
                 try {
                     clientSocket = publisher.getServerSocket().accept();
                     clientSocket.setSoTimeout(10);
-                    clientSocket.setTcpNoDelay(true);
+                    clientSocket.setTcpNoDelay(config.getTcpNoDelay());
+                    sndbuf_old = clientSocket.getSendBufferSize();
+                    if (config.getSendBufferSize()>0) clientSocket.setSendBufferSize(config.getSendBufferSize());
+                    sndbuf_new = clientSocket.getSendBufferSize();
+
                 } catch (Exception e) {
                     eventCollector.onUnexpectedAcceptorError(e);
-                    System.exit(-1);
                     break;
                 }
 

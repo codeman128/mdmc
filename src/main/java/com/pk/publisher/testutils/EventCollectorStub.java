@@ -87,10 +87,11 @@ public class EventCollectorStub implements IEventCollector {
                            cmd.getConsumer().getName()+ ", " +                                         // consumer name
                            cmd.getIpString()+ ", " +                                                   // consumer ip
                            (cc.getNextMsgSequenceId()-1)+", " +                                        // message sequence id
-                           message.type +", " +                                                        // message type
+                           message.type +", " +   // don't use until lwe support 0 alloc               // message type
                            message.length +", " + // without header!! fix latter                       // message length
-                           //(double)(cc.getStartTimeNano()-message.publishNano)/1000000+", " +        //
-                           (double)(cc.getFinishTimeNano()-message.publishNano)/1000000 +", " +        // total time
+                           (double)(cc.getFinishTimeNano()-message.eventTime)/1000000+", " +           // total time
+                           (double)(cc.getFinishTimeNano()-message.captureNano)/1000000 +", " +        // from capture time
+                           (double)(cc.getFinishTimeNano()-message.publishNano)/1000000 +", " +        // from publish time
                            (double)(cc.getFinishTimeNano()-cc.getStartTimeNano())/1000000              // write time
 
         );/**/

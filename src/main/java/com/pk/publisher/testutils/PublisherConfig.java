@@ -85,6 +85,11 @@ public class PublisherConfig implements IPublisherConfig {
         return false;
     }
 
+    @Override
+    public int getSendBufferSize() {
+        return 0;
+    }
+
 
     @Override
     public WaitStrategy getDisruptorStrategy() {
