@@ -24,7 +24,7 @@ public class Message {
     protected long dSequence;
     public final int offset = 125;
     public int length = 0;
-    public long eventTime;   // arb tick time (copy) - arb time!
+    public long eventTime;   // arb tick time (copy) - arb time in msec!
     public long captureTime; // System.currentTimeMillis() that should be taken upon receiving tick message from MSL and before processing.
     public long captureNano; // System.nanoTime() that should be taken upon receiving tick message from MSL and before processing.
     public long publishNano; // automatically set by disruptor, do not touch

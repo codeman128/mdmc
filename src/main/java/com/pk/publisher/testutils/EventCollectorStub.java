@@ -89,8 +89,10 @@ public class EventCollectorStub implements IEventCollector {
                            (cc.getNextMsgSequenceId()-1)+", " +                                        // message sequence id
                            message.type +", " +   // don't use until lwe support 0 alloc               // message type
                            message.length +", " + // without header!! fix latter                       // message length
-                           (double)(cc.getFinishTimeNano()-message.eventTime)/1000000+", " +           // total time
-                           (double)(cc.getFinishTimeNano()-message.captureNano)/1000000 +", " +        // from capture time
+
+                           (cc.getFinishTime()-message.eventTime)  +", " +                             // total Time     (in msec)
+                           (message.captureTime - message.eventTime)  +", " +                          // total MSL time (in msec)
+                           (double)(cc.getFinishTimeNano()-message.captureNano)/1000000 +", " +        // total MDS time (in msec)
                            (double)(cc.getFinishTimeNano()-message.publishNano)/1000000 +", " +        // from publish time
                            (double)(cc.getFinishTimeNano()-cc.getStartTimeNano())/1000000              // write time
 

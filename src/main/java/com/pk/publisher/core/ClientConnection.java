@@ -27,6 +27,7 @@ public class ClientConnection {
 
     long startTimeNano;
     long finishTimeNano;
+    long finishTime;
 
     private ClientConnection(){
         id = -1;
@@ -75,12 +76,12 @@ public class ClientConnection {
     }
 
     private boolean send(Message msg) {
-        //feeder.monConnection = this;
         feeder.monMessageType = msg.type;
         startTimeNano = System.nanoTime();
         try {
             header.addHeaderAndWrite(stream, msg, msgSequenceId);
             finishTimeNano = System.nanoTime();
+            finishTime = System.currentTimeMillis();
             msgSequenceId++;
             return true;
         } catch (IOException e) {
@@ -89,7 +90,6 @@ public class ClientConnection {
             eventEmitter.onConnectionWriteError(this, mData, e);
             return false;
         } finally {
-            //feeder.monConnection = null;
             feeder.monMessageType = null;
         }
     }
@@ -172,5 +172,9 @@ public class ClientConnection {
 
     public final long getFinishTimeNano() {
         return finishTimeNano;
+    }
+
+    public final long getFinishTime() {
+        return finishTime;
     }
 }
