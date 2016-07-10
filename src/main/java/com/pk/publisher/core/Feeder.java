@@ -96,15 +96,14 @@ public class Feeder implements EventHandler<Message> {
     @Override
     public void onEvent(Message message, long l, boolean b) throws Exception {
         for (int i=0; i< maxConnCount; i++){
-            monConnection = clients[pubOrder[i]];
+            monConnection = clients[pubOrder[i]]; //todo to move into send
             monConnection.sendData(message);
         }
         monConnection = null;
 
         for (int i=0; i< maxConnCount; i++){
             ClientConnection cc = clients[pubOrder[i]];
-            if (config.isPerfLogEnabled() && cc.getState()== ClientConnection.STATE.ASSIGNED &&
-                    !(cc.getNextMsgSequenceId()>2 && message.type== Message.TYPE.SNAPSHOT)) {
+            if (cc.getDataSent()) {
                 eventCollector.onPublishStats(message, cc);
             }
         }

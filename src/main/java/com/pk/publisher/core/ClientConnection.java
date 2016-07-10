@@ -24,6 +24,7 @@ public class ClientConnection {
     private OutputStream stream;
     private long msgSequenceId;
     private int heartbeatCounter;
+    private boolean dataSent = false;
 
     long startTimeNano;
     long finishTimeNano;
@@ -82,6 +83,7 @@ public class ClientConnection {
             header.addHeaderAndWrite(stream, msg, msgSequenceId);
             finishTimeNano = System.nanoTime();
             finishTime = System.currentTimeMillis();
+            dataSent = true;
             msgSequenceId++;
             return true;
         } catch (IOException e) {
@@ -95,7 +97,7 @@ public class ClientConnection {
     }
 
     public boolean sendData(Message msg) {
-
+        dataSent = false;
         switch (state.get()) {
             case ASSIGNED : {
                 if (msg.type == Message.TYPE.UPDATE) {
@@ -127,7 +129,7 @@ public class ClientConnection {
                 break;
             }
         }
-        return true;
+        return false;
     }
 
     public synchronized void safelyCloseConnection(){
@@ -176,5 +178,9 @@ public class ClientConnection {
 
     public final long getFinishTime() {
         return finishTime;
+    }
+
+    public final boolean getDataSent(){
+        return dataSent;
     }
 }
