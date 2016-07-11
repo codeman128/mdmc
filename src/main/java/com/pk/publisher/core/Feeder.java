@@ -103,7 +103,7 @@ public class Feeder implements EventHandler<Message> {
 
         for (int i=0; i< maxConnCount; i++){
             ClientConnection cc = clients[pubOrder[i]];
-            if (cc.getDataSent()) {
+            if (cc.getSentSize()>0) {
                 eventCollector.onPublishStats(message, cc);
             }
         }

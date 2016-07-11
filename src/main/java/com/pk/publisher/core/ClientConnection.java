@@ -16,19 +16,21 @@ public class ClientConnection {
     private final AtomicReference<STATE> state = new AtomicReference<>(STATE.UNKNOWN);
     private final byte id;
     private final Feeder feeder;
-    private  final IPublisherConfig config;
+    private final IPublisherConfig config;
     private final Header header;
     private final IEventCollector eventEmitter;
+    private final boolean shouldAddHeader;
     private Socket socket = null;
     private ConnectionMetadata mData = null;
     private OutputStream stream;
     private long msgSequenceId;
     private int heartbeatCounter;
-    private boolean dataSent = false;
 
     long startTimeNano;
     long finishTimeNano;
     long finishTime;
+    int sentSize;
+    long totalSent;
 
     private ClientConnection(){
         id = -1;
@@ -36,6 +38,7 @@ public class ClientConnection {
         config = null;
         eventEmitter = null;
         header = null;
+        shouldAddHeader = false;
     }
 
     public ClientConnection(byte id, Feeder feeder) {
@@ -44,6 +47,7 @@ public class ClientConnection {
         this.config = feeder.getPublisher().getConfig();
         this.header = new Header(config);
         this.eventEmitter = feeder.getPublisher().getEventCollector();
+        this.shouldAddHeader = config.shouldAddHeader();
         state.set(STATE.AVAILABLE);
     }
 
@@ -80,10 +84,15 @@ public class ClientConnection {
         feeder.monMessageType = msg.type;
         startTimeNano = System.nanoTime();
         try {
-            header.addHeaderAndWrite(stream, msg, msgSequenceId);
+            if (shouldAddHeader) {
+                sentSize = header.addHeaderAndWrite(stream, msg, msgSequenceId);
+            } else {
+                sentSize = msg.length-msg.offset;
+                stream.write(msg.buffer, msg.offset, sentSize);
+            }
+            totalSent += sentSize;
             finishTimeNano = System.nanoTime();
             finishTime = System.currentTimeMillis();
-            dataSent = true;
             msgSequenceId++;
             return true;
         } catch (IOException e) {
@@ -97,7 +106,7 @@ public class ClientConnection {
     }
 
     public boolean sendData(Message msg) {
-        dataSent = false;
+        sentSize = 0;
         switch (state.get()) {
             case ASSIGNED : {
                 if (msg.type == Message.TYPE.UPDATE) {
@@ -117,6 +126,7 @@ public class ClientConnection {
                 if (msg.type == Message.TYPE.SNAPSHOT) {
                     msgSequenceId = 1;
                     heartbeatCounter = 0;
+                    totalSent = 0;
                     if (send(msg)) {
                         state.compareAndSet(STATE.INIT, STATE.ASSIGNED);
                         return true;
@@ -180,7 +190,11 @@ public class ClientConnection {
         return finishTime;
     }
 
-    public final boolean getDataSent(){
-        return dataSent;
+    public final int getSentSize() {
+        return sentSize;
+    }
+
+    public  final long getTotalSent(){
+        return totalSent;
     }
 }

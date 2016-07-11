@@ -90,6 +90,11 @@ public class PublisherConfig implements IPublisherConfig {
         return 0;
     }
 
+    @Override
+    public boolean shouldAddHeader() {
+        return true;
+    }
+
 
     @Override
     public WaitStrategy getDisruptorStrategy() {

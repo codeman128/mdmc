@@ -88,7 +88,7 @@ public class EventCollectorStub implements IEventCollector {
                            cmd.getIpString()+ ", " +                                                   // consumer ip
                            (cc.getNextMsgSequenceId()-1)+", " +                                        // message sequence id
                            message.type +", " +   // don't use until lwe support 0 alloc               // message type
-                           message.length +", " + // without header!! fix latter                       // message length
+                           cc.getSentSize()+", " +                                                     // published length
 
                            (cc.getFinishTime()-message.eventTime)  +", " +                             // total Time     (in msec)
                            (message.captureTime - message.eventTime)  +", " +                          // total MSL time (in msec)

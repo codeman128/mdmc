@@ -30,6 +30,8 @@ public interface IPublisherConfig {
     boolean getTcpNoDelay();
     int getSendBufferSize();
 
+    boolean shouldAddHeader();
+
     WaitStrategy getDisruptorStrategy();
 
     InetAddress getAddress() throws UnknownHostException;
