@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Created by PavelK on 5/21/2016.
  */
-public class Feeder implements EventHandler<Message> {
+public final class Feeder implements EventHandler<Message> {
     private final byte id;
     private final Publisher publisher;
     private final Random random = new Random(System.currentTimeMillis());
@@ -21,9 +21,10 @@ public class Feeder implements EventHandler<Message> {
     private final long snapshotWriteTimeout;
     private final IEventCollector eventCollector;
 
+    // monitor related values
     private long monTimeout;
+    private Message monMessage;
     final AtomicReference<ClientConnection> monConnection = new AtomicReference<>();
-    Message monMessage;
 
     private Feeder(){
         id = -1;
@@ -64,7 +65,7 @@ public class Feeder implements EventHandler<Message> {
      * The Fisher–Yates shuffle, as implemented by Durstenfeld, is an in-place shuffle.
      * (see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">The "inside-out" algorithm</a>)
      **/
-    protected void shuffle(){
+    protected final void shuffle(){
         for (int i = pubOrder.length - 1; i > 0; i--){
             int index = random.nextInt(i + 1);
             int a = pubOrder[index];
@@ -104,7 +105,7 @@ public class Feeder implements EventHandler<Message> {
      * </ul>
      **/
     @Override
-    public void onEvent(Message message, long l, boolean b) throws Exception {
+    public final void onEvent(Message message, long l, boolean b) throws Exception {
         monMessage = message;
         if (message.type== Message.TYPE.SNAPSHOT) {
             monTimeout = snapshotWriteTimeout;
