@@ -34,7 +34,7 @@ public class Monitor implements Runnable{
         thread = new Thread(this);
         thread.setName(THREAD_NAME);
         thread.start();
-        feeders = new ArrayList<Feeder>();
+        feeders = new ArrayList<>();
     }
 
     public final void register(Feeder feeder){
@@ -78,7 +78,7 @@ public class Monitor implements Runnable{
                                     // a specially if there is only one active session, will find same session and will
                                     // try to close it again... we will simply ignore it until it will be cleared off.
                                 } else {
-                                    eventCollector.onMonitorWriteTimeout(session, delta, feeder.getMonitorWriteTimeout(), feeder.getMonMessageType());
+                                    eventCollector.onMonitorWriteTimeout(session, delta, feeder.getMonitorWriteTimeout(), feeder.getMonMessage());
                                     prevSession = session;
                                     prevMonTime = monTime;
                                     session.safelyCloseConnection();

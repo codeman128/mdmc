@@ -4,6 +4,7 @@ import com.lmax.disruptor.EventHandler;
 import com.pk.publisher.Publisher;
 
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created by PavelK on 5/21/2016.
@@ -20,14 +21,9 @@ public class Feeder implements EventHandler<Message> {
     private final long snapshotWriteTimeout;
     private final IEventCollector eventCollector;
 
-    ClientConnection monConnection;
-    Message.TYPE monMessageType;
-
-//    private long statSigma;
-//    private long statCounter;
-//    private long statMin;
-//    private long statMax;
-
+    private long monTimeout;
+    final AtomicReference<ClientConnection> monConnection = new AtomicReference<>();
+    Message monMessage;
 
     private Feeder(){
         id = -1;
@@ -64,7 +60,10 @@ public class Feeder implements EventHandler<Message> {
         }
     }
 
-    //  Durstenfeld shuffle algo
+    /**
+     * The Fisher–Yates shuffle, as implemented by Durstenfeld, is an in-place shuffle.
+     * (see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">The "inside-out" algorithm</a>)
+     **/
     protected void shuffle(){
         for (int i = pubOrder.length - 1; i > 0; i--){
             int index = random.nextInt(i + 1);
@@ -98,6 +97,7 @@ public class Feeder implements EventHandler<Message> {
     /**
      * Disruptor Event Handler
      * <ul>
+     * <li>Set monitor time out relevant to the message type
      * <li>Publish data to the clients
      * <li>Logs performance related data for client connections that actually sent data
      * <li>Shuffle sent order for next iteration (for fairness)
@@ -105,20 +105,26 @@ public class Feeder implements EventHandler<Message> {
      **/
     @Override
     public void onEvent(Message message, long l, boolean b) throws Exception {
-        ClientConnection cc;
+        monMessage = message;
+        if (message.type== Message.TYPE.SNAPSHOT) {
+            monTimeout = snapshotWriteTimeout;
+        } else {
+            monTimeout = writeTimeout;
+        }
 
         for (int i=0; i< maxConnCount; i++){
             clients[pubOrder[i]].sendData(message);
         }
 
         for (int i=0; i< maxConnCount; i++){
-            cc = clients[pubOrder[i]];
+            ClientConnection cc = clients[pubOrder[i]];
             if (cc.getSentSize()>0) {
                 eventCollector.onPublishStats(message, cc);
             }
         }
 
         shuffle();
+        monMessage = null;
     }
 
     public final Publisher getPublisher(){
@@ -130,21 +136,14 @@ public class Feeder implements EventHandler<Message> {
     }
 
     public final ClientConnection getMonConnection() {
-        return monConnection;
+        return monConnection.get();
     }
 
-    public final Message.TYPE getMonMessageType(){
-        return monMessageType;
+    public final Message getMonMessage(){
+        return monMessage;
     }
 
-    //todo refactor and remove..
     public final long getMonitorWriteTimeout(){
-        try {
-            if (monMessageType != null && monMessageType == Message.TYPE.SNAPSHOT) {
-                return snapshotWriteTimeout;
-            } else return writeTimeout;
-        } catch (Exception e) {
-        }
-        return writeTimeout;
+        return monTimeout;
     }
 }

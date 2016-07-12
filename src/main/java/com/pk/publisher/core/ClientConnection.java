@@ -81,17 +81,19 @@ public class ClientConnection {
     }
 
     private boolean send(Message msg) {
-        feeder.monMessageType = msg.type;
         startTimeNano = System.nanoTime();
         try {
-            feeder.monConnection = this;
-            if (shouldAddHeader) {
-                sentSize = header.addHeaderAndWrite(stream, msg, msgSequenceId);
-            } else {
-                sentSize = msg.length-msg.offset;
-                stream.write(msg.buffer, msg.offset, sentSize);
+            feeder.monConnection.lazySet(this);
+            try {
+                if (shouldAddHeader) {
+                    sentSize = header.addHeaderAndWrite(stream, msg, msgSequenceId);
+                } else {
+                    sentSize = msg.length-msg.offset;
+                    stream.write(msg.buffer, msg.offset, sentSize);
+                }
+            } finally {
+                feeder.monConnection.lazySet(null);
             }
-            feeder.monConnection = null;
             totalSent += sentSize;
             finishTimeNano = System.nanoTime();
             finishTime = System.currentTimeMillis();
@@ -102,9 +104,6 @@ public class ClientConnection {
             state.set(STATE.AVAILABLE);
             eventEmitter.onConnectionWriteError(this, mData, e);
             return false;
-        } finally {
-            feeder.monConnection = null;
-            feeder.monMessageType = null;
         }
     }
 

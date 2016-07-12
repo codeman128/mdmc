@@ -61,10 +61,10 @@ public class EventCollectorStub implements IEventCollector {
     }
 
     @Override
-    public void onMonitorWriteTimeout(ClientConnection clientConnection, long timeNano, long timeout, Message.TYPE msgType) {
+    public void onMonitorWriteTimeout(ClientConnection clientConnection, long timeNano, long timeout, Message msg) {
         String msgName = "NULL";
-        if (msgType!=null) msgName = msgType.name();
-        System.out.println("Monitor - write timeout detected, stale for "+timeNano+" expected "+timeout+" when publishing "+msgName);
+        if (msg.type!=null) msgName = msg.type.name();
+        System.out.println("Monitor - write timeout detected, stale for "+timeNano+" expected "+timeout+" when publishing "+msg.type);
     }
 
     @Override
@@ -81,6 +81,7 @@ public class EventCollectorStub implements IEventCollector {
     @Override
     public void onPublishStats(Message message, ClientConnection cc) {
         ConnectionMetadata cmd = cc.getMetadata();
+        //if (cmd == null) return;
         /**/
         System.out.println((new Date(message.eventTime)).toString()+ ", " +                            // arb time with ms
                            cc.getFeeder().getId()+"_"+cc.getId()+", " +                                 // feeder + connection id
