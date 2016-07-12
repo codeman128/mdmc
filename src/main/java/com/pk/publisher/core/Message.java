@@ -6,13 +6,19 @@ package com.pk.publisher.core;
 public class Message {
     public enum TYPE {UNKNOWN(0), SNAPSHOT(1), UPDATE(2), HEARTBEAT(3);
         final int id;
+        final byte[] byteName;
 
         TYPE(int id) {
             this.id = id;
+            byteName = name().getBytes();
         }
 
-        public int getId(){
+        public final int getId(){
             return id;
+        }
+
+        public final byte[] getName(){
+            return byteName;
         }
 
     }
@@ -42,7 +48,7 @@ public class Message {
         return buffer;
     }
 
-    public void init(long dSequence) {
+    public final void init(long dSequence) {
         type = TYPE.UNKNOWN;
         this.dSequence = dSequence;
         length = 0;
@@ -52,7 +58,7 @@ public class Message {
         publishNano = 0;
     }
 
-    public long getDSequence(){
+    public final long getDSequence(){
         return dSequence;
     }
 
