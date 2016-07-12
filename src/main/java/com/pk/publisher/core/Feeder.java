@@ -23,10 +23,10 @@ public class Feeder implements EventHandler<Message> {
     ClientConnection monConnection;
     Message.TYPE monMessageType;
 
-    private long statSigma;
-    private long statCounter;
-    private long statMin;
-    private long statMax;
+//    private long statSigma;
+//    private long statCounter;
+//    private long statMin;
+//    private long statMax;
 
 
     private Feeder(){
@@ -74,7 +74,8 @@ public class Feeder implements EventHandler<Message> {
         }
     }
 
-    public int countAvailable(){
+    /** @return number of available session slots feeder can currently support */
+    public final int countAvailable(){
         int counter = 0;
         for (int i=0; i<clients.length; i++) {
             if (clients[i].getState() == ClientConnection.STATE.AVAILABLE) {
@@ -84,7 +85,8 @@ public class Feeder implements EventHandler<Message> {
         return counter;
     }
 
-    public ClientConnection getFirstAvailable(){
+    /** @return first available session slots */
+    public final ClientConnection getFirstAvailable(){
         for (int i=0; i<clients.length; i++) {
             if (clients[i].getState() == ClientConnection.STATE.AVAILABLE) {
                 return clients[i];
@@ -93,41 +95,33 @@ public class Feeder implements EventHandler<Message> {
         return null;
     }
 
+    /**
+     * Disruptor Event Handler
+     * <ul>
+     * <li>Publish data to the clients
+     * <li>Logs performance related data for client connections that actually sent data
+     * <li>Shuffle sent order for next iteration (for fairness)
+     * </ul>
+     **/
     @Override
     public void onEvent(Message message, long l, boolean b) throws Exception {
-        for (int i=0; i< maxConnCount; i++){
-            monConnection = clients[pubOrder[i]]; //todo to move into send
-            monConnection.sendData(message);
-        }
-        monConnection = null;
+        ClientConnection cc;
 
         for (int i=0; i< maxConnCount; i++){
-            ClientConnection cc = clients[pubOrder[i]];
+            clients[pubOrder[i]].sendData(message);
+        }
+
+        for (int i=0; i< maxConnCount; i++){
+            cc = clients[pubOrder[i]];
             if (cc.getSentSize()>0) {
                 eventCollector.onPublishStats(message, cc);
             }
         }
 
-        //debug --------------------------------------------
-        /*
-        long delta = System.nanoTime() - message.eventTime;
-        statMin = Math.min(statMin, delta);
-        statMax = Math.max(statMax, delta);
-        statSigma += delta;
-        statCounter++;
-        if (statCounter>30) {
-            System.out.println("Ave: ["+(double)statSigma/(statCounter*1000000)+"] Min: ["+(double)statMin/1000000+"] Max: ["+(double)statMax/1000000+"]");
-            statMax = 0;
-            statMin = 0;
-            statCounter = 0;
-            statSigma = 0;
-        }
-           */
-        //--------------------------------------------------
         shuffle();
     }
 
-    public Publisher getPublisher(){
+    public final Publisher getPublisher(){
         return publisher;
     }
 
@@ -135,7 +129,7 @@ public class Feeder implements EventHandler<Message> {
         return id;
     }
 
-    public ClientConnection getMonConnection() {
+    public final ClientConnection getMonConnection() {
         return monConnection;
     }
 
@@ -143,9 +137,9 @@ public class Feeder implements EventHandler<Message> {
         return monMessageType;
     }
 
+    //todo refactor and remove..
     public final long getMonitorWriteTimeout(){
         try {
-            //System.out.println(monMessageType.name()+ " "+snapshotWriteTimeout);
             if (monMessageType != null && monMessageType == Message.TYPE.SNAPSHOT) {
                 return snapshotWriteTimeout;
             } else return writeTimeout;

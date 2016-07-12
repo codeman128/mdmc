@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Created by PavelK on 5/21/2016.
  */
-//todo this is a session really, refactor latter
+//todo this is a session really, refactor(rename) latter
 public class ClientConnection {
     public enum STATE {UNKNOWN, AVAILABLE, MARKED, INIT, ASSIGNED}
     private final AtomicReference<STATE> state = new AtomicReference<>(STATE.UNKNOWN);
@@ -84,12 +84,14 @@ public class ClientConnection {
         feeder.monMessageType = msg.type;
         startTimeNano = System.nanoTime();
         try {
+            feeder.monConnection = this;
             if (shouldAddHeader) {
                 sentSize = header.addHeaderAndWrite(stream, msg, msgSequenceId);
             } else {
                 sentSize = msg.length-msg.offset;
                 stream.write(msg.buffer, msg.offset, sentSize);
             }
+            feeder.monConnection = null;
             totalSent += sentSize;
             finishTimeNano = System.nanoTime();
             finishTime = System.currentTimeMillis();
@@ -101,6 +103,7 @@ public class ClientConnection {
             eventEmitter.onConnectionWriteError(this, mData, e);
             return false;
         } finally {
+            feeder.monConnection = null;
             feeder.monMessageType = null;
         }
     }
@@ -190,11 +193,17 @@ public class ClientConnection {
         return finishTime;
     }
 
+    /**
+     * @return number of bytes sent in last message
+     **/
     public final int getSentSize() {
         return sentSize;
     }
 
-    public  final long getTotalSent(){
+    /**
+     * @return number of bytes sent in current session
+     **/
+    public final long getTotalSent(){
         return totalSent;
     }
 }
