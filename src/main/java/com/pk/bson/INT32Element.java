@@ -6,9 +6,13 @@ package com.pk.bson;
 public class INT32Element extends Element {
     int value;
 
-    INT32Element(ElementName name, int value) {
+    INT32Element(ElementName name) {
         super(name);
-        this.value = value;
+    }
+
+    @Override
+    void read(BsonStream stream) {
+        setValue(stream.getINT32());
     }
 
     public int getValue() {

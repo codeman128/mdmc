@@ -16,4 +16,6 @@ public abstract class Element {
         return name;
     }
 
+    abstract void read(BsonStream stream);
+
 }

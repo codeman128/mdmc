@@ -8,6 +8,7 @@ import java.util.Map;
  */
 public class Document extends Element{
     private final Map<ElementName, Element> elements = new HashMap<>();
+    private final ElementName locator = new ElementName(200); //200 should be good enough
 
     Document(ElementName name) {
         super(name);
@@ -17,46 +18,34 @@ public class Document extends Element{
         return elements;
     }
 
-    public INT32Element addInt32(byte[] name, int nameOffset, int nameLength, int value){
-        ElementName elementName = new ElementName(name, nameOffset, nameLength);
-        INT32Element element = new INT32Element(elementName, value);
-        elements.put(elementName, element);
-        return element;
+    private Element getElement(byte[] name, int nameOffset, int nameLength) {
+        locator.setName(name, nameOffset, nameLength);
+        return elements.get(locator);
     }
 
-    public StringElement addString(byte[] name, int nameOffset, int nameLength) {
-        ElementName elementName = new ElementName(name, nameOffset, nameLength);
-        StringElement element = new StringElement(elementName);
-        elements.put(elementName, element);
-        return element;
-    }
-
-    public Document addDocument(byte[] name, int nameOffset, int nameLength) {
-        ElementName elementName = new ElementName(name, nameOffset, nameLength);
-        Document doc = new Document(elementName);
-        elements.put(elementName, doc);
-        return doc;
+    private Element readElement(BSON.TYPE type, BsonStream stream){
+        int nameLength = stream.readKey();
+        Element e = getElement(stream.getBuffer(), 0, nameLength);
+        if (e==null) {
+            ElementName elementName = new ElementName(stream.getBuffer(), 0, nameLength);
+            e = ElementFactory.createElement(type, elementName);
+            elements.put(elementName, e);
+        }
+        e.read(stream);
+        return e;
     }
 
     void read(BsonStream stream) {
         int size = stream.getINT32();
+        BSON.TYPE type;
         while(true) {
-            switch (stream.getType()) {
-                case EOO: {
-                    return;
-                }
-                case STRING: {
-                    StringElement se = addString(stream.getBuffer(), 0, stream.readKey());
-                    se.setValue(stream.getBuffer(), 0, stream.readString());
-                    break;
-                }
-                case  EMBEDDED: {
-                    Document doc = addDocument(stream.getBuffer(), 0, stream.readKey());
-                    doc.read(stream);
-                    break;
-                }
-                case INT32: {
-                    addInt32(stream.getBuffer(), 0, stream.readKey(), stream.getINT32());
+            type = stream.getType();
+            switch (type) {
+                case EOO: return;
+                case STRING:
+                case INT32:
+                case EMBEDDED: {
+                    readElement(type, stream);
                     break;
                 }
             }

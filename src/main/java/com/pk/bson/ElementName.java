@@ -9,6 +9,11 @@ public class ElementName {
     private int length;
     private int hash;
 
+    ElementName(int length){
+        bytes = new byte[length];
+        length = 0;
+    }
+
     public ElementName(String name){
         bytes = name.getBytes();
         length = bytes.length;
@@ -17,9 +22,7 @@ public class ElementName {
 
     public ElementName(byte[] name, int offset, int length){
         bytes = new byte[length];
-        System.arraycopy(name, offset, bytes, 0, length);
-        this.length = length;
-        hashCode();
+        setName(name, offset, length);
     }
 
     public int hashCode() {
@@ -30,6 +33,12 @@ public class ElementName {
             }
         }
         return hash;
+    }
+
+    void setName(byte[] name, int offset, int length) {
+        System.arraycopy(name, offset, bytes, 0, length);
+        this.length = length;
+        hashCode();
     }
 
     public String toString(){

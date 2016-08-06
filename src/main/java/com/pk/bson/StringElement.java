@@ -11,6 +11,11 @@ public class StringElement extends Element {
         super(name);
     }
 
+    @Override
+    void read(BsonStream stream) {
+        setValue(stream.getBuffer(), 0, stream.readString());
+    }
+
     public void setValue(byte[] value, int valOffset, int valLength) {
         if (this.value==null || this.value.length<valLength) {
             this.value = new byte[valLength];
