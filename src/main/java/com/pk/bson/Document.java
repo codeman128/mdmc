@@ -14,7 +14,7 @@ public class Document extends Element{
         super(name);
     }
 
-    public Map<ElementName, Element> getElements(){
+    private Map<ElementName, Element> getElements(){
         return elements;
     }
 
@@ -50,7 +50,13 @@ public class Document extends Element{
                 }
             }
         }
-
     }
+
+    public int getInt32(MutableString mStr){
+        return 0;
+    }
+
+
+
 
 }
