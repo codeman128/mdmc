@@ -6,7 +6,7 @@ package com.pk.bson;
 public class INT32Element extends Element {
     int value;
 
-    INT32Element(ElementName name) {
+    INT32Element(MutableString name) {
         super(name);
     }
 

@@ -5,7 +5,7 @@ package com.pk.bson;
  */
 public class ElementFactory {
 
-    static public Element createElement(BSON.TYPE type, ElementName name){
+    static public Element createElement(BSON.TYPE type, MutableString name){
         switch (type){
             case STRING   : return new StringElement(name);
             case INT32    : return new INT32Element(name);

@@ -7,19 +7,19 @@ import java.util.Map;
  * Created by pkapovski on 8/4/2016.
  */
 public class Document extends Element{
-    private final Map<ElementName, Element> elements = new HashMap<>();
-    private final ElementName locator = new ElementName(200); //200 should be good enough
+    private final Map<MutableString, Element> elements = new HashMap<>();
+    private final MutableString locator = new MutableString(200); //200 should be good enough
 
-    Document(ElementName name) {
+    Document(MutableString name) {
         super(name);
     }
 
-    private Map<ElementName, Element> getElements(){
+    private Map<MutableString, Element> getElements(){
         return elements;
     }
 
     private Element getElement(byte[] name, int nameOffset, int nameLength) {
-        locator.setName(name, nameOffset, nameLength);
+        locator.set(name, nameOffset, nameLength);
         return elements.get(locator);
     }
 
@@ -27,7 +27,7 @@ public class Document extends Element{
         int nameLength = stream.readKey();
         Element e = getElement(stream.getBuffer(), 0, nameLength);
         if (e==null) {
-            ElementName elementName = new ElementName(stream.getBuffer(), 0, nameLength);
+            MutableString elementName = new MutableString(stream.getBuffer(), 0, nameLength);
             e = ElementFactory.createElement(type, elementName);
             elements.put(elementName, e);
         }

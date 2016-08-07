@@ -4,15 +4,15 @@ package com.pk.bson;
  * Created by pkapovski on 8/4/2016.
  */
 public abstract class Element {
-    private ElementName name;
+    private MutableString name;
 
     private Element(){}
 
-    Element(ElementName name) {
+    Element(MutableString name) {
         this.name = name;
     }
 
-    public ElementName getName(){
+    public MutableString getName(){
         return name;
     }
 

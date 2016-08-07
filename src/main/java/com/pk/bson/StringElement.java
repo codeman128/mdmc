@@ -7,7 +7,7 @@ public class StringElement extends Element {
     private byte[] value;
     private int length;
 
-    StringElement(ElementName name) {
+    StringElement(MutableString name) {
         super(name);
     }
 
