@@ -27,20 +27,15 @@ public class BsonStream {
         return length;
     }
 
-    public final int readString() {
+    public final int readString(MutableString mStr) {
         int length = bb.getInt()-1;
-        bb.get(buf, 0, length);
+        bb.get(mStr.getBuffer(), 0, length);
         bb.get();
-        System.out.println(new String(buf,0,length));
+        mStr.setOffset(0);
+        mStr.setLength(length);
+        System.out.println(mStr);
         return length;
     }
-
-//    public final int readString2(byte[] strBuffer) {
-//        int length = bb.getInt()-1;
-//        System.arraycopy(bb.array(), bb.arrayOffset(), buf, 0, length);
-//        bb.get(); //read Null termination
-//        return length;
-//    }
 
     public final int getINT32(){
        return bb.getInt();
@@ -53,12 +48,9 @@ public class BsonStream {
             case BSON.T_STRING: return BSON.TYPE.STRING;
             case BSON.T_OBJECT: return BSON.TYPE.EMBEDDED;
             case BSON.T_INT32:  return BSON.TYPE.INT32;
-
         }
         return BSON.TYPE.UNDEFINED;
     }
-
-
 
     byte[] getBuffer(){
         return buf;

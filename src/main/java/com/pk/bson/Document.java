@@ -53,7 +53,12 @@ public class Document extends Element{
     }
 
     public int getInt32(MutableString mStr){
-        return 0;
+        INT32Element e = (INT32Element)elements.get(mStr);
+        if (e!=null) {
+            return e.getValue();
+        } else {
+            return 0;
+        }
     }
 
 
