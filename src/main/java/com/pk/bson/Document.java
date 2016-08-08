@@ -15,21 +15,25 @@ public class Document extends Element{
     }
 
 
-    private Element readElement(BSON.TYPE type, BsonStream stream){
-        stream.readKey(locator);
-        Element e = elements.get(locator);
+    private Element getElement(BSON.TYPE type, MutableString key){
+        Element e = elements.get(key);
         if (e==null) {
-            MutableString elementName = new MutableString(locator);
+            MutableString elementName = new MutableString(key);
             e = ElementFactory.createElement(type, elementName);
             elements.put(elementName, e);
         }
+        return e;
+    }
+
+    private Element readElement(BSON.TYPE type, BsonStream stream){
+        stream.readKey(locator);
+        Element e = getElement(type, locator);
         e.read(stream);
         return e;
     }
 
     void read(BsonStream stream) {
         int size = stream.getINT32();
-        //System.out.println("Start reading Object: size:"+size+ " at position "+stream.position());
         BSON.TYPE type;
         while(true) {
             type = stream.getType();
@@ -56,13 +60,23 @@ public class Document extends Element{
         }
     }
 
-    public  MutableString getString(MutableString key) {
+    public void setInt32(MutableString key, int value) {
+        INT32Element e = (INT32Element) getElement(BSON.TYPE.INT32, key);
+        e.setValue(value);
+    }
+
+    public MutableString getString(MutableString key) {
         StringElement e = (StringElement)elements.get(key);
         if (e!=null) {
             return e.getValue();
         } else {
             return null;
         }
+    }
+
+    public void setString(MutableString key, MutableString value) {
+        StringElement e = (StringElement) getElement(BSON.TYPE.STRING, key);
+        e.setValue(value);
     }
 
 

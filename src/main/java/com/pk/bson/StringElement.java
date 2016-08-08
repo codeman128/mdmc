@@ -23,4 +23,7 @@ public class StringElement extends Element {
         return "\""+value.toString()+"\"";
     }
 
+    public void setValue(MutableString value) {
+        this.value.copyFrom(value);
+    }
 }

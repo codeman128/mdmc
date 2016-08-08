@@ -16,8 +16,9 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
         Path path;
-        path = Paths.get("D:\\data\\gd\\workspace\\depot\\MarketData\\mis\\mdmc_ssh\\src\\test\\bson\\test.bson");
+        //path = Paths.get("D:\\data\\gd\\workspace\\depot\\MarketData\\mis\\mdmc_ssh\\src\\test\\bson\\test.bson");
         //path = Paths.get("E:\\gdrive\\projects\\git\\mdmc\\src\\test\\bson\\test.bson");
+        path = Paths.get("E:\\gdrive\\projects\\git\\mdmc\\src\\test\\bson\\bson2.bson");
 
 
         byte[] buffer = Files.readAllBytes(path);
@@ -48,6 +49,8 @@ public class Test {
         System.out.println("finished: " + doc.toString());
         System.out.println("get int [number]: " + doc.getInt32(new MutableString("number")));
         System.out.println("get string [string2]: "+doc.getString(new MutableString("string2")));
+        doc.setInt32(new MutableString("number-3"), 557);
+        doc.setString(new MutableString("name"), new MutableString("test324"));
 
         System.out.printf("\n\n\n");
         bb.position(0);
