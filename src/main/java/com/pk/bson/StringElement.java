@@ -4,7 +4,7 @@ package com.pk.bson;
  * Created by pkapovski on 8/4/2016.
  */
 public class StringElement extends Element {
-    private MutableString mStr = new MutableString(200);
+    private MutableString value = new MutableString(200);
 
     StringElement(MutableString name) {
         super(name);
@@ -12,15 +12,15 @@ public class StringElement extends Element {
 
     @Override
     void read(BsonStream stream) {
-        stream.readString(mStr);
+        stream.readString(value);
     }
 
     public MutableString getValue() {
-        return mStr;
+        return value;
     }
 
     public String toString(){
-        return mStr.toString();
+        return "\""+value.toString()+"\"";
     }
 
 }

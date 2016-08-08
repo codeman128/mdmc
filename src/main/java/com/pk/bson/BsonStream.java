@@ -19,22 +19,21 @@ public class BsonStream {
         bb.order(ByteOrder.LITTLE_ENDIAN);
     }
 
-    public final int readKey() {
+    public final void readKey(MutableString mStr) {
         int length = -1;
+        mStr.setOffset(0);
         while (true) {
-            if ((buf[++length] = bb.get())==0) break;
+            if ((mStr.getBuffer()[++length] = bb.get())==0) break;
         }
-        return length;
+        mStr.setLength(length);
     }
 
-    public final int readString(MutableString mStr) {
+    public final void readString(MutableString mStr) {
         int length = bb.getInt()-1;
         bb.get(mStr.getBuffer(), 0, length);
         bb.get();
         mStr.setOffset(0);
         mStr.setLength(length);
-        System.out.println(mStr);
-        return length;
     }
 
     public final int getINT32(){
@@ -54,5 +53,9 @@ public class BsonStream {
 
     byte[] getBuffer(){
         return buf;
+    }
+
+    public int position() {
+        return bb.position();
     }
 }

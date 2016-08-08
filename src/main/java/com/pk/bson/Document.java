@@ -14,20 +14,12 @@ public class Document extends Element{
         super(name);
     }
 
-    private Map<MutableString, Element> getElements(){
-        return elements;
-    }
-
-    private Element getElement(byte[] name, int nameOffset, int nameLength) {
-        locator.set(name, nameOffset, nameLength);
-        return elements.get(locator);
-    }
 
     private Element readElement(BSON.TYPE type, BsonStream stream){
-        int nameLength = stream.readKey();
-        Element e = getElement(stream.getBuffer(), 0, nameLength);
+        stream.readKey(locator);
+        Element e = elements.get(locator);
         if (e==null) {
-            MutableString elementName = new MutableString(stream.getBuffer(), 0, nameLength);
+            MutableString elementName = new MutableString(locator);
             e = ElementFactory.createElement(type, elementName);
             elements.put(elementName, e);
         }
@@ -37,11 +29,14 @@ public class Document extends Element{
 
     void read(BsonStream stream) {
         int size = stream.getINT32();
+        //System.out.println("Start reading Object: size:"+size+ " at position "+stream.position());
         BSON.TYPE type;
         while(true) {
             type = stream.getType();
             switch (type) {
-                case EOO: return;
+                case EOO: {
+                    return;
+                }
                 case STRING:
                 case INT32:
                 case EMBEDDED: {
@@ -62,6 +57,30 @@ public class Document extends Element{
     }
 
 
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+
+        boolean isFirst = true;
+        for (Map.Entry<MutableString, Element> entry : elements.entrySet()) {
+
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                sb.append(",");
+            }
+
+            MutableString key = entry.getKey();
+            Object value = entry.getValue();
+            sb.append("\"");
+            sb.append(key);
+            sb.append("\":");
+            sb.append(value);
+        }
+
+        sb.append("}");
+        return sb.toString();
+    }
 
 
 }

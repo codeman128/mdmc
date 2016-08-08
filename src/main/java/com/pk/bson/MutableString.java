@@ -14,6 +14,11 @@ public class MutableString {
         this.length = 0;
     }
 
+    public MutableString(MutableString mStr){
+        buffer = new byte[mStr.length];
+        set(mStr.buffer, mStr.offset, mStr.length);
+    }
+
     public MutableString(byte[] buffer, int offset, int length){
         set(buffer, offset, length);
     }
@@ -36,13 +41,15 @@ public class MutableString {
     }
 
     public int hashCode() {
-        if (buffer!= null && hash == 0 && length > 0) {
-            hash = 1;
-            for (int i=0; i<length; i++) {
-                hash = 31*hash + buffer[i];
-            }
-        } else {
-            hash = 0;
+        if (buffer== null || length<=0) {
+            hash =0;
+            return hash;
+        }
+
+        hash = 1;
+        for (int i=0; i<length; i++) {
+            hash = 31*hash + buffer[i];
+
         }
         return hash;
     }
@@ -95,7 +102,7 @@ public class MutableString {
         return false;
     }
 
-    public void cloneFrom(MutableString source) { //please note - not allows growth
+    public void copyFrom(MutableString source) { //please note - not allows growth
         offset = 0;
         length = source.length;
         System.arraycopy(source.buffer, source.offset, buffer, offset, length);
