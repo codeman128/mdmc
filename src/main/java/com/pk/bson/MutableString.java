@@ -16,7 +16,7 @@ public class MutableString {
 
     public MutableString(MutableString mStr){
         buffer = new byte[mStr.length];
-        set(mStr.buffer, mStr.offset, mStr.length);
+        copyFrom(mStr);
     }
 
     public MutableString(byte[] buffer, int offset, int length){

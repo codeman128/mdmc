@@ -1,13 +1,11 @@
 package com.pk.bson;
 
-import java.awt.*;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by pkapovski on 8/4/2016.
@@ -47,8 +45,11 @@ public class Test {
 
         Document doc = new Document(null);
         doc.read(bbs);
-        System.out.println("finished: " + doc.toString() + "\n\n\n");
+        System.out.println("finished: " + doc.toString());
+        System.out.println("get int [number]: " + doc.getInt32(new MutableString("number")));
+        System.out.println("get string [string2]: "+doc.getString(new MutableString("string2")));
 
+        System.out.printf("\n\n\n");
         bb.position(0);
         doc.read(bbs);
         System.out.println("finished: "+doc.toString());

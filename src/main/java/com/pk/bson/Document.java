@@ -47,12 +47,21 @@ public class Document extends Element{
         }
     }
 
-    public int getInt32(MutableString mStr){
-        INT32Element e = (INT32Element)elements.get(mStr);
+    public int getInt32(MutableString key){
+        INT32Element e = (INT32Element)elements.get(key);
         if (e!=null) {
             return e.getValue();
         } else {
             return 0;
+        }
+    }
+
+    public  MutableString getString(MutableString key) {
+        StringElement e = (StringElement)elements.get(key);
+        if (e!=null) {
+            return e.getValue();
+        } else {
+            return null;
         }
     }
 
