@@ -12,7 +12,7 @@ public class INT32Element extends Element {
 
     @Override
     void read(BsonStream stream) {
-        setValue(stream.getINT32());
+        setValue(stream.getInt32());
     }
 
     public int getValue() {

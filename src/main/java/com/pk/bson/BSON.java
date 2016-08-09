@@ -7,6 +7,7 @@ public class BSON {
     static final byte T_EOO    = 0x00;
     static final byte T_STRING = 0x02;
     static final byte T_OBJECT = 0x03;
+    static final byte T_ARRAY  = 0x04;
     static final byte T_INT32  = 0x10;
 
 
@@ -16,7 +17,7 @@ public class BSON {
         DOUBLE(1),
         STRING(T_STRING),
         EMBEDDED(T_OBJECT),
-        ARRAY(4),
+        ARRAY(T_ARRAY),
         BINARY(5),
         UNDEFINED(6),
         OBJECT_ID(7),

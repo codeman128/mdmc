@@ -10,6 +10,7 @@ public class ElementFactory {
             case STRING   : return new StringElement(name);
             case INT32    : return new INT32Element(name);
             case EMBEDDED : return new Document(name);
+            case ARRAY    : return new Array(name);
             default       : return null;
         }
     }

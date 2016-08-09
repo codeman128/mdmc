@@ -6,16 +6,14 @@ import java.util.Map;
 /**
  * Created by pkapovski on 8/4/2016.
  */
-public class Document extends Element{
+public class Document extends ContainerElement{
     private final Map<MutableString, Element> elements = new HashMap<>();
-    private final MutableString locator = new MutableString(200); //200 should be good enough
 
     Document(MutableString name) {
         super(name);
     }
 
-
-    private Element getElement(BSON.TYPE type, MutableString key){
+    protected Element getElement(BSON.TYPE type, MutableString key){
         Element e = elements.get(key);
         if (e==null) {
             MutableString elementName = new MutableString(key);
@@ -25,30 +23,11 @@ public class Document extends Element{
         return e;
     }
 
-    private Element readElement(BSON.TYPE type, BsonStream stream){
+    protected Element readElement(BSON.TYPE type, BsonStream stream){
         stream.readKey(locator);
         Element e = getElement(type, locator);
         e.read(stream);
         return e;
-    }
-
-    void read(BsonStream stream) {
-        int size = stream.getINT32();
-        BSON.TYPE type;
-        while(true) {
-            type = stream.getType();
-            switch (type) {
-                case EOO: {
-                    return;
-                }
-                case STRING:
-                case INT32:
-                case EMBEDDED: {
-                    readElement(type, stream);
-                    break;
-                }
-            }
-        }
     }
 
     public int getInt32(MutableString key){

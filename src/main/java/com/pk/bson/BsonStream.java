@@ -36,7 +36,7 @@ public class BsonStream {
         mStr.setLength(length);
     }
 
-    public final int getINT32(){
+    public final int getInt32(){
        return bb.getInt();
     }
 
@@ -46,6 +46,7 @@ public class BsonStream {
             case BSON.T_EOO:    return BSON.TYPE.EOO;
             case BSON.T_STRING: return BSON.TYPE.STRING;
             case BSON.T_OBJECT: return BSON.TYPE.EMBEDDED;
+            case BSON.T_ARRAY:  return BSON.TYPE.ARRAY;
             case BSON.T_INT32:  return BSON.TYPE.INT32;
         }
         return BSON.TYPE.UNDEFINED;
