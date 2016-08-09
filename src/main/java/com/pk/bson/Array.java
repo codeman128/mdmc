@@ -16,8 +16,8 @@ public class Array extends ContainerElement{
     @Override
     protected Element readElement(BSON.TYPE type, BsonStream stream) {
         stream.readKey(locator);
-        MutableString elementName = new MutableString(locator);
-        Element e = ElementFactory.createElement(type, elementName);
+        //MutableString elementName = new MutableString(locator);   no need to store it..
+        Element e = ElementFactory.createElement(type, null/*elementName*/);
         list.add(e);
         e.read(stream);
         return e;
