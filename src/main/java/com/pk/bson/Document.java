@@ -1,33 +1,41 @@
 package com.pk.bson;
 
+import com.pk.bson.elements.ContainerElement;
+import com.pk.bson.elements.Element;
+import com.pk.bson.elements.INT32Element;
+import com.pk.bson.elements.StringElement;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by pkapovski on 8/4/2016.
  */
-public class Document extends ContainerElement{
+public class Document extends ContainerElement {
     private final Map<MutableString, Element> elements = new HashMap<>();
 
-    Document(MutableString name) {
+    public Document(MutableString name) {
         super(name);
     }
 
-    protected Element getElement(BSON.TYPE type, MutableString key){
+    public Document(){
+        super(null);
+    }
+
+    protected Element getElement(Element.TYPE type, MutableString key){
         Element e = elements.get(key);
         if (e==null) {
             MutableString elementName = new MutableString(key);
-            e = ElementFactory.createElement(type, elementName);
+            e = Element.createElement(type, elementName);
             elements.put(elementName, e);
         }
         return e;
     }
 
-    protected Element readElement(BSON.TYPE type, BsonStream stream){
-        stream.readKey(locator);
-        Element e = getElement(type, locator);
-        e.read(stream);
-        return e;
+
+    @Override
+    protected void read(BsonStream stream) {
+        super.read(stream);
     }
 
     public int getInt32(MutableString key){
@@ -40,7 +48,7 @@ public class Document extends ContainerElement{
     }
 
     public void setInt32(MutableString key, int value) {
-        INT32Element e = (INT32Element) getElement(BSON.TYPE.INT32, key);
+        INT32Element e = (INT32Element) getElement(Element.TYPE.INT32, key);
         e.setValue(value);
     }
 
@@ -54,7 +62,7 @@ public class Document extends ContainerElement{
     }
 
     public void setString(MutableString key, MutableString value) {
-        StringElement e = (StringElement) getElement(BSON.TYPE.STRING, key);
+        StringElement e = (StringElement) getElement(Element.TYPE.STRING, key);
         e.setValue(value);
     }
 

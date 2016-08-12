@@ -1,5 +1,7 @@
 package com.pk.bson;
 
+import com.pk.bson.elements.Element;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -40,16 +42,8 @@ public class BsonStream {
        return bb.getInt();
     }
 
-    public final BSON.TYPE getType(){
-        byte b = bb.get();
-        switch (b) {
-            case BSON.T_EOO:    return BSON.TYPE.EOO;
-            case BSON.T_STRING: return BSON.TYPE.STRING;
-            case BSON.T_OBJECT: return BSON.TYPE.EMBEDDED;
-            case BSON.T_ARRAY:  return BSON.TYPE.ARRAY;
-            case BSON.T_INT32:  return BSON.TYPE.INT32;
-        }
-        return BSON.TYPE.UNDEFINED;
+    public final Element.TYPE readNextType(){
+        return Element.getType(bb.get());
     }
 
     byte[] getBuffer(){

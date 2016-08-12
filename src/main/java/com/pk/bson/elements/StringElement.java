@@ -1,4 +1,7 @@
-package com.pk.bson;
+package com.pk.bson.elements;
+
+import com.pk.bson.BsonStream;
+import com.pk.bson.MutableString;
 
 /**
  * Created by pkapovski on 8/4/2016.
@@ -11,7 +14,7 @@ public class StringElement extends Element {
     }
 
     @Override
-    void read(BsonStream stream) {
+    protected void read(BsonStream stream) {
         stream.readString(value);
     }
 
