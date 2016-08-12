@@ -34,10 +34,12 @@ public abstract class ContainerElement extends Element {
                     //System.out.println("Exited at "+stream.position()+" of "+size);
                     return;
                 }
+                case DOUBLE:
                 case STRING:
                 case INT32:
                 case EMBEDDED:
-                case ARRAY: {
+                case ARRAY:
+                case BOOLEAN:{
                     readElement(type, stream);
                     break;
                 }

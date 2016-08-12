@@ -18,7 +18,7 @@ public class Test {
         Path path;
         //path = Paths.get("D:\\data\\gd\\workspace\\depot\\MarketData\\mis\\mdmc_ssh\\src\\test\\bson\\test.bson");
         //path = Paths.get("E:\\gdrive\\projects\\git\\mdmc\\src\\test\\bson\\test.bson");
-        path = Paths.get("E:\\gdrive\\projects\\git\\mdmc\\src\\test\\bson\\bson2.bson");
+        path = Paths.get("E:\\gdrive\\projects\\git\\mdmc\\src\\test\\bson\\test5.bson");
 
 
         byte[] buffer = Files.readAllBytes(path);

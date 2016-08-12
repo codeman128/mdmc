@@ -53,4 +53,14 @@ public class BsonStream {
     public int position() {
         return bb.position();
     }
+
+    public double getDouble() {
+        return bb.getDouble();
+    }
+
+    public boolean readBoolean(){
+        byte b = bb.get();
+        return (b == 1);
+
+    }
 }

@@ -28,10 +28,8 @@ public abstract class Element {
         UNDEFINED(6),
 //        OBJECT_ID(7),
         BOOLEAN(T_BOOLEAN),
-        //FALSE(0),
-        //TRUE(1),
 //        UTC_DATE_TIME(9),
-        NULL(10),
+        //NULL(10),
 //        REGULAR_EXPRESSION(11),
 //        DB_POINTER(12),
 //        JAVASCRIPT_CODE(13),
@@ -83,11 +81,11 @@ public abstract class Element {
      public static Element createElement(Element.TYPE type, MutableString name) {
         switch (type){
             case STRING   : return new StringElement(name);
-            case INT32    : return new InT32Element(name);
+            case INT32    : return new INT32Element(name);
             case EMBEDDED : return new Document(name);
             case ARRAY    : return new ArrayElement(name);
-            case BOOLEAN  : return null;
-            case DOUBLE   : return null;
+            case BOOLEAN  : return new BooleanElement(name);
+            case DOUBLE   : return new DoubleElement(name);
             default       : return null;
         }
     }
@@ -95,6 +93,7 @@ public abstract class Element {
     public static TYPE getType(byte type) {
         switch (type) {
             case T_EOO     : return TYPE.EOO;
+            case T_DOUBLE  : return TYPE.DOUBLE;
             case T_STRING  : return TYPE.STRING;
             case T_OBJECT  : return TYPE.EMBEDDED;
             case T_ARRAY   : return TYPE.ARRAY;
