@@ -2,7 +2,7 @@ package com.pk.bson;
 
 import com.pk.bson.elements.ContainerElement;
 import com.pk.bson.elements.Element;
-import com.pk.bson.elements.INT32Element;
+import com.pk.bson.elements.InT32Element;
 import com.pk.bson.elements.StringElement;
 
 import java.util.HashMap;
@@ -39,7 +39,7 @@ public class Document extends ContainerElement {
     }
 
     public int getInt32(MutableString key){
-        INT32Element e = (INT32Element)elements.get(key);
+        InT32Element e = (InT32Element)elements.get(key);
         if (e!=null) {
             return e.getValue();
         } else {
@@ -48,7 +48,7 @@ public class Document extends ContainerElement {
     }
 
     public void setInt32(MutableString key, int value) {
-        INT32Element e = (INT32Element) getElement(Element.TYPE.INT32, key);
+        InT32Element e = (InT32Element) getElement(Element.TYPE.INT32, key);
         e.setValue(value);
     }
 

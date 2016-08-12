@@ -83,7 +83,7 @@ public abstract class Element {
      public static Element createElement(Element.TYPE type, MutableString name) {
         switch (type){
             case STRING   : return new StringElement(name);
-            case INT32    : return new INT32Element(name);
+            case INT32    : return new InT32Element(name);
             case EMBEDDED : return new Document(name);
             case ARRAY    : return new ArrayElement(name);
             case BOOLEAN  : return null;
