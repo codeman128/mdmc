@@ -1,6 +1,7 @@
 package com.pk.bson;
 
 import com.pk.bson.elements.Element;
+import com.pk.bson.lang.MutableString;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

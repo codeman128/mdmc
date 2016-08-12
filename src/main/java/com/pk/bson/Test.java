@@ -1,6 +1,9 @@
 package com.pk.bson;
 
 
+import com.pk.bson.lang.StringDictionary;
+import com.pk.bson.lang.MutableString;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
@@ -14,7 +17,24 @@ import java.nio.file.Path;
 
 public class Test {
 
+    protected static void testDictionary(){
+        final String KEY_1 = "test_1";
+        final String KEY_2 = "test_2";
+        StringDictionary dictionary = new StringDictionary();
+        System.out.println("Register " + KEY_1 + " > " + dictionary.key2Id(KEY_1));
+        System.out.println("Register " + KEY_2 + " > " + dictionary.key2Id(KEY_2));
+        System.out.println("Register "+KEY_1+" > "+dictionary.key2Id(KEY_1));
+
+        System.out.println(dictionary);
+
+
+    }
+
     public static void main(String[] args) throws IOException {
+        testDictionary();
+
+
+
         Path path;
         //path = Paths.get("D:\\data\\gd\\workspace\\depot\\MarketData\\mis\\mdmc_ssh\\src\\test\\bson\\test.bson");
         //path = Paths.get("E:\\gdrive\\projects\\git\\mdmc\\src\\test\\bson\\test.bson");

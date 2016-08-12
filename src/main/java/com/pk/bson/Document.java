@@ -4,6 +4,7 @@ import com.pk.bson.elements.ContainerElement;
 import com.pk.bson.elements.Element;
 import com.pk.bson.elements.INT32Element;
 import com.pk.bson.elements.StringElement;
+import com.pk.bson.lang.MutableString;
 
 import java.util.HashMap;
 import java.util.Map;
