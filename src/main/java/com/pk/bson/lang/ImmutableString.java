@@ -22,6 +22,7 @@ public class ImmutableString {
         offset = 0;
         buffer = new byte[length];
         System.arraycopy(source, 0, buffer, 0, length);
+        hashCode();
     }
 
     public int getOffset(){
@@ -43,7 +44,7 @@ public class ImmutableString {
         }
 
         hash = 1;
-        for (int i=0; i<length; i++) {
+        for (int i=offset; i<offset+length; i++) {
             hash = 31*hash + buffer[i];
 
         }
@@ -54,6 +55,7 @@ public class ImmutableString {
         offset = 0;
         length = source.length;
         System.arraycopy(source.buffer, source.offset, buffer, offset, length);
+        hashCode();
     }
 
     public boolean equals(Object anObject) {

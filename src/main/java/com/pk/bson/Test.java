@@ -1,8 +1,9 @@
 package com.pk.bson;
 
 
-import com.pk.bson.lang.StringDictionary;
+import com.pk.bson.elements.RecordCache;
 import com.pk.bson.lang.MutableString;
+import com.pk.bson.lang.StringDictionary;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -17,30 +18,33 @@ import java.nio.file.Path;
 
 public class Test {
 
-    protected static void testDictionary(){
-        final String KEY_1 = "test_1";
-        final String KEY_2 = "test_2";
+    public static void TestDictionary(){
+        System.out.println("Test Dictionary:");
         StringDictionary dictionary = new StringDictionary();
-        System.out.println("Register " + KEY_1 + " > " + dictionary.key2Id(KEY_1));
-        System.out.println("Register " + KEY_2 + " > " + dictionary.key2Id(KEY_2));
-        System.out.println("Register "+KEY_1+" > "+dictionary.key2Id(KEY_1));
+        dictionary.key2Id("one");
+        dictionary.key2Id("two");
+        dictionary.key2Id("three");
+        dictionary.key2Id("one");
+        dictionary.key2Id("two");
+        dictionary.key2Id("test1");
+        dictionary.key2Id("test2");
 
-        System.out.println(dictionary);
+        dictionary.key2Id(new MutableString("one"));
+        dictionary.key2Id(new MutableString("two"));
 
-
+        System.out.println(dictionary + "\n");
     }
 
     public static void main(String[] args) throws IOException {
-        testDictionary();
+        TestDictionary();
 
 
+        StringDictionary dictionary = new StringDictionary();
+        RecordCache cache = new RecordCache(1000);
 
         Path path;
-        //path = Paths.get("D:\\data\\gd\\workspace\\depot\\MarketData\\mis\\mdmc_ssh\\src\\test\\bson\\test.bson");
-        //path = Paths.get("E:\\gdrive\\projects\\git\\mdmc\\src\\test\\bson\\test.bson");
-        path = Paths.get("E:\\gdrive\\projects\\git\\mdmc\\src\\test\\bson\\test5.bson");
-
-
+        path = Paths.get("D:\\data\\gd\\workspace\\depot\\MarketData\\mis\\mdmc_ssh\\src\\test\\bson\\test5.bson");
+        //path = Paths.get("E:\\gdrive\\projects\\git\\mdmc\\src\\test\\bson\\test5.bson");
         byte[] buffer = Files.readAllBytes(path);
 
 //        MutableString mStr;
@@ -64,18 +68,19 @@ public class Test {
         ByteBuffer bb = ByteBuffer.wrap(buffer, 0, buffer.length);
         BsonStream bbs = new BsonStream(bb);
 
-        Document doc = new Document(null);
+        Document doc = new Document(null, dictionary, cache);
         doc.read(bbs);
         System.out.println("finished: " + doc.toString());
         System.out.println("get int [number]: " + doc.getInt32(new MutableString("number")));
-        System.out.println("get string [string2]: "+doc.getString(new MutableString("string2")));
+        System.out.println("get string [string2]: " + doc.getString(new MutableString("string2")));
         doc.setInt32(new MutableString("number-3"), 557);
         doc.setString(new MutableString("name"), new MutableString("test324"));
 
-        System.out.printf("\n\n\n");
-        bb.position(0);
-        doc.read(bbs);
-        System.out.println("finished: "+doc.toString());
+        System.out.println(dictionary);
+        //System.out.printf("\n\n\n");
+        //bb.position(0);
+        //doc.read(bbs);
+        //System.out.println("finished: "+doc.toString());
     }
 
 

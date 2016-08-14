@@ -1,10 +1,8 @@
 package com.pk.bson;
 
-import com.pk.bson.elements.ContainerElement;
-import com.pk.bson.elements.Element;
-import com.pk.bson.elements.INT32Element;
-import com.pk.bson.elements.StringElement;
+import com.pk.bson.elements.*;
 import com.pk.bson.lang.MutableString;
+import com.pk.bson.lang.StringDictionary;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,19 +13,19 @@ import java.util.Map;
 public class Document extends ContainerElement {
     private final Map<MutableString, Element> elements = new HashMap<>();
 
-    public Document(MutableString name) {
-        super(name);
+    public Document(MutableString name, StringDictionary dictionary, RecordCache cache) {
+        super(name, dictionary, cache);
     }
 
-    public Document(){
-        super(null);
+    private Document(){
+        super(null, null, null);
     }
 
     protected Element getElement(Element.TYPE type, MutableString key){
         Element e = elements.get(key);
         if (e==null) {
             MutableString elementName = new MutableString(key);
-            e = Element.createElement(type, elementName);
+            e = Element.createElement(type, elementName, dictionary, records.getCache());
             elements.put(elementName, e);
         }
         return e;
@@ -35,7 +33,7 @@ public class Document extends ContainerElement {
 
 
     @Override
-    protected void read(BsonStream stream) {
+    public void read(BsonStream stream) {
         super.read(stream);
     }
 

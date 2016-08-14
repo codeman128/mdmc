@@ -32,7 +32,7 @@ public class MutableString extends ImmutableString {
         if (length>=0) {
             this.length = length;
         } else this.length = buffer.length;
-        hashCode();
+        hash = hashCode();
     }
 
     public byte[] getBuffer(){
@@ -41,17 +41,17 @@ public class MutableString extends ImmutableString {
 
     public void setBuffer(byte[] buffer){
         this.buffer = buffer;
-        hashCode();
+        hash = hashCode();
     }
 
     public void setOffset(int offset) {
         this.offset = offset;
-        hashCode();
+        hash = hashCode();
     }
 
     public void setLength(int length) {
         this.length = length;
-        hashCode();
+        hash = hashCode();
     }
 
     public void copyFrom(MutableString source) { //please note - not allows growth

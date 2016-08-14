@@ -5,7 +5,9 @@ import com.pk.bson.lang.ImmutableInteger;
 import com.pk.bson.lang.ImmutableString;
 import com.pk.bson.lang.MutableInteger;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -34,6 +36,7 @@ public class StringDictionary {
     }
 
     public ImmutableInteger isExists(ImmutableString key) {
+        System.out.println("isExists: "+key+" "+key2id.get(key)+" ["+key.hash+"]");
         return key2id.get(key);
     }
 
@@ -51,9 +54,17 @@ public class StringDictionary {
         sb.append(counter.get()).append(" entries:\n");
         if (getCount()>0) {
             for (int i=1; i<=counter.get(); i++) {
-                sb.append(i).append(" : ").append(getKey(i)).append("\n");
+                sb.append(i).append(" : [").append(getKey(i)).append("] ["+getKey(i).hash+"]\n");
             }
         }
+
+//        Collection c = key2id.keySet();
+//        Iterator itr = c.iterator();
+//        while (itr.hasNext()) {
+//            Object o = itr.next();
+//            System.out.println(o+" - ["+o.hashCode()+"]");
+//        }
+
         return sb.toString();
     }
 
