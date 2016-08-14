@@ -63,19 +63,6 @@ public abstract class Element {
 //        }
 //    }
 
-    private MutableString name;
-
-    private Element(){}
-
-    protected Element(MutableString name) {
-        this.name = name;
-    }
-
-    public MutableString getName(){
-        return name;
-    }
-
-    protected abstract void read(BsonStream stream);
 
 
     public static TYPE getType(byte type) {

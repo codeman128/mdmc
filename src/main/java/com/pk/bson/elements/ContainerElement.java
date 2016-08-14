@@ -14,13 +14,11 @@ public class ContainerElement extends Element {
     protected final StringDictionary dictionary;
 
     private ContainerElement(){
-        super(null);
         records = null;
         dictionary = null;
     }
 
-    public ContainerElement(RecordLinkedList.TYPE type, MutableString name, StringDictionary dictionary, RecordCache cache) {
-        super(name);
+    public ContainerElement(RecordLinkedList.TYPE type, StringDictionary dictionary, RecordCache cache) {
         records = new RecordLinkedList(type, cache, dictionary);
         this.dictionary = dictionary;
     }
@@ -41,7 +39,6 @@ public class ContainerElement extends Element {
         }
     }
 
-    @Override
     public void read(BsonStream stream) {
         int size = stream.getInt32();
         Element.TYPE type;

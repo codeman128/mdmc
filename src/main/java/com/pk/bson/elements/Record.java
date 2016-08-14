@@ -1,7 +1,6 @@
 package com.pk.bson.elements;
 
 import com.pk.bson.BsonStream;
-import com.pk.bson.Document;
 import com.pk.bson.lang.ImmutableString;
 import com.pk.bson.lang.MutableString;
 import com.pk.bson.lang.StringDictionary;
@@ -73,13 +72,13 @@ public class Record {
                 return;
             }
             case EMBEDDED : {
-                Document doc = new Document(null/*key*/, dictionary, cache);//todo fix
+                ContainerElement doc = new ContainerElement(RecordLinkedList.TYPE.OBJECT, dictionary, cache);
                 doc.read(stream);
                 reference = doc;
                 return;
             }
             case ARRAY: {
-                ContainerElement array = new ContainerElement(RecordLinkedList.TYPE.ARRAY, null /*key*/, dictionary, cache); //todo fix
+                ContainerElement array = new ContainerElement(RecordLinkedList.TYPE.ARRAY, dictionary, cache);
                 array.read(stream);
                 reference = array;
                 return;
@@ -119,14 +118,14 @@ public class Record {
     }
 
 
-    public void setObject(Document value)throws NoSuchFieldException {
+    public void setObject(ContainerElement value)throws NoSuchFieldException {
         if (type != Element.TYPE.EMBEDDED) throw new NoSuchFieldException();
         reference = value;
     }
 
-    public Document getObject()throws NoSuchFieldException {
+    public ContainerElement getObject()throws NoSuchFieldException {
         if (type != Element.TYPE.EMBEDDED) throw new NoSuchFieldException();
-        return  (Document)reference;
+        return  (ContainerElement)reference;
     }
 
     public void setArray(ContainerElement value)throws NoSuchFieldException {

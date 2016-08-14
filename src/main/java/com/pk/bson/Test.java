@@ -1,7 +1,9 @@
 package com.pk.bson;
 
 
+import com.pk.bson.elements.ContainerElement;
 import com.pk.bson.elements.RecordCache;
+import com.pk.bson.elements.RecordLinkedList;
 import com.pk.bson.lang.MutableString;
 import com.pk.bson.lang.StringDictionary;
 
@@ -68,7 +70,7 @@ public class Test {
         ByteBuffer bb = ByteBuffer.wrap(buffer, 0, buffer.length);
         BsonStream bbs = new BsonStream(bb);
 
-        Document doc = new Document(null, dictionary, cache);
+        ContainerElement doc = new ContainerElement(RecordLinkedList.TYPE.OBJECT, dictionary, cache);
         doc.read(bbs);
         System.out.println("finished: " + doc.toString());
 
