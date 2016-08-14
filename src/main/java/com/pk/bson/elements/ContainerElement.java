@@ -3,13 +3,12 @@ package com.pk.bson.elements;
 import com.pk.bson.BsonStream;
 import com.pk.bson.lang.ImmutableInteger;
 import com.pk.bson.lang.ImmutableString;
-import com.pk.bson.lang.MutableString;
 import com.pk.bson.lang.StringDictionary;
 
 /**
  * Created by PavelK on 8/10/2016.
  */
-public class ContainerElement extends Element {
+public class ContainerElement  {
     protected final RecordLinkedList records;
     protected final StringDictionary dictionary;
 
@@ -24,7 +23,7 @@ public class ContainerElement extends Element {
     }
 
 
-    protected void readElement(Element.TYPE type, BsonStream stream){
+    protected void readElement(Record.TYPE type, BsonStream stream){
         ImmutableString locator = stream.readKey();
         int keyId = -1;
         if (records.getType()== RecordLinkedList.TYPE.OBJECT){
@@ -41,7 +40,7 @@ public class ContainerElement extends Element {
 
     public void read(BsonStream stream) {
         int size = stream.getInt32();
-        Element.TYPE type;
+        Record.TYPE type;
         while(true) {
             type = stream.readNextType();
             switch (type) {

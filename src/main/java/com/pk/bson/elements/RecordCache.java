@@ -19,7 +19,7 @@ public class RecordCache {
         }
     }
 
-    public Record acquier(Element.TYPE type, int key){
+    public Record acquier(Record.TYPE type, int key){
         Record record = cache.acquire();
         if (record==null) return null;
         record.init(type, key);

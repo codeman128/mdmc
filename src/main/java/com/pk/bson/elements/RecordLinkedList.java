@@ -38,7 +38,7 @@ public class RecordLinkedList {
         return type;
     }
 
-    public Record add(Element.TYPE type, int key){
+    public Record add(Record.TYPE type, int key){
         Record record = cache.acquier(type, key);
         if (last==null) {
             //first element, "first" also expected to be null
