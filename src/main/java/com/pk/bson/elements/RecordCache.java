@@ -13,7 +13,7 @@ public class RecordCache {
     }
 
     public RecordCache(int size) {
-        cache = new ObjectCache(size);
+        cache = new ObjectCache<Record>(size);
         for (int i=0; i<size; i++){
             cache.add(new Record());
         }
