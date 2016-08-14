@@ -1,20 +1,31 @@
 package com.pk.bson.elements;
 
+import com.pk.bson.lang.StringDictionary;
+import com.pk.publisher.core.Message;
+
+import java.util.Dictionary;
+
 /**
  * Created by pkapovski on 8/14/2016.
  */
 public class RecordLinkedList {
+    public enum TYPE {OBJECT, ARRAY}
 
+    final private StringDictionary dictionary;
     final private RecordCache cache;
+    private TYPE type;
     private Record first;
     private Record last;
 
     private RecordLinkedList(){
         cache = null;
+        dictionary = null;
     }
 
-    public RecordLinkedList(RecordCache cache){
+    public RecordLinkedList(TYPE type, RecordCache cache, StringDictionary dictionary){
+        this.type = type;
         this.cache = cache;
+        this.dictionary = dictionary;
         first = null;
         last = null;
     }
@@ -60,6 +71,34 @@ public class RecordLinkedList {
             first = null;
         }
         cache.release(record);
+    }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        if (type==TYPE.OBJECT){
+            sb.append("{");
+        } else sb.append("[");
+
+
+        boolean isFirst = true;
+        Record r = first;
+        while (r!=null) {
+
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                sb.append(",");
+            }
+
+            if (type==TYPE.OBJECT) sb.append("\"").append(dictionary.getKey(r.key)).append("\":");
+            sb.append(r.toString());
+            r= r.getNext();
+        }
+        if (type==TYPE.OBJECT){
+            sb.append("}");
+        } else sb.append("]");
+        return sb.toString();
+
     }
 
 }

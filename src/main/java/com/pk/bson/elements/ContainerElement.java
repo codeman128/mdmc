@@ -19,18 +19,17 @@ public abstract class ContainerElement extends Element {
         dictionary = null;
     }
 
+    protected abstract RecordLinkedList.TYPE getContainerType();
+
     protected ContainerElement(MutableString name, StringDictionary dictionary, RecordCache cache) {
         super(name);
-        records = new RecordLinkedList(cache);
+        records = new RecordLinkedList(getContainerType(), cache, dictionary);
         this.dictionary = dictionary;
     }
 
-    protected abstract Element getElement(Element.TYPE type, MutableString key);
 
-    protected Element readElement(Element.TYPE type, BsonStream stream){
+    protected void readElement(Element.TYPE type, BsonStream stream){
         stream.readKey(locator);
-
-        //----------------------------------------------------------------------
         ImmutableInteger key = dictionary.key2Id(locator);
         Record record = records.add(type, key.get());
         try {
@@ -38,12 +37,6 @@ public abstract class ContainerElement extends Element {
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
-        //----------------------------------------------
-
-        //Element e = getElement(type, locator);
-        //e.read(stream);
-        //return e;
-        return null;
     }
 
     @Override
@@ -69,5 +62,10 @@ public abstract class ContainerElement extends Element {
             }
         }
     }
+
+    public String toString(){
+        return records.toString();
+    }
+
 
 }

@@ -2,6 +2,7 @@ package com.pk.bson.elements;
 
 import com.pk.bson.BsonStream;
 import com.pk.bson.Document;
+import com.pk.bson.lang.ImmutableString;
 import com.pk.bson.lang.MutableString;
 import com.pk.bson.lang.StringDictionary;
 
@@ -136,5 +137,35 @@ public class Record {
     public ArrayElement getArray()throws NoSuchFieldException {
         if (type != Element.TYPE.ARRAY) throw new NoSuchFieldException();
         return  (ArrayElement)reference;
+    }
+
+    public String toString() {
+        try {
+            switch (type) {
+                case INT32: {
+                    return Integer.toString(getInt());
+                }
+                case BOOLEAN: {
+                    return Boolean.toString(getBoolean());
+                }
+                case DOUBLE: {
+                    return Double.toString(getDouble());
+                }
+                case STRING: {
+                    return "\""+(ImmutableString)reference+"\"";
+                }
+                case EMBEDDED : {
+                    return ((Document)reference).toString();
+                }
+                case ARRAY: {
+                    return ((ArrayElement)reference).toString();
+                }
+                default: {
+                    return "???";
+                }
+            }
+        } catch (NoSuchFieldException e) {
+            return e.toString();
+        }
     }
 }

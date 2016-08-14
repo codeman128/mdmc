@@ -37,7 +37,6 @@ public class StringDictionary {
     }
 
     public ImmutableInteger isExists(ImmutableString key) {
-        System.out.println("isExists: "+key+" "+key2id.get(key)+" ["+key.hash+"]");
         return key2id.get(key);
     }
 

@@ -36,7 +36,7 @@ public class Test {
     }
 
     public static void main(String[] args) throws IOException {
-        TestDictionary();
+        //TestDictionary();
 
 
         StringDictionary dictionary = new StringDictionary();
@@ -71,12 +71,9 @@ public class Test {
         Document doc = new Document(null, dictionary, cache);
         doc.read(bbs);
         System.out.println("finished: " + doc.toString());
-        System.out.println("get int [number]: " + doc.getInt32(new MutableString("number")));
-        System.out.println("get string [string2]: " + doc.getString(new MutableString("string2")));
-        doc.setInt32(new MutableString("number-3"), 557);
-        doc.setString(new MutableString("name"), new MutableString("test324"));
 
-        System.out.println(dictionary);
+
+        //System.out.println(dictionary);
         //System.out.printf("\n\n\n");
         //bb.position(0);
         //doc.read(bbs);
