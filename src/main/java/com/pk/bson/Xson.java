@@ -1,6 +1,5 @@
 package com.pk.bson;
 
-import com.pk.bson.elements.ContainerElement;
 import com.pk.bson.elements.ElementCache;
 import com.pk.bson.elements.ElementCollection;
 import com.pk.bson.lang.StringDictionary;
@@ -23,9 +22,11 @@ public class Xson {
         recordCache = new ElementCache(maxElements);
     }
 
-    public ContainerElement readBson(ByteBuffer byteBuffer){
+
+
+    public ElementCollection readBson(ByteBuffer byteBuffer){
         bsonStream.init(byteBuffer);
-        ContainerElement doc = new ContainerElement(ElementCollection.TYPE.OBJECT, dictionary, recordCache);
+        ElementCollection doc = new ElementCollection(ElementCollection.TYPE.OBJECT, recordCache, dictionary);
         doc.read(bsonStream);
         return doc;
 

@@ -1,5 +1,8 @@
 package com.pk.bson.elements;
 
+import com.pk.bson.BsonStream;
+import com.pk.bson.lang.ImmutableInteger;
+import com.pk.bson.lang.ImmutableString;
 import com.pk.bson.lang.StringDictionary;
 
 /**
@@ -72,6 +75,41 @@ public class ElementCollection {
             first = null;
         }
         cache.release(record);
+    }
+
+    protected void readElement(Element.TYPE type, BsonStream stream){
+        ImmutableString locator = stream.readKey();
+        int keyId = -1;
+        if (getType()== ElementCollection.TYPE.OBJECT){
+            ImmutableInteger key = dictionary.key2Id(locator);
+            keyId = key.get();
+        }
+        Element record = add(type, keyId);
+        try {
+            record.read(stream, dictionary, cache);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void read(BsonStream stream) {
+        int size = stream.getInt32();
+        Element.TYPE type;
+        while(true) {
+            type = stream.readNextType();
+            switch (type) {
+                case EOO: return;
+                case DOUBLE:
+                case STRING:
+                case INT32:
+                case EMBEDDED:
+                case ARRAY:
+                case BOOLEAN:{
+                    readElement(type, stream);
+                    break;
+                }
+            }
+        }
     }
 
     public String toString(){

@@ -1,7 +1,7 @@
 package com.pk.bson;
 
 
-import com.pk.bson.elements.ContainerElement;
+import com.pk.bson.elements.ElementCollection;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -27,7 +27,7 @@ public class Test {
 
         ByteBuffer bb = ByteBuffer.wrap(buffer, 0, buffer.length);
         Xson xson = new Xson(1024);
-        ContainerElement doc = xson.readBson(bb);
+        ElementCollection doc = xson.readBson(bb);
 
         System.out.println("finished: " + doc.toString());
 

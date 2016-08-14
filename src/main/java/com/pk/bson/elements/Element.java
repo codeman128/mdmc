@@ -127,13 +127,13 @@ public class Element {
                 return;
             }
             case EMBEDDED : {
-                ContainerElement doc = new ContainerElement(ElementCollection.TYPE.OBJECT, dictionary, cache);
+                ElementCollection doc = new ElementCollection(ElementCollection.TYPE.OBJECT, cache, dictionary);
                 doc.read(stream);
                 reference = doc;
                 return;
             }
             case ARRAY: {
-                ContainerElement array = new ContainerElement(ElementCollection.TYPE.ARRAY, dictionary, cache);
+                ElementCollection array = new ElementCollection(ElementCollection.TYPE.ARRAY, cache, dictionary);
                 array.read(stream);
                 reference = array;
                 return;
@@ -173,24 +173,24 @@ public class Element {
     }
 
 
-    public void setObject(ContainerElement value)throws NoSuchFieldException {
+    public void setObject(ElementCollection value)throws NoSuchFieldException {
         if (type != TYPE.EMBEDDED) throw new NoSuchFieldException();
         reference = value;
     }
 
-    public ContainerElement getObject()throws NoSuchFieldException {
+    public ElementCollection getObject()throws NoSuchFieldException {
         if (type != TYPE.EMBEDDED) throw new NoSuchFieldException();
-        return  (ContainerElement)reference;
+        return  (ElementCollection)reference;
     }
 
-    public void setArray(ContainerElement value)throws NoSuchFieldException {
+    public void setArray(ElementCollection value)throws NoSuchFieldException {
         if (type != TYPE.ARRAY) throw new NoSuchFieldException();
         reference = value;
     }
 
-    public ContainerElement getArray()throws NoSuchFieldException {
+    public ElementCollection getArray()throws NoSuchFieldException {
         if (type != TYPE.ARRAY) throw new NoSuchFieldException();
-        return  (ContainerElement)reference;
+        return  (ElementCollection)reference;
     }
 
     public String toString() {
