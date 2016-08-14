@@ -2,6 +2,7 @@ package com.pk.bson.elements;
 
 import com.pk.bson.BsonStream;
 import com.pk.bson.lang.ImmutableInteger;
+import com.pk.bson.lang.ImmutableString;
 import com.pk.bson.lang.MutableString;
 import com.pk.bson.lang.StringDictionary;
 
@@ -9,7 +10,6 @@ import com.pk.bson.lang.StringDictionary;
  * Created by PavelK on 8/10/2016.
  */
 public class ContainerElement extends Element {
-    protected final MutableString locator = new MutableString(200); //200 should be good enough
     protected final RecordLinkedList records;
     protected final StringDictionary dictionary;
 
@@ -25,7 +25,7 @@ public class ContainerElement extends Element {
 
 
     protected void readElement(Element.TYPE type, BsonStream stream){
-        stream.readKey(locator);
+        ImmutableString locator = stream.readKey();
         int keyId = -1;
         if (records.getType()== RecordLinkedList.TYPE.OBJECT){
             ImmutableInteger key = dictionary.key2Id(locator);
@@ -45,10 +45,7 @@ public class ContainerElement extends Element {
         while(true) {
             type = stream.readNextType();
             switch (type) {
-                case EOO: {
-                    //System.out.println("Exited at "+stream.position()+" of "+size);
-                    return;
-                }
+                case EOO: return;
                 case DOUBLE:
                 case STRING:
                 case INT32:

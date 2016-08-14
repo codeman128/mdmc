@@ -1,6 +1,7 @@
 package com.pk.bson;
 
 import com.pk.bson.elements.Element;
+import com.pk.bson.lang.ImmutableString;
 import com.pk.bson.lang.MutableString;
 
 import java.nio.ByteBuffer;
@@ -10,25 +11,23 @@ import java.nio.ByteOrder;
  * Created by pkapovski on 8/4/2016.
  */
 public class BsonStream {
-    byte[] buf = new byte[1024*10];
-    private final ByteBuffer bb;
+    private final MutableString str = new MutableString(1024);
+    private ByteBuffer bb;
 
-    private BsonStream(){
-        bb = null;
-    }
-
-    public BsonStream (ByteBuffer byteStreams) {
+    public void init (ByteBuffer byteStreams) {
         bb = byteStreams;
         bb.order(ByteOrder.LITTLE_ENDIAN);
     }
 
-    public final void readKey(MutableString mStr) {
+    public final ImmutableString readKey() {
         int length = -1;
-        mStr.setOffset(0);
+        str.setOffset(0);
         while (true) {
-            if ((mStr.getBuffer()[++length] = bb.get())==0) break;
+            if ((str.getBuffer()[++length] = bb.get())==0) break;
         }
-        mStr.setLength(length);
+        str.setLength(length);
+
+        return str;
     }
 
     public final void readString(MutableString mStr) {
@@ -45,14 +44,6 @@ public class BsonStream {
 
     public final Element.TYPE readNextType(){
         return Element.getType(bb.get());
-    }
-
-    byte[] getBuffer(){
-        return buf;
-    }
-
-    public int position() {
-        return bb.position();
     }
 
     public double getDouble() {
