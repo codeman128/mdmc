@@ -1,7 +1,6 @@
 package com.pk.bson;
 
 import com.pk.bson.elements.Element;
-import com.pk.bson.elements.Record;
 import com.pk.bson.lang.ImmutableString;
 import com.pk.bson.lang.MutableString;
 
@@ -43,8 +42,8 @@ public class BsonStream {
        return bb.getInt();
     }
 
-    public final Record.TYPE readNextType(){
-        return Record.getType(bb.get());
+    public final Element.TYPE readNextType(){
+        return Element.getType(bb.get());
     }
 
     public double getDouble() {

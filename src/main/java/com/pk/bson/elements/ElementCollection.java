@@ -1,28 +1,25 @@
 package com.pk.bson.elements;
 
 import com.pk.bson.lang.StringDictionary;
-import com.pk.publisher.core.Message;
-
-import java.util.Dictionary;
 
 /**
  * Created by pkapovski on 8/14/2016.
  */
-public class RecordLinkedList {
+public class ElementCollection {
     public enum TYPE {OBJECT, ARRAY}
 
     final private StringDictionary dictionary;
-    final private RecordCache cache;
+    final private ElementCache cache;
     private TYPE type;
-    private Record first;
-    private Record last;
+    private Element first;
+    private Element last;
 
-    private RecordLinkedList(){
+    private ElementCollection(){
         cache = null;
         dictionary = null;
     }
 
-    public RecordLinkedList(TYPE type, RecordCache cache, StringDictionary dictionary){
+    public ElementCollection(TYPE type, ElementCache cache, StringDictionary dictionary){
         this.type = type;
         this.cache = cache;
         this.dictionary = dictionary;
@@ -30,7 +27,7 @@ public class RecordLinkedList {
         last = null;
     }
 
-    public RecordCache getCache(){
+    public ElementCache getCache(){
         return cache;
     }
 
@@ -38,8 +35,8 @@ public class RecordLinkedList {
         return type;
     }
 
-    public Record add(Record.TYPE type, int key){
-        Record record = cache.acquier(type, key);
+    public Element add(Element.TYPE type, int key){
+        Element record = cache.acquier(type, key);
         if (last==null) {
             //first element, "first" also expected to be null
             first = record;
@@ -52,8 +49,8 @@ public class RecordLinkedList {
         return record;
     }
 
-    public Record get(int key) {
-        Record r = first;
+    public Element get(int key) {
+        Element r = first;
         while (r!=null) {
             if (r.key==key) {
                 return r;
@@ -62,7 +59,7 @@ public class RecordLinkedList {
         return null;
     }
 
-    protected void remove(Record record) {
+    protected void remove(Element record) {
         // if in the middle
         if (record.next!=null && record.previous!=null) {
            record.previous.next=record.next;
@@ -85,7 +82,7 @@ public class RecordLinkedList {
 
 
         boolean isFirst = true;
-        Record r = first;
+        Element r = first;
         while (r!=null) {
 
             if (isFirst) {

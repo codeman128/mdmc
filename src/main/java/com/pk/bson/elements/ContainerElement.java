@@ -9,7 +9,7 @@ import com.pk.bson.lang.StringDictionary;
  * Created by PavelK on 8/10/2016.
  */
 public class ContainerElement  {
-    protected final RecordLinkedList records;
+    protected final ElementCollection records;
     protected final StringDictionary dictionary;
 
     private ContainerElement(){
@@ -17,20 +17,20 @@ public class ContainerElement  {
         dictionary = null;
     }
 
-    public ContainerElement(RecordLinkedList.TYPE type, StringDictionary dictionary, RecordCache cache) {
-        records = new RecordLinkedList(type, cache, dictionary);
+    public ContainerElement(ElementCollection.TYPE type, StringDictionary dictionary, ElementCache cache) {
+        records = new ElementCollection(type, cache, dictionary);
         this.dictionary = dictionary;
     }
 
 
-    protected void readElement(Record.TYPE type, BsonStream stream){
+    protected void readElement(Element.TYPE type, BsonStream stream){
         ImmutableString locator = stream.readKey();
         int keyId = -1;
-        if (records.getType()== RecordLinkedList.TYPE.OBJECT){
+        if (records.getType()== ElementCollection.TYPE.OBJECT){
             ImmutableInteger key = dictionary.key2Id(locator);
             keyId = key.get();
         }
-        Record record = records.add(type, keyId);
+        Element record = records.add(type, keyId);
         try {
             record.read(stream, dictionary, records.getCache());
         } catch (NoSuchFieldException e) {
@@ -40,7 +40,7 @@ public class ContainerElement  {
 
     public void read(BsonStream stream) {
         int size = stream.getInt32();
-        Record.TYPE type;
+        Element.TYPE type;
         while(true) {
             type = stream.readNextType();
             switch (type) {

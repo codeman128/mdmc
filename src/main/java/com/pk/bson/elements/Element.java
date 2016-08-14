@@ -8,7 +8,7 @@ import com.pk.bson.lang.StringDictionary;
 /**
  * Created by pkapovski on 8/14/2016.
  */
-public class Record {
+public class Element {
 
     private static final byte T_EOO       = 0x00;
     private static final byte T_DOUBLE    = 0x01;
@@ -68,11 +68,11 @@ public class Record {
     protected TYPE type;
     protected long data;
     Object reference;  // to string or container
-    protected Record previous;
-    protected Record next;
+    protected Element previous;
+    protected Element next;
 
 
-    Record() {
+    Element() {
         type = TYPE.UNDEFINED;
     }
 
@@ -90,23 +90,23 @@ public class Record {
         return type;
     }
 
-    public Record getPrevious() {
+    public Element getPrevious() {
         return previous;
     }
 
-    public void setPrevious(Record previous) {
+    public void setPrevious(Element previous) {
         this.previous = previous;
     }
 
-    public Record getNext() {
+    public Element getNext() {
         return next;
     }
 
-    public void setNext(Record next) {
+    public void setNext(Element next) {
         this.next = next;
     }
 
-    public void read(BsonStream stream, StringDictionary dictionary, RecordCache cache) throws NoSuchFieldException {
+    public void read(BsonStream stream, StringDictionary dictionary, ElementCache cache) throws NoSuchFieldException {
         switch (type) {
             case INT32: {
                 setInt(stream.getInt32());
@@ -127,13 +127,13 @@ public class Record {
                 return;
             }
             case EMBEDDED : {
-                ContainerElement doc = new ContainerElement(RecordLinkedList.TYPE.OBJECT, dictionary, cache);
+                ContainerElement doc = new ContainerElement(ElementCollection.TYPE.OBJECT, dictionary, cache);
                 doc.read(stream);
                 reference = doc;
                 return;
             }
             case ARRAY: {
-                ContainerElement array = new ContainerElement(RecordLinkedList.TYPE.ARRAY, dictionary, cache);
+                ContainerElement array = new ContainerElement(ElementCollection.TYPE.ARRAY, dictionary, cache);
                 array.read(stream);
                 reference = array;
                 return;
