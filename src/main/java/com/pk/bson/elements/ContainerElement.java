@@ -8,7 +8,7 @@ import com.pk.bson.lang.StringDictionary;
 /**
  * Created by PavelK on 8/10/2016.
  */
-public abstract class ContainerElement extends Element {
+public class ContainerElement extends Element {
     protected final MutableString locator = new MutableString(200); //200 should be good enough
     protected final RecordLinkedList records;
     protected final StringDictionary dictionary;
@@ -19,19 +19,21 @@ public abstract class ContainerElement extends Element {
         dictionary = null;
     }
 
-    protected abstract RecordLinkedList.TYPE getContainerType();
-
-    protected ContainerElement(MutableString name, StringDictionary dictionary, RecordCache cache) {
+    public ContainerElement(RecordLinkedList.TYPE type, MutableString name, StringDictionary dictionary, RecordCache cache) {
         super(name);
-        records = new RecordLinkedList(getContainerType(), cache, dictionary);
+        records = new RecordLinkedList(type, cache, dictionary);
         this.dictionary = dictionary;
     }
 
 
     protected void readElement(Element.TYPE type, BsonStream stream){
         stream.readKey(locator);
-        ImmutableInteger key = dictionary.key2Id(locator);
-        Record record = records.add(type, key.get());
+        int keyId = -1;
+        if (records.getType()== RecordLinkedList.TYPE.OBJECT){
+            ImmutableInteger key = dictionary.key2Id(locator);
+            keyId = key.get();
+        }
+        Record record = records.add(type, keyId);
         try {
             record.read(stream, dictionary, records.getCache());
         } catch (NoSuchFieldException e) {
@@ -40,7 +42,7 @@ public abstract class ContainerElement extends Element {
     }
 
     @Override
-    protected void read(BsonStream stream) {
+    public void read(BsonStream stream) {
         int size = stream.getInt32();
         Element.TYPE type;
         while(true) {

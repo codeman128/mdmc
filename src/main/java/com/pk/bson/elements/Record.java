@@ -79,7 +79,7 @@ public class Record {
                 return;
             }
             case ARRAY: {
-                ArrayElement array = new ArrayElement(null /*key*/, dictionary, cache); //todo fix
+                ContainerElement array = new ContainerElement(RecordLinkedList.TYPE.ARRAY, null /*key*/, dictionary, cache); //todo fix
                 array.read(stream);
                 reference = array;
                 return;
@@ -129,14 +129,14 @@ public class Record {
         return  (Document)reference;
     }
 
-    public void setArray(ArrayElement value)throws NoSuchFieldException {
+    public void setArray(ContainerElement value)throws NoSuchFieldException {
         if (type != Element.TYPE.ARRAY) throw new NoSuchFieldException();
         reference = value;
     }
 
-    public ArrayElement getArray()throws NoSuchFieldException {
+    public ContainerElement getArray()throws NoSuchFieldException {
         if (type != Element.TYPE.ARRAY) throw new NoSuchFieldException();
-        return  (ArrayElement)reference;
+        return  (ContainerElement)reference;
     }
 
     public String toString() {
@@ -155,10 +155,10 @@ public class Record {
                     return "\""+(ImmutableString)reference+"\"";
                 }
                 case EMBEDDED : {
-                    return ((Document)reference).toString();
+                    return reference.toString();
                 }
                 case ARRAY: {
-                    return ((ArrayElement)reference).toString();
+                    return reference.toString();
                 }
                 default: {
                     return "???";

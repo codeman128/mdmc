@@ -1,9 +1,7 @@
 package com.pk.bson.elements;
 
 import com.pk.bson.BsonStream;
-import com.pk.bson.Document;
 import com.pk.bson.lang.MutableString;
-import com.pk.bson.lang.StringDictionary;
 
 /**
  * Created by pkapovski on 8/4/2016.

@@ -34,6 +34,10 @@ public class RecordLinkedList {
         return cache;
     }
 
+    public TYPE getType(){
+        return type;
+    }
+
     public Record add(Element.TYPE type, int key){
         Record record = cache.acquier(type, key);
         if (last==null) {
