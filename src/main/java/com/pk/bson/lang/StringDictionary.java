@@ -29,8 +29,9 @@ public class StringDictionary {
         ImmutableInteger id = isExists(key);
         if (id==null){
             id = new ImmutableInteger(counter.incrementAndGet());
-            key2id.put(key, id);
-            id2key.put(id, key);
+            MutableString newKey = new MutableString(key);
+            key2id.put(newKey, id);
+            id2key.put(id, newKey);
         }
         return id;
     }

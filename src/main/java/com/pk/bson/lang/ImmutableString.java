@@ -11,7 +11,7 @@ public class ImmutableString {
 
     protected ImmutableString(){}
 
-    public ImmutableString(MutableString mStr){
+    public ImmutableString(ImmutableString mStr){
         buffer = new byte[mStr.length];
         copyFrom(mStr);
     }
@@ -51,7 +51,7 @@ public class ImmutableString {
         return hash;
     }
 
-    protected void copyFrom(MutableString source) { //please note - not allows growth
+    protected void copyFrom(ImmutableString source) { //please note - not allows growth
         offset = 0;
         length = source.length;
         System.arraycopy(source.buffer, source.offset, buffer, offset, length);

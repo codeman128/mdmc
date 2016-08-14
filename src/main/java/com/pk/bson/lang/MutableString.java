@@ -9,7 +9,7 @@ public class MutableString extends ImmutableString {
         super(string);
     }
 
-    public MutableString(MutableString mStr){
+    public MutableString(ImmutableString mStr){
         super(mStr);
     }
 
