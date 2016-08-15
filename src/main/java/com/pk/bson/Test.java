@@ -2,7 +2,6 @@ package com.pk.bson;
 
 
 import com.pk.bson.elements.Collection;
-import com.pk.bson.elements.Element;
 import com.pk.bson.lang.ImmutableString;
 
 import java.io.IOException;
@@ -19,7 +18,10 @@ import java.nio.file.Path;
 public class Test {
 
     public static void main(String[] args) throws IOException, NoSuchFieldException {
-         ImmutableString KEY_double = new ImmutableString("double");
+        ImmutableString KEY_double = new ImmutableString("double");
+        ImmutableString KEY_double8 = new ImmutableString("double8");
+        ImmutableString KEY_int32_8 = new ImmutableString("int32_8");
+
         //TestDictionary();
 
         Path path;
@@ -33,14 +35,26 @@ public class Test {
 
         System.out.println("finished: " + doc.toString());
 
-        Element e;
+        doc.setDouble(KEY_double8, 1.5556);
+        doc.setInt(KEY_int32_8, 15557);
+        System.out.println("finished: " + doc.toString());
 
-        e =  doc.get(KEY_double);
-        System.out.println("read \""+KEY_double+"\" " + doc.get(KEY_double).getDouble());
-        e.setInt(123);
+        //doc.remove(KEY_double8);
+        doc.remove(KEY_int32_8);
+        doc.remove(KEY_double8);
+
+
         System.out.println("finished: " + doc.toString());
-        doc.remove(KEY_double);
-        System.out.println("finished: " + doc.toString());
+
+
+//        Element e;
+
+//        e =  doc.get(KEY_double);
+//        System.out.println("read \""+KEY_double+"\" " + doc.get(KEY_double).getDouble());
+//        e.setInt(123);
+//        System.out.println("finished: " + doc.toString());
+//        doc.remove(KEY_double);
+//        System.out.println("finished: " + doc.toString());
 
     }
 

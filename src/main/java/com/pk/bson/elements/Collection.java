@@ -31,7 +31,7 @@ public class Collection {
         return type;
     }
 
-     Element add(Element.TYPE type, int key){
+    Element add(Element.TYPE type, int key){
         Element record = cache.getElementCache().acquier(type, key);
         if (last==null) {
             //first element, "first" also expected to be null
@@ -45,7 +45,7 @@ public class Collection {
         return record;
     }
 
-    public Element get(ImmutableString key){
+    Element get(ImmutableString key){
         int keyId = cache.getDictionary().key2Id(key).get();
         return get(keyId);
     }
@@ -60,30 +60,16 @@ public class Collection {
         return null;
     }
 
-    public boolean remove(ImmutableString key){
-        Element e = get(key);
-        if (e!= null){
-            remove(e);
-            return true;
-        } else return false;
-    }
-
-    public boolean remove(int key){
-        Element e = get(key);
-        if (e!=null){
-            remove(e);
-            return true;
-        } else return false;
-    }
-
     protected void remove(Element record) {
         // if in the middle
         if (record.next!=null && record.previous!=null) {
-           record.previous.next=record.next;
+           record.previous.next=record.next; // fix forward link
+           record.next.previous = record.previous; // fix backwards link
         } else
         // if last
         if (record.next == null) {
             record.previous.next = null;
+            last = record.previous;
         } else {
             // first
             first = null;
@@ -171,6 +157,94 @@ public class Collection {
         cache.release(this);
     }
 
-    //-----------------------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------------------------
+
+    public boolean remove(ImmutableString key){
+        Element e = get(key);
+        if (e!= null){
+            remove(e);
+            return true;
+        } else return false;
+    }
+
+    public boolean remove(int key){
+        Element e = get(key);
+        if (e!=null){
+            remove(e);
+            return true;
+        } else return false;
+    }
+
+    /**
+     * Updates (or creates if didn't exists) element with specified key with provided double value
+     * @param key key of the element
+     * @param value new value
+     **/
+    public void setDouble(ImmutableString key, double value) {
+        int keyId = cache.getDictionary().key2Id(key).get();
+        setDouble(keyId, value);
+    }
+    /**
+     * Updates (or creates if didn't exists) element with specified key id with provided double value
+     * @param key key id of the element
+     * @param value new value
+     **/
+    public void setDouble(int key, double value) {
+        Element e = get(key);
+        if (e==null) {
+            e = add(Element.TYPE.DOUBLE, key);
+        }
+        e.setDouble(value);
+    }
+
+    /**
+     * Retrieves double value of specified element by key id.
+     * @param key key of the element
+     * @return double value.  If element doesn't exists returns 0.
+     **/
+    public double getDouble(int key) throws NoSuchFieldException {
+        Element e = get(key);
+        if (e!=null) {
+            return e.getDouble();
+        } else {
+            return 0;//todo or NoSuchFieldException?
+        }
+    }
+
+    /**
+     * Updates (or creates if didn't exists) element with specified key with provided int value
+     * @param key key of the element
+     * @param value new value
+     **/
+    public void setInt(ImmutableString key, int value) {
+        int keyId = cache.getDictionary().key2Id(key).get();
+        setInt(keyId, value);
+    }
+    /**
+     * Updates (or creates if didn't exists) element with specified key id with provided int value
+     * @param key key id of the element
+     * @param value new value
+     **/
+    public void setInt(int key, int value) {
+        Element e = get(key);
+        if (e==null) {
+            e = add(Element.TYPE.INT32, key);
+        }
+        e.setInt(value);
+    }
+
+    /**
+     * Retrieves int value of specified element by key id.
+     * @param key key of the element
+     * @return int value.  If element doesn't exists returns 0.
+     **/
+    public int getInt(int key) throws NoSuchFieldException {
+        Element e = get(key);
+        if (e!=null) {
+            return e.getInt();
+        } else {
+            return 0;//todo or NoSuchFieldException?
+        }
+    }
 
 }
