@@ -30,4 +30,8 @@ public class ElementCache {
         cache.release(element);
     }
 
+    public int getAvailableCount(){
+        return cache.getAvailableCount();
+    }
+
 }

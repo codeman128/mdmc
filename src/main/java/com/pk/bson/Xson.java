@@ -27,14 +27,19 @@ public class Xson {
         collectionCache = new CollectionCache(maxCollections, elementCache, dictionary);
     }
 
-
-
     public Collection readBson(ByteBuffer byteBuffer){
         bsonStream.init(byteBuffer);
-        Collection collection = new Collection(collectionCache, Collection.TYPE.OBJECT);
+        Collection collection = new Collection(collectionCache, Collection.TYPE.OBJECT); //todo take from cache
         collection.read(bsonStream);
         return collection;
 
+    }
+    public void DEBUG_ShowStats() {
+        System.out.println("-- STATS ------------------------------------------");
+        //System.out.println(dictionary);
+        System.out.println("    Elements cache:\t\t"+elementCache.getAvailableCount());
+        System.out.println("    Collection cache:\t"+collectionCache.getAvailableCount());
+        System.out.println("---------------------------------------------------\n");
     }
 
 }

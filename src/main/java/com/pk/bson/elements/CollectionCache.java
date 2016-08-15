@@ -44,4 +44,8 @@ public class CollectionCache {
     public void release(Collection collection){
         cache.release(collection);
     }
+
+    public int getAvailableCount() {
+        return cache.getAvailableCount();
+    }
 }

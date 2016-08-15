@@ -68,11 +68,23 @@ public class Collection {
         } else
         // if last
         if (record.next == null) {
-            record.previous.next = null;
-            last = record.previous;
+            if (record.previous==null){
+                // single record
+                first = null;
+                last = null;
+            } else {
+                // last
+                record.previous.next = null;
+                last = record.previous;
+            }
         } else {
             // first
-            first = null;
+            if (record.next==null) { //todo can we get here???
+                first = null;
+                last = null;
+            } else {
+                first = record.next;
+            }
         }
         record.releaseReference();
         cache.getElementCache().release(record);
@@ -154,11 +166,23 @@ public class Collection {
     }
 
     public void release() {
+        Element e = last;
+        Element previous;
+        while (e!=null) {
+            previous = e.previous;
+            e.releaseReference();
+            cache.getElementCache().release(e);
+            e = previous;
+        }
+        first = null;
+        last = null;
         cache.release(this);
     }
 
     //----------------------------------------------------------------------------------------------------------------
-
+    /**
+     * Remove element by key
+     **/
     public boolean remove(ImmutableString key){
         Element e = get(key);
         if (e!= null){
@@ -167,6 +191,9 @@ public class Collection {
         } else return false;
     }
 
+    /**
+     * Remove element by key id
+     **/
     public boolean remove(int key){
         Element e = get(key);
         if (e!=null){

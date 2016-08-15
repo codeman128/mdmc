@@ -21,6 +21,10 @@ public class Test {
         ImmutableString KEY_double = new ImmutableString("double");
         ImmutableString KEY_double8 = new ImmutableString("double8");
         ImmutableString KEY_int32_8 = new ImmutableString("int32_8");
+        ImmutableString KEY_array = new ImmutableString("array");
+
+        ImmutableString KEY_boolean_1 = new ImmutableString("boolean_1");
+        ImmutableString KEY_boolean_2 = new ImmutableString("boolean_2");
 
         //TestDictionary();
 
@@ -31,31 +35,46 @@ public class Test {
 
         ByteBuffer bb = ByteBuffer.wrap(buffer, 0, buffer.length);
         Xson xson = new Xson(1024, 128);
+
+        xson.DEBUG_ShowStats();
+
         Collection doc = xson.readBson(bb);
 
-        System.out.println("finished: " + doc.toString());
+        System.out.println(doc.toString());
+
+        xson.DEBUG_ShowStats();
 
         doc.setDouble(KEY_double8, 1.5556);
         doc.setInt(KEY_int32_8, 15557);
-        System.out.println("finished: " + doc.toString());
+        System.out.println( doc.toString());
+        xson.DEBUG_ShowStats();
 
         //doc.remove(KEY_double8);
         doc.remove(KEY_int32_8);
         doc.remove(KEY_double8);
+        System.out.println(doc.toString());
+        xson.DEBUG_ShowStats();
+
+        doc.remove(KEY_boolean_2);
+        doc.remove(KEY_double);
+        doc.remove(KEY_boolean_1);
+        System.out.println( doc.toString());
+        xson.DEBUG_ShowStats();
 
 
-        System.out.println("finished: " + doc.toString());
+        doc.remove(KEY_array);
+        System.out.println(doc.toString());
+        xson.DEBUG_ShowStats();
+
+        doc.remove(1);
+        System.out.println(doc.toString());
+        xson.DEBUG_ShowStats();
 
 
-//        Element e;
-
-//        e =  doc.get(KEY_double);
-//        System.out.println("read \""+KEY_double+"\" " + doc.get(KEY_double).getDouble());
-//        e.setInt(123);
-//        System.out.println("finished: " + doc.toString());
-//        doc.remove(KEY_double);
-//        System.out.println("finished: " + doc.toString());
-
+        bb.position(0);
+        doc = xson.readBson(bb);
+        System.out.println(doc.toString());
+        xson.DEBUG_ShowStats();
     }
 
 
