@@ -8,38 +8,31 @@ import com.pk.bson.lang.StringDictionary;
 /**
  * Created by pkapovski on 8/14/2016.
  */
-public class ElementCollection {
-    public enum TYPE {OBJECT, ARRAY}
+public class Collection {
 
-    final private StringDictionary dictionary;
-    final private ElementCache cache;
+    public enum TYPE {OBJECT, ARRAY}
+    final private CollectionCache cache;
     private TYPE type;
     private Element first;
     private Element last;
 
-    private ElementCollection(){
+    private Collection(){
         cache = null;
-        dictionary = null;
     }
 
-    public ElementCollection(TYPE type, ElementCache cache, StringDictionary dictionary){
+    public Collection(CollectionCache collectionCache, TYPE type){
         this.type = type;
-        this.cache = cache;
-        this.dictionary = dictionary;
+        this.cache = collectionCache;
         first = null;
         last = null;
-    }
-
-    public ElementCache getCache(){
-        return cache;
     }
 
     public TYPE getType(){
         return type;
     }
 
-    public Element add(Element.TYPE type, int key){
-        Element record = cache.acquier(type, key);
+     Element add(Element.TYPE type, int key){
+        Element record = cache.getElementCache().acquier(type, key);
         if (last==null) {
             //first element, "first" also expected to be null
             first = record;
@@ -52,6 +45,11 @@ public class ElementCollection {
         return record;
     }
 
+    public Element get(ImmutableString key){
+        int keyId = cache.getDictionary().key2Id(key).get();
+        return get(keyId);
+    }
+
     public Element get(int key) {
         Element r = first;
         while (r!=null) {
@@ -60,6 +58,22 @@ public class ElementCollection {
             } else r= r.getNext();
         }
         return null;
+    }
+
+    public boolean remove(ImmutableString key){
+        Element e = get(key);
+        if (e!= null){
+            remove(e);
+            return true;
+        } else return false;
+    }
+
+    public boolean remove(int key){
+        Element e = get(key);
+        if (e!=null){
+            remove(e);
+            return true;
+        } else return false;
     }
 
     protected void remove(Element record) {
@@ -74,19 +88,20 @@ public class ElementCollection {
             // first
             first = null;
         }
-        cache.release(record);
+        record.releaseReference();
+        cache.getElementCache().release(record);
     }
 
     protected void readElement(Element.TYPE type, BsonStream stream){
         ImmutableString locator = stream.readKey();
         int keyId = -1;
-        if (getType()== ElementCollection.TYPE.OBJECT){
-            ImmutableInteger key = dictionary.key2Id(locator);
+        if (getType()== Collection.TYPE.OBJECT){
+            ImmutableInteger key = cache.getDictionary().key2Id(locator);
             keyId = key.get();
         }
         Element record = add(type, keyId);
         try {
-            record.read(stream, dictionary, cache);
+            record.read(stream, cache, cache.getDictionary(), cache.getElementCache());
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
@@ -120,8 +135,8 @@ public class ElementCollection {
 
 
         boolean isFirst = true;
-        Element r = first;
-        while (r!=null) {
+        Element e = first;
+        while (e!=null) {
 
             if (isFirst) {
                 isFirst = false;
@@ -129,15 +144,33 @@ public class ElementCollection {
                 sb.append(",");
             }
 
-            if (type==TYPE.OBJECT) sb.append("\"").append(dictionary.getKey(r.key)).append("\":");
-            sb.append(r.toString());
-            r= r.getNext();
+            if (type==TYPE.OBJECT) sb.append("\"").append(cache.getDictionary().getKey(e.key)).append("\":");
+            sb.append(e.toString());
+            e = e.getNext();
         }
         if (type==TYPE.OBJECT){
             sb.append("}");
         } else sb.append("]");
         return sb.toString();
-
     }
+
+    public void init(TYPE type){
+        Element e = last;
+        Element previous;
+        while (e!=null) {
+            previous = e.previous;
+            e.releaseReference();
+            cache.getElementCache().release(e);
+            e = previous;
+        }
+        first = null;
+        this.type = type;
+    }
+
+    public void release() {
+        cache.release(this);
+    }
+
+    //-----------------------------------------------------------------------------------------------------------
 
 }

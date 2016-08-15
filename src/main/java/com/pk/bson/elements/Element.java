@@ -19,7 +19,6 @@ public class Element {
     private static final byte T_BOOLEAN   = 0x08;
     private static final byte T_INT32     = 0x10;
 
-
     public enum TYPE {
         EOF(1),
         EOO(T_EOO),
@@ -77,9 +76,10 @@ public class Element {
     }
 
      final void init(TYPE type, int key) {
-        this.type = type;
-        this.key = key;
-        this.next = null;
+         this.type = type;
+         this.key = key;
+         this.next = null;
+         this.previous = null;
     }
 
     public final int getKey(){
@@ -94,7 +94,7 @@ public class Element {
         return previous;
     }
 
-    public void setPrevious(Element previous) {
+    void setPrevious(Element previous) {
         this.previous = previous;
     }
 
@@ -102,11 +102,11 @@ public class Element {
         return next;
     }
 
-    public void setNext(Element next) {
+    void setNext(Element next) {
         this.next = next;
     }
 
-    public void read(BsonStream stream, StringDictionary dictionary, ElementCache cache) throws NoSuchFieldException {
+    public void read(BsonStream stream, CollectionCache collectionCache, StringDictionary dictionary, ElementCache cache) throws NoSuchFieldException {
         switch (type) {
             case INT32: {
                 setInt(stream.getInt32());
@@ -127,13 +127,13 @@ public class Element {
                 return;
             }
             case EMBEDDED : {
-                ElementCollection doc = new ElementCollection(ElementCollection.TYPE.OBJECT, cache, dictionary);
+                Collection doc = collectionCache.acquier(Collection.TYPE.OBJECT);
                 doc.read(stream);
                 reference = doc;
                 return;
             }
             case ARRAY: {
-                ElementCollection array = new ElementCollection(ElementCollection.TYPE.ARRAY, cache, dictionary);
+                Collection array = collectionCache.acquier(Collection.TYPE.ARRAY);
                 array.read(stream);
                 reference = array;
                 return;
@@ -141,9 +141,9 @@ public class Element {
         }
     }
 
-
-    public void setDouble(double value) throws NoSuchFieldException {
-        if (type!= TYPE.DOUBLE) throw new NoSuchFieldException();
+    public void setDouble(double value) {
+        releaseReference();
+        type = TYPE.DOUBLE;
         data = Double.doubleToRawLongBits(value);
     }
 
@@ -152,8 +152,9 @@ public class Element {
         return Double.longBitsToDouble(data);
     }
 
-    public void setBoolean(boolean value) throws NoSuchFieldException {
-        if (type!= TYPE.BOOLEAN) throw new NoSuchFieldException();
+    public void setBoolean(boolean value){
+        releaseReference();
+        type = TYPE.BOOLEAN;
         data = (value) ? 1 : 0;
     }
 
@@ -162,8 +163,9 @@ public class Element {
         return (data == 1);
     }
 
-    public void setInt(int value) throws NoSuchFieldException {
-        if (type!= TYPE.INT32) throw new NoSuchFieldException();
+    public void setInt(int value) {
+        releaseReference();
+        type = TYPE.INT32;
         data = (long)value;
     }
 
@@ -172,26 +174,27 @@ public class Element {
         return (int)data;
     }
 
+//
+//    public void setObject(Collection value)throws NoSuchFieldException {
+//
+//        if (type != TYPE.EMBEDDED) throw new NoSuchFieldException();
+//        reference = value;
+//    }
+//
+//    public Collection getObject()throws NoSuchFieldException {
+//        if (type != TYPE.EMBEDDED) throw new NoSuchFieldException();
+//        return  (Collection)reference;
+//    }
 
-    public void setObject(ElementCollection value)throws NoSuchFieldException {
-        if (type != TYPE.EMBEDDED) throw new NoSuchFieldException();
-        reference = value;
-    }
-
-    public ElementCollection getObject()throws NoSuchFieldException {
-        if (type != TYPE.EMBEDDED) throw new NoSuchFieldException();
-        return  (ElementCollection)reference;
-    }
-
-    public void setArray(ElementCollection value)throws NoSuchFieldException {
-        if (type != TYPE.ARRAY) throw new NoSuchFieldException();
-        reference = value;
-    }
-
-    public ElementCollection getArray()throws NoSuchFieldException {
-        if (type != TYPE.ARRAY) throw new NoSuchFieldException();
-        return  (ElementCollection)reference;
-    }
+//    public void setArray(Collection value)throws NoSuchFieldException {
+//        if (type != TYPE.ARRAY) throw new NoSuchFieldException();
+//        reference = value;
+//    }
+//
+//    public Collection getArray()throws NoSuchFieldException {
+//        if (type != TYPE.ARRAY) throw new NoSuchFieldException();
+//        return  (Collection)reference;
+//    }
 
     public String toString() {
         try {
@@ -235,4 +238,18 @@ public class Element {
             default        : return TYPE.UNDEFINED;
         }
     }
+
+    void releaseReference() {
+        if (reference!=null) {
+            if (type==TYPE.EMBEDDED || type==TYPE.ARRAY) {
+                ((Collection)reference).release();
+            }
+            if (type==TYPE.STRING) {
+                //todo release "long" strings
+            }
+            reference = null;
+        }
+    }
+
+
 }

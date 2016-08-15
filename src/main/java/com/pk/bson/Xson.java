@@ -1,7 +1,9 @@
 package com.pk.bson;
 
+import com.pk.bson.elements.CollectionCache;
 import com.pk.bson.elements.ElementCache;
-import com.pk.bson.elements.ElementCollection;
+import com.pk.bson.elements.Collection;
+import com.pk.bson.lang.ObjectCache;
 import com.pk.bson.lang.StringDictionary;
 
 import java.nio.ByteBuffer;
@@ -11,24 +13,27 @@ import java.nio.ByteBuffer;
  */
 public class Xson {
     private final StringDictionary dictionary = new StringDictionary();
-    private final ElementCache recordCache;
+    private final ElementCache elementCache;
+    private final CollectionCache collectionCache;
     private final BsonStream bsonStream = new BsonStream();
 
     private Xson(){
-        recordCache = null;
+        elementCache = null;
+        collectionCache = null;
     }
 
-    public Xson(int maxElements){
-        recordCache = new ElementCache(maxElements);
+    public Xson(int maxElements, int maxCollections){
+        elementCache = new ElementCache(maxElements);
+        collectionCache = new CollectionCache(maxCollections, elementCache, dictionary);
     }
 
 
 
-    public ElementCollection readBson(ByteBuffer byteBuffer){
+    public Collection readBson(ByteBuffer byteBuffer){
         bsonStream.init(byteBuffer);
-        ElementCollection doc = new ElementCollection(ElementCollection.TYPE.OBJECT, recordCache, dictionary);
-        doc.read(bsonStream);
-        return doc;
+        Collection collection = new Collection(collectionCache, Collection.TYPE.OBJECT);
+        collection.read(bsonStream);
+        return collection;
 
     }
 

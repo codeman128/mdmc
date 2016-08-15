@@ -26,8 +26,8 @@ public class ElementCache {
         return record;
     }
 
-    public void release(Element record){
-        cache.release(record);
+    public void release(Element element){
+        cache.release(element);
     }
 
 }
