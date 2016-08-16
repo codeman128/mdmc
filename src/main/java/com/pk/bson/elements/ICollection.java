@@ -16,4 +16,6 @@ public interface ICollection {
      * Remove element by key id
      **/
     boolean remove(int key);
+
+    void recycle();
 }

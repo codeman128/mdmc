@@ -176,7 +176,7 @@ public class Collection implements IObject, IArray {
         this.type = type;
     }
 
-    public void release() {
+    public void recycle() {
         Element e = tail;
         Element previous;
         while (e!=null) {

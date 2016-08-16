@@ -3,7 +3,6 @@ package com.pk.bson.elements;
 import com.pk.bson.BsonStream;
 import com.pk.bson.lang.ImmutableString;
 import com.pk.bson.lang.MutableString;
-import com.pk.bson.lang.StringDictionary;
 
 /**
  * Created by pkapovski on 8/14/2016.
@@ -245,7 +244,7 @@ public class Element {
     void releaseReference() {
         if (reference!=null) {
             if (type==TYPE.EMBEDDED || type==TYPE.ARRAY) {
-                ((Collection)reference).release();
+                ((Collection)reference).recycle();
             }
             if (type==TYPE.STRING) {
                 //todo release "long" strings

@@ -104,6 +104,9 @@ public class Test {
         doc.remove(KEY_new_obj);
         System.out.println(doc.toString());
         xson.DEBUG_ShowStats();
+
+        doc.recycle();
+        xson.DEBUG_ShowStats();
     }
 
 

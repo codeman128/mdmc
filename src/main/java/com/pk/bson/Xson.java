@@ -29,7 +29,7 @@ public class Xson {
 
     public IObject readBson(ByteBuffer byteBuffer){
         bsonStream.init(byteBuffer);
-        Collection collection = new Collection(collectionCache, Collection.TYPE.OBJECT); //todo take from cache
+        Collection collection = collectionCache.acquier(Collection.TYPE.OBJECT);
         collection.read(bsonStream);
         return collection;
 
@@ -37,7 +37,7 @@ public class Xson {
     public void DEBUG_ShowStats() {
         System.out.println("-- STATS ------------------------------------------");
         //System.out.println(dictionary);
-        System.out.println("    Elements cache:\t\t"+elementCache.getAvailableCount());
+        System.out.println("    Elements cache:\t\t" + elementCache.getAvailableCount());
         System.out.println("    Collection cache:\t"+collectionCache.getAvailableCount());
         System.out.println("---------------------------------------------------\n");
     }
