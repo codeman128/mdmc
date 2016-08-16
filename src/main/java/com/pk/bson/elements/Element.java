@@ -106,7 +106,7 @@ public class Element {
         this.next = next;
     }
 
-    public void read(BsonStream stream, CollectionCache collectionCache, StringDictionary dictionary, ElementCache cache) throws NoSuchFieldException {
+    public void read(BsonStream stream) throws NoSuchFieldException {
         switch (type) {
             case INT32: {
                 setInt(stream.getInt32());
@@ -127,15 +127,11 @@ public class Element {
                 return;
             }
             case EMBEDDED : {
-                Collection doc = collectionCache.acquier(Collection.TYPE.OBJECT);
-                doc.read(stream);
-                reference = doc;
+                ((Collection)reference).read(stream);
                 return;
             }
             case ARRAY: {
-                Collection array = collectionCache.acquier(Collection.TYPE.ARRAY);
-                array.read(stream);
-                reference = array;
+                ((Collection)reference).read(stream);
                 return;
             }
         }
@@ -174,24 +170,30 @@ public class Element {
         return (int)data;
     }
 
+    public IObject setObject(CollectionCache collectionCache) {
+        if (type!=TYPE.EMBEDDED) {
+            releaseReference();
+            type = TYPE.EMBEDDED;
+            reference = collectionCache.acquier(Collection.TYPE.OBJECT);
+        }
+        return (IObject)reference;
+    }
 
-//
-//    public void setObject(Collection value)throws NoSuchFieldException {
-//
-//        if (type != TYPE.EMBEDDED) throw new NoSuchFieldException();
-//        reference = value;
-//    }
-//
     public IObject getObject()throws NoSuchFieldException {
         if (type != TYPE.EMBEDDED) throw new NoSuchFieldException();
         return  (IObject)reference;
     }
 
-//    public void setArray(Collection value)throws NoSuchFieldException {
-//        if (type != TYPE.ARRAY) throw new NoSuchFieldException();
-//        reference = value;
-//    }
-//
+    public IArray setArray(CollectionCache collectionCache) {
+        if (type!=TYPE.ARRAY) {
+            releaseReference();
+            type = TYPE.ARRAY;
+            reference = collectionCache.acquier(Collection.TYPE.ARRAY);
+        }
+        return (IArray)reference;
+    }
+
+
     public IArray getArray()throws NoSuchFieldException {
         if (type != TYPE.ARRAY) throw new NoSuchFieldException(); //todo invalid type exception
         return  (IArray)reference;

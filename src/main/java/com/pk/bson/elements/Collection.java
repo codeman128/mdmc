@@ -12,8 +12,8 @@ public class Collection implements IObject, IArray {
     public enum TYPE {OBJECT, ARRAY}
     final private CollectionCache cache;
     private TYPE type;
-    private Element first;
-    private Element last;
+    private Element head;
+    private Element tail;
 
     private Collection(){
         cache = null;
@@ -22,8 +22,8 @@ public class Collection implements IObject, IArray {
     public Collection(CollectionCache collectionCache, TYPE type){
         this.type = type;
         this.cache = collectionCache;
-        first = null;
-        last = null;
+        head = null;
+        tail = null;
     }
 
     public TYPE getType(){
@@ -31,17 +31,29 @@ public class Collection implements IObject, IArray {
     }
 
     Element add(Element.TYPE type, int key){
-        Element record = cache.getElementCache().acquier(type, key);
-        if (last==null) {
-            //first element, "first" also expected to be null
-            first = record;
-            last = record;
-        } else {
-            last.setNext(record);
-            record.setPrevious(last);
-            last = record;
+        Element e = cache.getElementCache().acquier(type, key);
+        switch (type) {
+            case EMBEDDED: {
+                e.reference = cache.acquier(TYPE.OBJECT);
+                break;
+            }
+            case ARRAY: {
+                e.reference = cache.acquier(TYPE.ARRAY);
+                break;
+            }
         }
-        return record;
+
+
+        if (tail ==null) {
+            //first element, "head" also expected to be null
+            head = e;
+            tail = e;
+        } else {
+            tail.setNext(e);
+            e.setPrevious(tail);
+            tail = e;
+        }
+        return e;
     }
 
     Element get(ImmutableString key){
@@ -50,7 +62,7 @@ public class Collection implements IObject, IArray {
     }
 
     public Element get(int key) {
-        Element r = first;
+        Element r = head;
         while (r!=null) {
             if (r.key==key) {
                 return r;
@@ -69,20 +81,20 @@ public class Collection implements IObject, IArray {
         if (record.next == null) {
             if (record.previous==null){
                 // single record
-                first = null;
-                last = null;
+                head = null;
+                tail = null;
             } else {
                 // last
                 record.previous.next = null;
-                last = record.previous;
+                tail = record.previous;
             }
         } else {
-            // first
+            // head
             if (record.next==null) { //todo can we get here???
-                first = null;
-                last = null;
+                head = null;
+                tail = null;
             } else {
-                first = record.next;
+                head = record.next;
             }
         }
         record.releaseReference();
@@ -98,7 +110,7 @@ public class Collection implements IObject, IArray {
         }
         Element record = add(type, keyId);
         try {
-            record.read(stream, cache, cache.getDictionary(), cache.getElementCache());
+            record.read(stream);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
@@ -132,7 +144,7 @@ public class Collection implements IObject, IArray {
 
 
         boolean isFirst = true;
-        Element e = first;
+        Element e = head;
         while (e!=null) {
 
             if (isFirst) {
@@ -152,7 +164,7 @@ public class Collection implements IObject, IArray {
     }
 
     public void init(TYPE type){
-        Element e = last;
+        Element e = tail;
         Element previous;
         while (e!=null) {
             previous = e.previous;
@@ -160,12 +172,12 @@ public class Collection implements IObject, IArray {
             cache.getElementCache().release(e);
             e = previous;
         }
-        first = null;
+        head = null;
         this.type = type;
     }
 
     public void release() {
-        Element e = last;
+        Element e = tail;
         Element previous;
         while (e!=null) {
             previous = e.previous;
@@ -173,8 +185,8 @@ public class Collection implements IObject, IArray {
             cache.getElementCache().release(e);
             e = previous;
         }
-        first = null;
-        last = null;
+        head = null;
+        tail = null;
         cache.release(this);
     }
 
@@ -292,6 +304,21 @@ public class Collection implements IObject, IArray {
     }
 
     @Override
+    public IObject setObject(int key) {
+        Element e = get(key);
+        if (e==null) {
+            e = add(Element.TYPE.EMBEDDED, key);
+        }
+        return  e.setObject(cache);
+    }
+
+    @Override
+    public IObject setObject(ImmutableString key) {
+        int keyId = cache.getDictionary().key2Id(key).get();
+        return setObject(keyId);
+    }
+
+    @Override
     public IObject getObject(int key) throws NoSuchFieldException {
         Element e = get(key);
         if (e!=null) {
@@ -305,6 +332,21 @@ public class Collection implements IObject, IArray {
     public IObject getObject(ImmutableString key) throws NoSuchFieldException {
         int keyId = cache.getDictionary().key2Id(key).get();
         return getObject(keyId);
+    }
+
+    @Override
+    public IArray setArray(int key) {
+        Element e = get(key);
+        if (e==null) {
+            e = add(Element.TYPE.ARRAY, key);
+        }
+        return  e.setArray(cache);
+    }
+
+    @Override
+    public IArray setArray(ImmutableString key) {
+        int keyId = cache.getDictionary().key2Id(key).get();
+        return setArray(keyId);
     }
 
     @Override

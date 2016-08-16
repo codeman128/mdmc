@@ -27,12 +27,13 @@ public class Test {
         ImmutableString KEY_boolean_2 = new ImmutableString("boolean_2");
 
         ImmutableString KEY_dealCount = new ImmutableString("dealCount");
+        ImmutableString KEY_new_obj = new ImmutableString("new_obj");
 
         //TestDictionary();
 
         Path path;
         path = Paths.get("D:\\data\\gd\\workspace\\depot\\MarketData\\mis\\mdmc_ssh\\src\\test\\bson\\test5.bson");
-        //path = Paths.get("E:\\gdrive\\projects\\git\\mdmc\\src\\test\\bson\\test5.bson");
+        path = Paths.get("E:\\gdrive\\projects\\git\\mdmc\\src\\test\\bson\\test5.bson");
         byte[] buffer = Files.readAllBytes(path);
 
         ByteBuffer bb = ByteBuffer.wrap(buffer, 0, buffer.length);
@@ -81,7 +82,21 @@ public class Test {
         System.out.println(doc.getObject(KEY_dealCount));
         System.out.println(doc.getArray(KEY_array));
 
-        System.out.println(doc.getArray(KEY_dealCount));
+        System.out.println("-------------");
+        IObject o = doc.setObject(KEY_new_obj);
+        o.setBoolean(KEY_boolean_1, true);
+        o.setBoolean(KEY_boolean_2, false);
+        System.out.println(o);
+        System.out.println(doc.toString());
+        xson.DEBUG_ShowStats();
+
+        doc.remove(KEY_new_obj);
+        System.out.println(doc.toString());
+        xson.DEBUG_ShowStats();
+
+        doc.setArray(KEY_new_obj);
+        System.out.println(doc.toString());
+        xson.DEBUG_ShowStats();
     }
 
 

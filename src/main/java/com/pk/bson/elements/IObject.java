@@ -94,9 +94,15 @@ public interface IObject extends ICollection {
     boolean getBoolean(ImmutableString key) throws NoSuchFieldException;
 
 
+    IObject setObject(int key);
+    IObject setObject(ImmutableString key);
     IObject getObject(int key) throws NoSuchFieldException;
     IObject getObject(ImmutableString key) throws NoSuchFieldException;
 
+    IArray setArray(int key);
+    IArray setArray(ImmutableString key);
     IArray getArray(int key) throws NoSuchFieldException;
     IArray getArray(ImmutableString key) throws NoSuchFieldException;
+
+
 }
