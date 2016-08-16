@@ -3,12 +3,11 @@ package com.pk.bson.elements;
 import com.pk.bson.BsonStream;
 import com.pk.bson.lang.ImmutableInteger;
 import com.pk.bson.lang.ImmutableString;
-import com.pk.bson.lang.StringDictionary;
 
 /**
  * Created by pkapovski on 8/14/2016.
  */
-public class Collection {
+public class Collection implements IObject, IArray {
 
     public enum TYPE {OBJECT, ARRAY}
     final private CollectionCache cache;
@@ -180,9 +179,8 @@ public class Collection {
     }
 
     //----------------------------------------------------------------------------------------------------------------
-    /**
-     * Remove element by key
-     **/
+
+    @Override
     public boolean remove(ImmutableString key){
         Element e = get(key);
         if (e!= null){
@@ -191,9 +189,7 @@ public class Collection {
         } else return false;
     }
 
-    /**
-     * Remove element by key id
-     **/
+    @Override
     public boolean remove(int key){
         Element e = get(key);
         if (e!=null){
@@ -202,20 +198,13 @@ public class Collection {
         } else return false;
     }
 
-    /**
-     * Updates (or creates if didn't exists) element with specified key with provided double value
-     * @param key key of the element
-     * @param value new value
-     **/
+    @Override
     public void setDouble(ImmutableString key, double value) {
         int keyId = cache.getDictionary().key2Id(key).get();
         setDouble(keyId, value);
     }
-    /**
-     * Updates (or creates if didn't exists) element with specified key id with provided double value
-     * @param key key id of the element
-     * @param value new value
-     **/
+
+    @Override
     public void setDouble(int key, double value) {
         Element e = get(key);
         if (e==null) {
@@ -224,11 +213,7 @@ public class Collection {
         e.setDouble(value);
     }
 
-    /**
-     * Retrieves double value of specified element by key id.
-     * @param key key of the element
-     * @return double value.  If element doesn't exists returns 0.
-     **/
+    @Override
     public double getDouble(int key) throws NoSuchFieldException {
         Element e = get(key);
         if (e!=null) {
@@ -238,20 +223,19 @@ public class Collection {
         }
     }
 
-    /**
-     * Updates (or creates if didn't exists) element with specified key with provided int value
-     * @param key key of the element
-     * @param value new value
-     **/
+    @Override
+    public double getDouble(ImmutableString key) throws NoSuchFieldException {
+        int keyId = cache.getDictionary().key2Id(key).get();
+        return getDouble(keyId);
+    }
+
+    @Override
     public void setInt(ImmutableString key, int value) {
         int keyId = cache.getDictionary().key2Id(key).get();
         setInt(keyId, value);
     }
-    /**
-     * Updates (or creates if didn't exists) element with specified key id with provided int value
-     * @param key key id of the element
-     * @param value new value
-     **/
+
+    @Override
     public void setInt(int key, int value) {
         Element e = get(key);
         if (e==null) {
@@ -260,11 +244,7 @@ public class Collection {
         e.setInt(value);
     }
 
-    /**
-     * Retrieves int value of specified element by key id.
-     * @param key key of the element
-     * @return int value.  If element doesn't exists returns 0.
-     **/
+    @Override
     public int getInt(int key) throws NoSuchFieldException {
         Element e = get(key);
         if (e!=null) {
@@ -272,6 +252,75 @@ public class Collection {
         } else {
             return 0;//todo or NoSuchFieldException?
         }
+    }
+
+    @Override
+    public int getInt(ImmutableString key) throws NoSuchFieldException {
+        int keyId = cache.getDictionary().key2Id(key).get();
+        return getInt(keyId);
+    }
+
+    @Override
+    public void setBoolean(ImmutableString key, boolean value) {
+        int keyId = cache.getDictionary().key2Id(key).get();
+        setBoolean(keyId, value);
+    }
+
+    @Override
+    public void setBoolean(int key, boolean value) {
+        Element e = get(key);
+        if (e==null) {
+            e = add(Element.TYPE.BOOLEAN, key);
+        }
+        e.setBoolean(value);
+    }
+
+    @Override
+    public boolean getBoolean(int key) throws NoSuchFieldException {
+        Element e = get(key);
+        if (e!=null) {
+            return e.getBoolean();
+        } else {
+            return false;//todo or NoSuchFieldException?
+        }
+    }
+
+    @Override
+    public boolean getBoolean(ImmutableString key) throws NoSuchFieldException {
+        int keyId = cache.getDictionary().key2Id(key).get();
+        return getBoolean(keyId);
+    }
+
+    @Override
+    public IObject getObject(int key) throws NoSuchFieldException {
+        Element e = get(key);
+        if (e!=null) {
+            return e.getObject();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public IObject getObject(ImmutableString key) throws NoSuchFieldException {
+        int keyId = cache.getDictionary().key2Id(key).get();
+        return getObject(keyId);
+    }
+
+    @Override
+    public IArray getArray(int key) throws NoSuchFieldException {
+        Element e = get(key);
+        if (e!=null) {
+            return e.getArray();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public IArray getArray(ImmutableString key) throws NoSuchFieldException {
+        int keyId = cache.getDictionary().key2Id(key).get();
+        return getArray(keyId);
     }
 
 }

@@ -174,6 +174,7 @@ public class Element {
         return (int)data;
     }
 
+
 //
 //    public void setObject(Collection value)throws NoSuchFieldException {
 //
@@ -181,20 +182,20 @@ public class Element {
 //        reference = value;
 //    }
 //
-//    public Collection getObject()throws NoSuchFieldException {
-//        if (type != TYPE.EMBEDDED) throw new NoSuchFieldException();
-//        return  (Collection)reference;
-//    }
+    public IObject getObject()throws NoSuchFieldException {
+        if (type != TYPE.EMBEDDED) throw new NoSuchFieldException();
+        return  (IObject)reference;
+    }
 
 //    public void setArray(Collection value)throws NoSuchFieldException {
 //        if (type != TYPE.ARRAY) throw new NoSuchFieldException();
 //        reference = value;
 //    }
 //
-//    public Collection getArray()throws NoSuchFieldException {
-//        if (type != TYPE.ARRAY) throw new NoSuchFieldException();
-//        return  (Collection)reference;
-//    }
+    public IArray getArray()throws NoSuchFieldException {
+        if (type != TYPE.ARRAY) throw new NoSuchFieldException(); //todo invalid type exception
+        return  (IArray)reference;
+    }
 
     public String toString() {
         try {

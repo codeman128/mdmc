@@ -3,7 +3,7 @@ package com.pk.bson;
 import com.pk.bson.elements.CollectionCache;
 import com.pk.bson.elements.ElementCache;
 import com.pk.bson.elements.Collection;
-import com.pk.bson.lang.ObjectCache;
+import com.pk.bson.elements.IObject;
 import com.pk.bson.lang.StringDictionary;
 
 import java.nio.ByteBuffer;
@@ -27,7 +27,7 @@ public class Xson {
         collectionCache = new CollectionCache(maxCollections, elementCache, dictionary);
     }
 
-    public Collection readBson(ByteBuffer byteBuffer){
+    public IObject readBson(ByteBuffer byteBuffer){
         bsonStream.init(byteBuffer);
         Collection collection = new Collection(collectionCache, Collection.TYPE.OBJECT); //todo take from cache
         collection.read(bsonStream);

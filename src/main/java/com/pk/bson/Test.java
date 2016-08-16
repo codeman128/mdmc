@@ -1,7 +1,7 @@
 package com.pk.bson;
 
 
-import com.pk.bson.elements.Collection;
+import com.pk.bson.elements.IObject;
 import com.pk.bson.lang.ImmutableString;
 
 import java.io.IOException;
@@ -26,6 +26,8 @@ public class Test {
         ImmutableString KEY_boolean_1 = new ImmutableString("boolean_1");
         ImmutableString KEY_boolean_2 = new ImmutableString("boolean_2");
 
+        ImmutableString KEY_dealCount = new ImmutableString("dealCount");
+
         //TestDictionary();
 
         Path path;
@@ -38,7 +40,7 @@ public class Test {
 
         xson.DEBUG_ShowStats();
 
-        Collection doc = xson.readBson(bb);
+        IObject doc = xson.readBson(bb);
 
         System.out.println(doc.toString());
 
@@ -46,7 +48,7 @@ public class Test {
 
         doc.setDouble(KEY_double8, 1.5556);
         doc.setInt(KEY_int32_8, 15557);
-        System.out.println( doc.toString());
+        System.out.println(doc.toString());
         xson.DEBUG_ShowStats();
 
         //doc.remove(KEY_double8);
@@ -58,7 +60,7 @@ public class Test {
         doc.remove(KEY_boolean_2);
         doc.remove(KEY_double);
         doc.remove(KEY_boolean_1);
-        System.out.println( doc.toString());
+        System.out.println(doc.toString());
         xson.DEBUG_ShowStats();
 
 
@@ -75,6 +77,11 @@ public class Test {
         doc = xson.readBson(bb);
         System.out.println(doc.toString());
         xson.DEBUG_ShowStats();
+
+        System.out.println(doc.getObject(KEY_dealCount));
+        System.out.println(doc.getArray(KEY_array));
+
+        System.out.println(doc.getArray(KEY_dealCount));
     }
 
 
