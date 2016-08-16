@@ -365,4 +365,14 @@ public class Collection implements IObject, IArray {
         return getArray(keyId);
     }
 
+    @Override
+    public void addInt(int value) {
+        add(Element.TYPE.INT32, -1).setInt(value);
+    }
+
+    @Override
+    public void addBoolean(boolean value) {
+        add(Element.TYPE.BOOLEAN, -1).setBoolean(value);
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.pk.bson;
 
 
+import com.pk.bson.elements.IArray;
 import com.pk.bson.elements.IObject;
 import com.pk.bson.lang.ImmutableString;
 
@@ -94,7 +95,13 @@ public class Test {
         System.out.println(doc.toString());
         xson.DEBUG_ShowStats();
 
-        doc.setArray(KEY_new_obj);
+        IArray a = doc.setArray(KEY_new_obj);
+        a.addInt(777);
+        a.addBoolean(false);
+        System.out.println(doc.toString());
+        xson.DEBUG_ShowStats();
+
+        doc.remove(KEY_new_obj);
         System.out.println(doc.toString());
         xson.DEBUG_ShowStats();
     }
