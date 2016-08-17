@@ -53,4 +53,21 @@ public class ObjectCache<T> {
             available[availableCount++] = obj;
         }
     }
+
+    public void debugFindLeak() {
+        System.out.println("count:"+count+" available:"+getAvailableCount());
+        System.out.println("--------------------------------------------------");
+        for (Object i : list) {
+            boolean found = false;
+            for (int j=0; j<availableCount; j++) {
+                if (i==available[j]) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                System.out.println(">> "+i);
+            }
+        }
+        System.out.println("--------------------------------------------------");
+    }
 }
