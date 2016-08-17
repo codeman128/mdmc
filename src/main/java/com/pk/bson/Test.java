@@ -34,7 +34,7 @@ public class Test {
 
         Path path;
         path = Paths.get("D:\\data\\gd\\workspace\\depot\\MarketData\\mis\\mdmc_ssh\\src\\test\\bson\\test5.bson");
-        path = Paths.get("E:\\gdrive\\projects\\git\\mdmc\\src\\test\\bson\\test5.bson");
+        //path = Paths.get("E:\\gdrive\\projects\\git\\mdmc\\src\\test\\bson\\test5.bson");
         byte[] buffer = Files.readAllBytes(path);
 
         ByteBuffer bb = ByteBuffer.wrap(buffer, 0, buffer.length);
@@ -45,8 +45,11 @@ public class Test {
         IObject doc = xson.readBson(bb);
 
         System.out.println(doc.toString());
-
         xson.DEBUG_ShowStats();
+
+        //doc.recycle();
+        //xson.DEBUG_ShowStats();
+        //System.exit(1);
 
         doc.setDouble(KEY_double8, 1.5556);
         doc.setInt(KEY_int32_8, 15557);
@@ -98,6 +101,9 @@ public class Test {
         IArray a = doc.setArray(KEY_new_obj);
         a.addInt(777);
         a.addBoolean(false);
+        a.addDouble(123.456);
+        a.addObject().setBoolean(KEY_boolean_1, true);
+        a.addArray().addBoolean(true);
         System.out.println(doc.toString());
         xson.DEBUG_ShowStats();
 

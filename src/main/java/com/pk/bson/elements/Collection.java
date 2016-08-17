@@ -30,6 +30,10 @@ public class Collection implements IObject, IArray {
         return type;
     }
 
+    protected int key2id(ImmutableString key){
+        return cache.getDictionary().key2Id(key).get();
+    }
+
     Element add(Element.TYPE type, int key){
         Element e = cache.getElementCache().acquier(type, key);
         switch (type) {
@@ -43,7 +47,6 @@ public class Collection implements IObject, IArray {
             }
         }
 
-
         if (tail ==null) {
             //first element, "head" also expected to be null
             head = e;
@@ -56,12 +59,11 @@ public class Collection implements IObject, IArray {
         return e;
     }
 
-    Element get(ImmutableString key){
-        int keyId = cache.getDictionary().key2Id(key).get();
-        return get(keyId);
+    Element getElement(ImmutableString key){
+        return getElement(key2id(key));
     }
 
-    public Element get(int key) {
+    public Element getElement(int key) {
         Element r = head;
         while (r!=null) {
             if (r.key==key) {
@@ -194,7 +196,7 @@ public class Collection implements IObject, IArray {
 
     @Override
     public boolean remove(ImmutableString key){
-        Element e = get(key);
+        Element e = getElement(key);
         if (e!= null){
             remove(e);
             return true;
@@ -203,7 +205,7 @@ public class Collection implements IObject, IArray {
 
     @Override
     public boolean remove(int key){
-        Element e = get(key);
+        Element e = getElement(key);
         if (e!=null){
             remove(e);
             return true;
@@ -212,13 +214,12 @@ public class Collection implements IObject, IArray {
 
     @Override
     public void setDouble(ImmutableString key, double value) {
-        int keyId = cache.getDictionary().key2Id(key).get();
-        setDouble(keyId, value);
+        setDouble(key2id(key), value);
     }
 
     @Override
     public void setDouble(int key, double value) {
-        Element e = get(key);
+        Element e = getElement(key);
         if (e==null) {
             e = add(Element.TYPE.DOUBLE, key);
         }
@@ -227,7 +228,7 @@ public class Collection implements IObject, IArray {
 
     @Override
     public double getDouble(int key) throws NoSuchFieldException {
-        Element e = get(key);
+        Element e = getElement(key);
         if (e!=null) {
             return e.getDouble();
         } else {
@@ -237,19 +238,17 @@ public class Collection implements IObject, IArray {
 
     @Override
     public double getDouble(ImmutableString key) throws NoSuchFieldException {
-        int keyId = cache.getDictionary().key2Id(key).get();
-        return getDouble(keyId);
+        return getDouble(key2id(key));
     }
 
     @Override
     public void setInt(ImmutableString key, int value) {
-        int keyId = cache.getDictionary().key2Id(key).get();
-        setInt(keyId, value);
+        setInt(key2id(key), value);
     }
 
     @Override
     public void setInt(int key, int value) {
-        Element e = get(key);
+        Element e = getElement(key);
         if (e==null) {
             e = add(Element.TYPE.INT32, key);
         }
@@ -258,7 +257,7 @@ public class Collection implements IObject, IArray {
 
     @Override
     public int getInt(int key) throws NoSuchFieldException {
-        Element e = get(key);
+        Element e = getElement(key);
         if (e!=null) {
             return e.getInt();
         } else {
@@ -268,19 +267,17 @@ public class Collection implements IObject, IArray {
 
     @Override
     public int getInt(ImmutableString key) throws NoSuchFieldException {
-        int keyId = cache.getDictionary().key2Id(key).get();
-        return getInt(keyId);
+        return getInt(key2id(key));
     }
 
     @Override
     public void setBoolean(ImmutableString key, boolean value) {
-        int keyId = cache.getDictionary().key2Id(key).get();
-        setBoolean(keyId, value);
+        setBoolean(key2id(key), value);
     }
 
     @Override
     public void setBoolean(int key, boolean value) {
-        Element e = get(key);
+        Element e = getElement(key);
         if (e==null) {
             e = add(Element.TYPE.BOOLEAN, key);
         }
@@ -289,23 +286,18 @@ public class Collection implements IObject, IArray {
 
     @Override
     public boolean getBoolean(int key) throws NoSuchFieldException {
-        Element e = get(key);
-        if (e!=null) {
-            return e.getBoolean();
-        } else {
-            return false;//todo or NoSuchFieldException?
-        }
+        Element e = getElement(key);
+        return e != null && e.getBoolean(); //todo or NoSuchFieldException?
     }
 
     @Override
     public boolean getBoolean(ImmutableString key) throws NoSuchFieldException {
-        int keyId = cache.getDictionary().key2Id(key).get();
-        return getBoolean(keyId);
+        return getBoolean(key2id(key));
     }
 
     @Override
     public IObject setObject(int key) {
-        Element e = get(key);
+        Element e = getElement(key);
         if (e==null) {
             e = add(Element.TYPE.EMBEDDED, key);
         }
@@ -314,13 +306,12 @@ public class Collection implements IObject, IArray {
 
     @Override
     public IObject setObject(ImmutableString key) {
-        int keyId = cache.getDictionary().key2Id(key).get();
-        return setObject(keyId);
+        return setObject(key2id(key));
     }
 
     @Override
     public IObject getObject(int key) throws NoSuchFieldException {
-        Element e = get(key);
+        Element e = getElement(key);
         if (e!=null) {
             return e.getObject();
         } else {
@@ -330,13 +321,12 @@ public class Collection implements IObject, IArray {
 
     @Override
     public IObject getObject(ImmutableString key) throws NoSuchFieldException {
-        int keyId = cache.getDictionary().key2Id(key).get();
-        return getObject(keyId);
+        return getObject(key2id(key));
     }
 
     @Override
     public IArray setArray(int key) {
-        Element e = get(key);
+        Element e = getElement(key);
         if (e==null) {
             e = add(Element.TYPE.ARRAY, key);
         }
@@ -345,13 +335,12 @@ public class Collection implements IObject, IArray {
 
     @Override
     public IArray setArray(ImmutableString key) {
-        int keyId = cache.getDictionary().key2Id(key).get();
-        return setArray(keyId);
+        return setArray(key2id(key));
     }
 
     @Override
     public IArray getArray(int key) throws NoSuchFieldException {
-        Element e = get(key);
+        Element e = getElement(key);
         if (e!=null) {
             return e.getArray();
         } else {
@@ -361,8 +350,7 @@ public class Collection implements IObject, IArray {
 
     @Override
     public IArray getArray(ImmutableString key) throws NoSuchFieldException {
-        int keyId = cache.getDictionary().key2Id(key).get();
-        return getArray(keyId);
+        return getArray(key2id(key));
     }
 
     @Override
@@ -373,6 +361,21 @@ public class Collection implements IObject, IArray {
     @Override
     public void addBoolean(boolean value) {
         add(Element.TYPE.BOOLEAN, -1).setBoolean(value);
+    }
+
+    @Override
+    public void addDouble(double value) {
+        add(Element.TYPE.DOUBLE, -1).setDouble(value);
+    }
+
+    @Override
+    public IObject addObject() {
+        return (IObject)add(Element.TYPE.EMBEDDED, -1).reference;
+    }
+
+    @Override
+    public IArray addArray() {
+        return (IArray)add(Element.TYPE.ARRAY, -1).reference;
     }
 
 }

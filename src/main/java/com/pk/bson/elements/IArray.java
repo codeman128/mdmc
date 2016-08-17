@@ -6,4 +6,7 @@ package com.pk.bson.elements;
 public interface IArray extends ICollection {
     void addInt(int value);
     void addBoolean(boolean value);
+    void addDouble(double value);
+    IObject addObject();
+    IArray addArray();
 }
