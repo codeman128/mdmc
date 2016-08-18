@@ -1,7 +1,5 @@
 package com.pk.bson.elements;
 
-import com.pk.bson.BsonStream;
-import com.pk.bson.lang.ImmutableInteger;
 import com.pk.bson.lang.ImmutableString;
 
 /**
@@ -103,39 +101,13 @@ public class Collection implements IObject, IArray {
         cache.getElementCache().release(record);
     }
 
-    protected void readElement(Element.TYPE type, BsonStream stream){
+    public Element addElement(Element.TYPE type, BsonStream stream){ // set package level
         ImmutableString locator = stream.readKey();
         int keyId = -1;
         if (getType()== Collection.TYPE.OBJECT){
-            ImmutableInteger key = cache.getDictionary().key2Id(locator);
-            keyId = key.get();
+            keyId = key2id(locator);
         }
-        Element record = add(type, keyId);
-        try {
-            record.read(stream);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void read(BsonStream stream) {
-        int size = stream.getInt32();
-        Element.TYPE type;
-        while(true) {
-            type = stream.readNextType();
-            switch (type) {
-                case EOO: return;
-                case DOUBLE:
-                case STRING:
-                case INT32:
-                case EMBEDDED:
-                case ARRAY:
-                case BOOLEAN:{
-                    readElement(type, stream);
-                    break;
-                }
-            }
-        }
+        return add(type, keyId);
     }
 
     public String toString(){

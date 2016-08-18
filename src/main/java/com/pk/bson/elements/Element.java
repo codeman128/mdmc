@@ -1,6 +1,5 @@
 package com.pk.bson.elements;
 
-import com.pk.bson.BsonStream;
 import com.pk.bson.lang.ImmutableString;
 import com.pk.bson.lang.MutableString;
 
@@ -105,36 +104,6 @@ public class Element {
         this.next = next;
     }
 
-    public void read(BsonStream stream) throws NoSuchFieldException {
-        switch (type) {
-            case INT32: {
-                setInt(stream.getInt32());
-                return;
-            }
-            case BOOLEAN: {
-                setBoolean(stream.readBoolean());
-                return;
-            }
-            case DOUBLE: {
-                setDouble(stream.getDouble());
-                return;
-            }
-            case STRING: {
-                MutableString str = new MutableString(200);
-                stream.readString(str);
-                reference = str;
-                return;
-            }
-            case EMBEDDED : {
-                ((Collection)reference).read(stream);
-                return;
-            }
-            case ARRAY: {
-                ((Collection)reference).read(stream);
-                return;
-            }
-        }
-    }
 
     public void setDouble(double value) {
         releaseReference();
