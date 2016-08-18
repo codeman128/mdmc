@@ -64,7 +64,7 @@ public class Element {
     protected int key;   // reference to the dictionary
     protected TYPE type;
     protected long data;
-    Object reference;  // to string or container
+    public Object reference;  // to string or container
     protected Element previous;
     protected Element next;
 
