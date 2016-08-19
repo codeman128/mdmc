@@ -1,6 +1,6 @@
 package com.pk.bson.core;
 
-import com.pk.bson.BsonStream;
+import com.pk.bson.serialization.BsonStream;
 import com.pk.bson.lang.ImmutableString;
 
 /**

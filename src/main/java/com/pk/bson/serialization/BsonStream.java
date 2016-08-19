@@ -1,4 +1,4 @@
-package com.pk.bson;
+package com.pk.bson.serialization;
 
 import com.pk.bson.core.Collection;
 import com.pk.bson.core.Element;
