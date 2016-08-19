@@ -19,6 +19,9 @@ import java.nio.file.Path;
 public class Test {
 
     public static void main(String[] args) throws IOException, NoSuchFieldException {
+        byte[] jsonBytes = "{\"key1\":null}".getBytes();
+        ByteBuffer jsonBB = ByteBuffer.wrap(jsonBytes, 0, jsonBytes.length);
+
         ImmutableString KEY_double = new ImmutableString("double");
         ImmutableString KEY_double8 = new ImmutableString("double8");
         ImmutableString KEY_int32_8 = new ImmutableString("int32_8");
@@ -29,6 +32,9 @@ public class Test {
 
         ImmutableString KEY_dealCount = new ImmutableString("dealCount");
         ImmutableString KEY_new_obj = new ImmutableString("new_obj");
+
+
+
 
         //TestDictionary();
 
@@ -41,6 +47,10 @@ public class Test {
         Xson xson = new Xson(1024, 128);
 
         xson.DEBUG_ShowStats();
+
+        IObject json = xson.readJson(jsonBB);
+        System.out.println(json);
+        System.exit(-1);
 
         IObject doc = xson.readBson(bb);
 

@@ -3,6 +3,7 @@ package com.pk.bson;
 import com.pk.bson.core.*;
 import com.pk.bson.lang.StringDictionary;
 import com.pk.bson.serialization.BsonStream;
+import com.pk.bson.serialization.JsonStream;
 
 import java.nio.ByteBuffer;
 
@@ -14,6 +15,7 @@ public class Xson {
     private final ElementCache elementCache;
     private final CollectionCache collectionCache;
     private final BsonStream bsonStream = new BsonStream();
+    private final JsonStream jsonStream = new JsonStream();
 
     private Xson(){
         elementCache = null;
@@ -30,8 +32,21 @@ public class Xson {
         Collection collection = collectionCache.acquier(Collection.TYPE.OBJECT);
         bsonStream.readCollectionFromBSON(collection);
         return collection;
-
     }
+
+    public IObject readJson(ByteBuffer byteBuffer){
+        Collection collection = null;
+        jsonStream.init(byteBuffer);
+        if (jsonStream.objectStart()) {
+            collection = collectionCache.acquier(Collection.TYPE.OBJECT);
+            jsonStream.readCollectionFromBSON(collection);
+        } else {
+             //todo exception
+            System.out.println("invalid format");
+        }
+        return collection;
+    }
+
     public void DEBUG_ShowStats() {
         System.out.println("-- STATS ------------------------------------------");
         //System.out.println(dictionary);
