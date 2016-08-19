@@ -19,7 +19,7 @@ import java.nio.file.Path;
 public class Test {
 
     public static void main(String[] args) throws IOException, NoSuchFieldException {
-        byte[] jsonBytes = "{\"key1\":null}".getBytes();
+        byte[] jsonBytes = "{\"key1\":34e4}".getBytes();
         ByteBuffer jsonBB = ByteBuffer.wrap(jsonBytes, 0, jsonBytes.length);
 
         ImmutableString KEY_double = new ImmutableString("double");

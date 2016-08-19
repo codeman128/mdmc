@@ -2,7 +2,6 @@ package com.pk.bson.serialization;
 
 import com.pk.bson.core.Collection;
 import com.pk.bson.lang.MutableString;
-import org.omg.CORBA.UNKNOWN;
 
 import java.nio.ByteBuffer;
 
@@ -12,8 +11,7 @@ import java.nio.ByteBuffer;
 public class JsonStream {
     private final MutableString str = new MutableString(1024);
 
-    private enum JsonElementType {UNKNOWN, STRING, NUMBER, DOUBLE, FALSE, TRUE, NULL}
-    private JsonElementType bufType = JsonElementType.UNKNOWN;
+    private enum JsonElementType {UNKNOWN, STRING, INTEGER, DOUBLE, FALSE, TRUE, NULL}
     private final byte[] buffer = new byte[1024*10];
     private int bufLength = 0;
     private ByteBuffer bb;
@@ -31,9 +29,8 @@ public class JsonStream {
     private JsonElementType readElement(){
         // init
         bufLength = 0;
-        bufType = JsonElementType.UNKNOWN;
-
-        switch (readByteIgnoreSpaces()) {
+         byte b = readByteIgnoreSpaces();
+        switch (b) {
             case '"': { // read String
                 while (true) {
                     buffer[bufLength] = bb.get();
@@ -64,13 +61,35 @@ public class JsonStream {
                     return JsonElementType.NULL;
                 } else return JsonElementType.UNKNOWN;
             }
+            case '-':
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9': { //number
+                buffer[bufLength++]=b;
+                boolean pointFound = false;
+                while (true){
+                    b=bb.get();
+                    if (('0'<=b && b<='9')||(b=='e')||(b=='.'&& !pointFound)) {
+                        buffer[bufLength++]=b;
+                        if (b=='.') pointFound = true;
+                    } else {
+                        bb.position(bb.position()-1);
+                        if (pointFound) {
+                            return JsonElementType.DOUBLE;
+                        } else return JsonElementType.INTEGER;
+                    }
+                }
+
+            }
         }
-
-
-
-
-
-    return JsonElementType.UNKNOWN;
+        return JsonElementType.UNKNOWN;
     }
 
     public boolean objectStart() {
