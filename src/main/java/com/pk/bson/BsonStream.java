@@ -1,7 +1,7 @@
 package com.pk.bson;
 
-import com.pk.bson.elements.Collection;
-import com.pk.bson.elements.Element;
+import com.pk.bson.core.Collection;
+import com.pk.bson.core.Element;
 import com.pk.bson.lang.ImmutableString;
 import com.pk.bson.lang.MutableString;
 

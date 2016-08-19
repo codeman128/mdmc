@@ -1,4 +1,4 @@
-package com.pk.bson.elements;
+package com.pk.bson.core;
 
 /**
  * Created by pkapovski on 8/16/2016.

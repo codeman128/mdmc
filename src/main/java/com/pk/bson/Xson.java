@@ -1,6 +1,6 @@
 package com.pk.bson;
 
-import com.pk.bson.elements.*;
+import com.pk.bson.core.*;
 import com.pk.bson.lang.StringDictionary;
 
 import java.nio.ByteBuffer;

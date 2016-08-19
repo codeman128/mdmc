@@ -1,8 +1,8 @@
 package com.pk.bson;
 
 
-import com.pk.bson.elements.IArray;
-import com.pk.bson.elements.IObject;
+import com.pk.bson.core.IArray;
+import com.pk.bson.core.IObject;
 import com.pk.bson.lang.ImmutableString;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class Test {
 
         Path path;
         path = Paths.get("D:\\data\\gd\\workspace\\depot\\MarketData\\mis\\mdmc_ssh\\src\\test\\bson\\test5.bson");
-        //path = Paths.get("E:\\gdrive\\projects\\git\\mdmc\\src\\test\\bson\\test5.bson");
+        path = Paths.get("E:\\gdrive\\projects\\git\\mdmc\\src\\test\\bson\\test5.bson");
         byte[] buffer = Files.readAllBytes(path);
 
         ByteBuffer bb = ByteBuffer.wrap(buffer, 0, buffer.length);

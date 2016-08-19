@@ -1,7 +1,6 @@
-package com.pk.bson.elements;
+package com.pk.bson.core;
 
 import com.pk.bson.lang.ImmutableString;
-import com.pk.bson.lang.MutableString;
 
 /**
  * Created by pkapovski on 8/14/2016.
