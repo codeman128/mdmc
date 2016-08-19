@@ -2,7 +2,6 @@ package com.pk.bson.serialization;
 
 import com.pk.bson.core.Collection;
 import com.pk.bson.lang.MutableString;
-
 import java.nio.ByteBuffer;
 
 /**
@@ -11,12 +10,10 @@ import java.nio.ByteBuffer;
 public class JsonStream {
     private final MutableString str = new MutableString(1024);
 
-    private enum JsonElementType {UNKNOWN, STRING, INTEGER, DOUBLE, FALSE, TRUE, NULL}
+    private enum JsonElementType {UNKNOWN, STRING, INTEGER, DOUBLE, FALSE, TRUE, NULL, OBJECT, ARRAY}
     private final byte[] buffer = new byte[1024*10];
     private int bufLength = 0;
     private ByteBuffer bb;
-
-
 
     private byte readByteIgnoreSpaces(){
         byte b = ' ';
@@ -31,7 +28,7 @@ public class JsonStream {
         bufLength = 0;
          byte b = readByteIgnoreSpaces();
         switch (b) {
-            case '"': { // read String
+            case '"': { // read String ---------------------------------------------------------------------------------
                 while (true) {
                     buffer[bufLength] = bb.get();
                     //handle escape chars
@@ -44,19 +41,18 @@ public class JsonStream {
                         bufLength++;
                     }
                 }
-                //return JsonElementType.UNKNOWN;
             }
-            case 'f': { //read false
+            case 'f': { //read false -----------------------------------------------------------------------------------
                 if (bb.get()=='a' && bb.get()=='l' && bb.get()=='s' && bb.get()=='e') {
                     return JsonElementType.FALSE;
                 } else return JsonElementType.UNKNOWN;
             }
-            case 't': { //read true
+            case 't': { //read true ------------------------------------------------------------------------------------
                 if (bb.get()=='r' && bb.get()=='u' && bb.get()=='e') {
                     return JsonElementType.TRUE;
                 } else return JsonElementType.UNKNOWN;
             }
-            case 'n': { //read null
+            case 'n': { //read null ------------------------------------------------------------------------------------
                 if (bb.get()=='u' && bb.get()=='l' && bb.get()=='l') {
                     return JsonElementType.NULL;
                 } else return JsonElementType.UNKNOWN;
@@ -71,7 +67,7 @@ public class JsonStream {
             case '6':
             case '7':
             case '8':
-            case '9': { //number
+            case '9': { //read number ---------------------------------------------------------------------------------
                 buffer[bufLength++]=b;
                 boolean pointFound = false;
                 while (true){
@@ -88,8 +84,25 @@ public class JsonStream {
                 }
 
             }
+            case '{': return JsonElementType.OBJECT; //read object -----------------------------------------------------
+            case '[': return JsonElementType.ARRAY; //read array -------------------------------------------------------
         }
         return JsonElementType.UNKNOWN;
+    }
+
+    protected boolean readKeyValuePair(){
+        if (readElement()==JsonElementType.STRING) {
+            str.copyFrom(buffer, 0, bufLength);
+            if (readByteIgnoreSpaces()==':') {
+                JsonElementType type = readElement();
+                System.out.println("["+str+"]:["+new String(buffer, 0 , bufLength)+"] "+type);
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     public boolean objectStart() {
@@ -102,26 +115,7 @@ public class JsonStream {
     }
 
     public void readCollectionFromBSON(Collection collection) {
-        JsonElementType type = readElement();
-        if (type!= JsonElementType.UNKNOWN){
-            System.out.println(type+" > ["+new String(buffer,0, bufLength)+"]");
-        } else{
-            System.out.println(type);
-        }
-
-        byte s = readByteIgnoreSpaces();
-        if (s==':') {
-            System.out.println(" : ");
-        } else {
-            System.out.println("no : instead "+(char)s);
-        }
-
-        type = readElement();
-        if (type!= JsonElementType.UNKNOWN){
-            System.out.println(type+" > ["+new String(buffer,0, bufLength)+"]");
-        } else{
-            System.out.println(type);
-        }
+       readKeyValuePair();
 
 
     }

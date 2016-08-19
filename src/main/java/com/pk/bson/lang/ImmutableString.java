@@ -51,12 +51,19 @@ public class ImmutableString {
         return hash;
     }
 
-    protected void copyFrom(ImmutableString source) { //please note - not allows growth
+    public void copyFrom(byte[] buffer, int offset, int length) { //please note - not allows growth
         offset = 0;
-        length = source.length;
-        System.arraycopy(source.buffer, source.offset, buffer, offset, length);
+        this.length = length;
+        System.arraycopy(buffer, offset, this.buffer, this.offset, length);
         hashCode();
     }
+
+    protected void copyFrom(ImmutableString source) { //please note - not allows growth
+        copyFrom(source.buffer, source.offset, source.length);
+        hashCode();
+    }
+
+
 
     public boolean equals(Object anObject) {
         if (this == anObject) {
