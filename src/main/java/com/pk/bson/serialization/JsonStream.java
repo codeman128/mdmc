@@ -118,6 +118,47 @@ public class JsonStream {
         bb = byteStreams;
     }
 
+//    private void setBoolean(Collection collection, boolean value){
+//        if (collection.getType()== Collection.TYPE.OBJECT) {
+//            collection.setBoolean(str, value);
+//        } else {
+//            collection.addBoolean(value);
+//        }
+//    }
+
+    private void readArrayFromBSON(Collection collection) throws Exception {
+        while (true) {
+            switch (readElement()) {
+                case TRUE: {
+                    collection.addBoolean(true);
+                    break;
+                }
+                case FALSE: {
+                    collection.addBoolean(false);
+                    break;
+                }
+                case INTEGER: {
+                    collection.addInt(NumberUtils.toInt(buffer, 0, bufLength));
+                    break;
+                }
+                case OBJECT: {
+                    readCollectionFromBSON((Collection) collection.setObject(str));
+                    break;
+                }
+                case ARRAY: {
+                    readArrayFromBSON((Collection) collection.setArray(str));
+                    break;
+                }
+                case ARRAY_END: {
+                    return;
+                }
+                case COMMA: {
+                    //do nothing
+                }
+            }
+        }
+    }
+
     public void readCollectionFromBSON(Collection collection) throws Exception {
         while (true){
             switch (readElement()) {
@@ -140,6 +181,10 @@ public class JsonStream {
                             }
                             case OBJECT: {
                                 readCollectionFromBSON((Collection) collection.setObject(str));
+                                break;
+                            }
+                            case ARRAY: {
+                                readArrayFromBSON((Collection) collection.setArray(str));
                             }
                         }
                     } else {
