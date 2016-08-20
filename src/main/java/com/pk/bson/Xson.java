@@ -34,7 +34,7 @@ public class Xson {
         return collection;
     }
 
-    public IObject readJson(ByteBuffer byteBuffer){
+    public IObject readJson(ByteBuffer byteBuffer) throws Exception {
         Collection collection = null;
         jsonStream.init(byteBuffer);
         if (jsonStream.objectStart()) {

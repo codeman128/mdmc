@@ -2,6 +2,8 @@ package com.pk.bson.serialization;
 
 import com.pk.bson.core.Collection;
 import com.pk.bson.lang.MutableString;
+import com.pk.bson.lang.NumberUtils;
+
 import java.nio.ByteBuffer;
 
 /**
@@ -10,7 +12,7 @@ import java.nio.ByteBuffer;
 public class JsonStream {
     private final MutableString str = new MutableString(1024);
 
-    private enum JsonElementType {UNKNOWN, STRING, INTEGER, DOUBLE, FALSE, TRUE, NULL, OBJECT, ARRAY}
+    private enum JsonElementType {UNKNOWN, STRING, INTEGER, DOUBLE, FALSE, TRUE, NULL, OBJECT, OBJECT_END, ARRAY_END, COMMA, ARRAY}
     private final byte[] buffer = new byte[1024*10];
     private int bufLength = 0;
     private ByteBuffer bb;
@@ -82,10 +84,12 @@ public class JsonStream {
                         } else return JsonElementType.INTEGER;
                     }
                 }
-
             }
             case '{': return JsonElementType.OBJECT; //read object -----------------------------------------------------
+            case '}': return JsonElementType.OBJECT_END;
             case '[': return JsonElementType.ARRAY; //read array -------------------------------------------------------
+            case ']': return JsonElementType.ARRAY_END;
+            case ',': return JsonElementType.COMMA;
         }
         return JsonElementType.UNKNOWN;
     }
@@ -114,8 +118,37 @@ public class JsonStream {
         bb = byteStreams;
     }
 
-    public void readCollectionFromBSON(Collection collection) {
-       readKeyValuePair();
+    public void readCollectionFromBSON(Collection collection) throws Exception {
+        while (true){
+            switch (readElement()) {
+                case OBJECT_END: return;
+                case STRING:{
+                    str.copyFrom(buffer, 0, bufLength);
+                    if (readByteIgnoreSpaces()==':') {
+                        switch (readElement()){
+                            case TRUE: {
+                                collection.setBoolean(str, true);
+                                break;
+                            }
+                            case FALSE: {
+                                collection.setBoolean(str, false);
+                                break;
+                            }
+                            case INTEGER: {
+                                collection.setInt(str, NumberUtils.toInt(buffer, 0, bufLength));
+                                break;
+                            }
+                            case OBJECT: {
+                                readCollectionFromBSON((Collection) collection.setObject(str));
+                            }
+                        }
+                    } else {
+                        throw new Exception("invalid format ");
+                    }
+                }
+            }
+        }
+
 
 
     }
