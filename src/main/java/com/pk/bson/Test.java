@@ -19,8 +19,6 @@ import java.nio.file.Path;
 public class Test {
 
     public static void main(String[] args) throws Exception {
-        byte[] jsonBytes = "{\"key1\":1234, \"key2\":[true,false]}".getBytes();
-        ByteBuffer jsonBB = ByteBuffer.wrap(jsonBytes, 0, jsonBytes.length);
 
         ImmutableString KEY_double = new ImmutableString("double");
         ImmutableString KEY_double8 = new ImmutableString("double8");
@@ -33,17 +31,23 @@ public class Test {
         ImmutableString KEY_dealCount = new ImmutableString("dealCount");
         ImmutableString KEY_new_obj = new ImmutableString("new_obj");
 
-
-
-
         //TestDictionary();
 
-        Path path;
-        path = Paths.get("D:\\data\\gd\\workspace\\depot\\MarketData\\mis\\mdmc_ssh\\src\\test\\bson\\test5.bson");
-        path = Paths.get("E:\\gdrive\\projects\\git\\mdmc\\src\\test\\bson\\test5.bson");
-        byte[] buffer = Files.readAllBytes(path);
+        String s;
+        s = "D:\\data\\gd\\workspace\\depot\\MarketData\\mis\\mdmc_ssh\\src\\test\\bson\\";
+        s = "E:\\gdrive\\projects\\git\\mdmc\\src\\test\\bson\\";
 
-        ByteBuffer bb = ByteBuffer.wrap(buffer, 0, buffer.length);
+
+        Path bsonPath = Paths.get(s+"test5.bson");
+        byte[] bsonBuffer = Files.readAllBytes(bsonPath);
+        ByteBuffer bsonBB = ByteBuffer.wrap(bsonBuffer, 0, bsonBuffer.length);
+
+        Path jsonPath = Paths.get(s+"test4.json");
+        byte[] jsonBuffer = Files.readAllBytes(jsonPath);
+        ByteBuffer jsonBB = ByteBuffer.wrap(jsonBuffer, 0, jsonBuffer.length);
+        System.out.println(new String(jsonBuffer));
+
+
         Xson xson = new Xson(1024, 128);
 
         xson.DEBUG_ShowStats();
@@ -52,7 +56,7 @@ public class Test {
         System.out.println(json);
         System.exit(-1);
 
-        IObject doc = xson.readBson(bb);
+        IObject doc = xson.readBson(bsonBB);
 
         System.out.println(doc.toString());
         xson.DEBUG_ShowStats();
@@ -89,8 +93,8 @@ public class Test {
         xson.DEBUG_ShowStats();
 
 
-        bb.position(0);
-        doc = xson.readBson(bb);
+        bsonBB.position(0);
+        doc = xson.readBson(bsonBB);
         System.out.println(doc.toString());
         xson.DEBUG_ShowStats();
 

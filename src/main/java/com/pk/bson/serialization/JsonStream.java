@@ -1,6 +1,8 @@
 package com.pk.bson.serialization;
 
 import com.pk.bson.core.Collection;
+import com.pk.bson.core.IArray;
+import com.pk.bson.core.IObject;
 import com.pk.bson.lang.MutableString;
 import com.pk.bson.lang.NumberUtils;
 
@@ -126,27 +128,27 @@ public class JsonStream {
 //        }
 //    }
 
-    private void readArrayFromBSON(Collection collection) throws Exception {
+    private void readArrayFromBSON(IArray array) throws Exception {
         while (true) {
             switch (readElement()) {
                 case TRUE: {
-                    collection.addBoolean(true);
+                    array.addBoolean(true);
                     break;
                 }
                 case FALSE: {
-                    collection.addBoolean(false);
+                    array.addBoolean(false);
                     break;
                 }
                 case INTEGER: {
-                    collection.addInt(NumberUtils.toInt(buffer, 0, bufLength));
+                    array.addInt(NumberUtils.toInt(buffer, 0, bufLength));
                     break;
                 }
                 case OBJECT: {
-                    readCollectionFromBSON((Collection) collection.setObject(str));
+                    readCollectionFromBSON((Collection) array.addObject());
                     break;
                 }
                 case ARRAY: {
-                    readArrayFromBSON((Collection) collection.setArray(str));
+                    readArrayFromBSON(array.addArray());
                     break;
                 }
                 case ARRAY_END: {
@@ -159,7 +161,7 @@ public class JsonStream {
         }
     }
 
-    public void readCollectionFromBSON(Collection collection) throws Exception {
+    public void readCollectionFromBSON(IObject object) throws Exception {
         while (true){
             switch (readElement()) {
                 case OBJECT_END: return;
@@ -168,23 +170,23 @@ public class JsonStream {
                     if (readByteIgnoreSpaces()==':') {
                         switch (readElement()){
                             case TRUE: {
-                                collection.setBoolean(str, true);
+                                object.setBoolean(str, true);
                                 break;
                             }
                             case FALSE: {
-                                collection.setBoolean(str, false);
+                                object.setBoolean(str, false);
                                 break;
                             }
                             case INTEGER: {
-                                collection.setInt(str, NumberUtils.toInt(buffer, 0, bufLength));
+                                object.setInt(str, NumberUtils.toInt(buffer, 0, bufLength));
                                 break;
                             }
                             case OBJECT: {
-                                readCollectionFromBSON((Collection) collection.setObject(str));
+                                readCollectionFromBSON(object.setObject(str));
                                 break;
                             }
                             case ARRAY: {
-                                readArrayFromBSON((Collection) collection.setArray(str));
+                                readArrayFromBSON(object.setArray(str));
                             }
                         }
                     } else {
