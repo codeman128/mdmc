@@ -143,6 +143,10 @@ public class JsonStream {
                     array.addInt(NumberUtils.toInt(buffer, 0, bufLength));
                     break;
                 }
+                case DOUBLE: {
+                    array.addDouble(NumberUtils.toDouble(buffer, 0, bufLength));
+                    break;
+                }
                 case OBJECT: {
                     readCollectionFromBSON((Collection) array.addObject());
                     break;
@@ -179,6 +183,10 @@ public class JsonStream {
                             }
                             case INTEGER: {
                                 object.setInt(str, NumberUtils.toInt(buffer, 0, bufLength));
+                                break;
+                            }
+                            case DOUBLE: {
+                                object.setDouble(str, NumberUtils.toDouble(buffer, 0, bufLength));
                                 break;
                             }
                             case OBJECT: {
