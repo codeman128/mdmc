@@ -5,6 +5,7 @@ import com.pk.bson.core.IArray;
 import com.pk.bson.core.IObject;
 import com.pk.bson.lang.ImmutableInteger;
 import com.pk.bson.lang.ImmutableString;
+import com.pk.bson.lang.MutableString;
 
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
@@ -23,11 +24,17 @@ public class Test {
         byte[] intBuffer = new byte[100];
         int size;
 
-        size = ImmutableInteger.intToString(intBuffer, 0, 100, Integer.MAX_VALUE);
+        size = ImmutableInteger.intToString(intBuffer, 0, Integer.MAX_VALUE);
         System.out.println(new String(intBuffer, 0, size));
 
-        size = ImmutableInteger.intToString(intBuffer, 0, 100, -1237779);
+        size = ImmutableInteger.intToString(intBuffer, 0, -1237779);
         System.out.println(new String(intBuffer, 0, size));
+
+        MutableString ms = new MutableString(100);
+        ms.append(7777);
+        ms.append(123);
+        ms.append(-8765);
+        System.out.println("["+ms+"]");
 
         ImmutableString KEY_double = new ImmutableString("double");
         ImmutableString KEY_double8 = new ImmutableString("double8");

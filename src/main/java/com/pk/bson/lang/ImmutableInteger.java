@@ -136,13 +136,13 @@ public class ImmutableInteger {
                 return i+1;
     }
 
-    public static int intToString(byte[] buf, int offset, int length, int value){
+    public static int intToString(byte[] buf, int offset, int value){
         if (value == Integer.MIN_VALUE) {
             System.arraycopy(MIN_INT_VAL, 0, buf, offset, MIN_INT_VAL.length);
             return MIN_INT_VAL.length;
         }
         int size = (value < 0) ? stringSize(-value) + 1 : stringSize(value);
-        getChars(value, size, buf);
+        getChars(value, offset+size, buf);
         return size;
     }
 
