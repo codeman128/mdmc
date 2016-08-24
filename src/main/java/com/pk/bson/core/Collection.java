@@ -13,6 +13,7 @@ public class Collection implements IObject, IArray {
     private TYPE type;
     private Element head;
     private Element tail;
+    private int size;
 
     private Collection(){
         cache = null;
@@ -55,6 +56,7 @@ public class Collection implements IObject, IArray {
             e.setPrevious(tail);
             tail = e;
         }
+        size++;
         return e;
     }
 
@@ -100,6 +102,7 @@ public class Collection implements IObject, IArray {
         }
         record.releaseReference();
         cache.getElementCache().release(record);
+        size--;
     }
 
     public Element addElement(Element.TYPE type, BsonStream stream){ // set package level
@@ -327,6 +330,18 @@ public class Collection implements IObject, IArray {
     }
 
     @Override
+    public Element.TYPE getType(int key) {
+        Element e = getElement(key);
+        if (e!=null) return e.getType();
+        return Element.TYPE.UNDEFINED;
+    }
+
+    @Override
+    public Element.TYPE getType(ImmutableString key) {
+        return getType(key2id(key));
+    }
+
+    @Override
     public void addInt(int value) {
         add(Element.TYPE.INT32, -1).setInt(value);
     }
@@ -349,6 +364,23 @@ public class Collection implements IObject, IArray {
     @Override
     public IArray addArray() {
         return (IArray)add(Element.TYPE.ARRAY, -1).reference;
+    }
+
+    @Override
+    public int getSize() {
+        return size;
+    }
+
+    @Override
+    public Element getElementAt(int index) {
+        if (index >= size || index < 0)
+            throw new IndexOutOfBoundsException();
+        Element e = head;
+        while (index>0) {
+            e = e.getNext();
+            index--;
+        }
+        return e;
     }
 
 }

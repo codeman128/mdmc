@@ -9,4 +9,6 @@ public interface IArray extends ICollection {
     void addDouble(double value);
     IObject addObject();
     IArray addArray();
+    int getSize();
+    Element getElementAt(int index);
 }

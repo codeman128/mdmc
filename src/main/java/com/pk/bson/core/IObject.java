@@ -104,5 +104,7 @@ public interface IObject extends ICollection {
     IArray getArray(int key) throws NoSuchFieldException;
     IArray getArray(ImmutableString key) throws NoSuchFieldException;
 
+    Element.TYPE getType(int key);
+    Element.TYPE getType(ImmutableString key);
 
 }

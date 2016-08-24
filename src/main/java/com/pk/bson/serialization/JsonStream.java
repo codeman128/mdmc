@@ -3,6 +3,7 @@ package com.pk.bson.serialization;
 import com.pk.bson.core.Collection;
 import com.pk.bson.core.IArray;
 import com.pk.bson.core.IObject;
+import com.pk.bson.lang.ImmutableInteger;
 import com.pk.bson.lang.MutableString;
 import com.pk.bson.lang.NumberUtils;
 
@@ -140,7 +141,7 @@ public class JsonStream {
                     break;
                 }
                 case INTEGER: {
-                    array.addInt(NumberUtils.toInt(buffer, 0, bufLength));
+                    array.addInt(ImmutableInteger.toInt(buffer, 0, bufLength));
                     break;
                 }
                 case DOUBLE: {
@@ -182,7 +183,7 @@ public class JsonStream {
                                 break;
                             }
                             case INTEGER: {
-                                object.setInt(str, NumberUtils.toInt(buffer, 0, bufLength));
+                                object.setInt(str, ImmutableInteger.toInt(buffer, 0, bufLength));
                                 break;
                             }
                             case DOUBLE: {

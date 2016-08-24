@@ -3,9 +3,9 @@ package com.pk.bson;
 
 import com.pk.bson.core.IArray;
 import com.pk.bson.core.IObject;
+import com.pk.bson.lang.ImmutableInteger;
 import com.pk.bson.lang.ImmutableString;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,6 +19,15 @@ import java.nio.file.Path;
 public class Test {
 
     public static void main(String[] args) throws Exception {
+
+        byte[] intBuffer = new byte[100];
+        int size;
+
+        size = ImmutableInteger.intToString(intBuffer, 0, 100, Integer.MAX_VALUE);
+        System.out.println(new String(intBuffer, 0, size));
+
+        size = ImmutableInteger.intToString(intBuffer, 0, 100, -1237779);
+        System.out.println(new String(intBuffer, 0, size));
 
         ImmutableString KEY_double = new ImmutableString("double");
         ImmutableString KEY_double8 = new ImmutableString("double8");
@@ -54,6 +63,11 @@ public class Test {
 
         IObject json = xson.readJson(jsonBB);
         System.out.println(json);
+
+        IArray array = json.getArray(KEY_array);
+        System.out.println(array.getSize());
+        System.out.println(array.getElementAt(2));
+
         System.exit(-1);
 
         IObject doc = xson.readBson(bsonBB);
