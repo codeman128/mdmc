@@ -58,8 +58,21 @@ public class MutableString extends ImmutableString {
         super.copyFrom(source);
     }
 
-    public void append(int value) {
+    public MutableString append(int value) {
         length = length+ImmutableInteger.intToString(buffer, offset+length, value);
+        return this;
+    }
+
+    public MutableString append(byte value) {
+        buffer[offset+length] = value;
+        length++;
+        return this;
+    }
+
+    public MutableString append(ImmutableString string) {
+        System.arraycopy(string.buffer, string.offset, buffer, offset+length, string.length);
+        length = length + string.length;
+        return this;
     }
 
 }

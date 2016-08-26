@@ -6,6 +6,7 @@ import com.pk.bson.core.IObject;
 import com.pk.bson.lang.ImmutableInteger;
 import com.pk.bson.lang.ImmutableString;
 import com.pk.bson.lang.MutableString;
+import com.pk.redis.RedisString;
 
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
@@ -20,22 +21,6 @@ import java.nio.file.Path;
 public class Test {
 
     public static void main(String[] args) throws Exception {
-
-        byte[] intBuffer = new byte[100];
-        int size;
-
-        size = ImmutableInteger.intToString(intBuffer, 0, Integer.MAX_VALUE);
-        System.out.println(new String(intBuffer, 0, size));
-
-        size = ImmutableInteger.intToString(intBuffer, 0, -1237779);
-        System.out.println(new String(intBuffer, 0, size));
-
-        MutableString ms = new MutableString(100);
-        ms.append(7777);
-        ms.append(123);
-        ms.append(-8765);
-        System.out.println("["+ms+"]");
-
         ImmutableString KEY_double = new ImmutableString("double");
         ImmutableString KEY_double8 = new ImmutableString("double8");
         ImmutableString KEY_int32_8 = new ImmutableString("int32_8");
@@ -46,6 +31,28 @@ public class Test {
 
         ImmutableString KEY_dealCount = new ImmutableString("dealCount");
         ImmutableString KEY_new_obj = new ImmutableString("new_obj");
+
+        byte[] intBuffer = new byte[100];
+        int size;
+
+        size = ImmutableInteger.intToString(intBuffer, 0, Integer.MAX_VALUE);
+        System.out.println(new String(intBuffer, 0, size));
+
+        size = ImmutableInteger.intToString(intBuffer, 0, -1237779);
+        System.out.println(new String(intBuffer, 0, size));
+
+//        MutableString ms = new MutableString(100);
+//        ms.append(7070);
+//        ms.append(-1234);
+//        ms.append(-8765);
+//        ms.append((byte)'+');
+//        System.out.println("["+ms+"] " + ms.getLength());
+
+        RedisString rs = new RedisString(1000);
+        rs.appendString(KEY_array);
+        System.out.println(rs);
+
+
 
         //TestDictionary();
 
