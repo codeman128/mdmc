@@ -1,7 +1,7 @@
 package com.pk.bson;
 
 import com.pk.bson.core.*;
-import com.pk.bson.lang.StringDictionary;
+import com.pk.lang.StringDictionary;
 import com.pk.bson.serialization.BsonStream;
 import com.pk.bson.serialization.JsonStream;
 

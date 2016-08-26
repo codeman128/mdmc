@@ -1,7 +1,7 @@
 package com.pk.redis;
 
-import com.pk.bson.lang.ImmutableString;
-import com.pk.bson.lang.MutableString;
+import com.pk.lang.ImmutableString;
+import com.pk.lang.MutableString;
 
 /**
  * Created by PavelK on 8/26/2016.

@@ -2,8 +2,8 @@ package com.pk.bson.serialization;
 
 import com.pk.bson.core.Collection;
 import com.pk.bson.core.Element;
-import com.pk.bson.lang.ImmutableString;
-import com.pk.bson.lang.MutableString;
+import com.pk.lang.ImmutableString;
+import com.pk.lang.MutableString;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

@@ -1,7 +1,7 @@
 package com.pk.bson.core;
 
-import com.pk.bson.lang.ObjectCache;
-import com.pk.bson.lang.StringDictionary;
+import com.pk.lang.ObjectCache;
+import com.pk.lang.StringDictionary;
 
 /**
  * Created by pkapovski on 8/15/2016.

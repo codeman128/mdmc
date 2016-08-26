@@ -1,4 +1,4 @@
-package com.pk.bson.lang;
+package com.pk.lang;
 
 /**
  * Created by PavelK on 8/12/2016.

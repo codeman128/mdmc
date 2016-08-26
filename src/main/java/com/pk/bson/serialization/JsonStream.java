@@ -3,9 +3,9 @@ package com.pk.bson.serialization;
 import com.pk.bson.core.Collection;
 import com.pk.bson.core.IArray;
 import com.pk.bson.core.IObject;
-import com.pk.bson.lang.ImmutableInteger;
-import com.pk.bson.lang.MutableString;
-import com.pk.bson.lang.NumberUtils;
+import com.pk.lang.ImmutableInteger;
+import com.pk.lang.MutableString;
+import com.pk.lang.NumberUtils;
 
 import java.nio.ByteBuffer;
 

@@ -3,9 +3,8 @@ package com.pk.bson;
 
 import com.pk.bson.core.IArray;
 import com.pk.bson.core.IObject;
-import com.pk.bson.lang.ImmutableInteger;
-import com.pk.bson.lang.ImmutableString;
-import com.pk.bson.lang.MutableString;
+import com.pk.lang.ImmutableInteger;
+import com.pk.lang.ImmutableString;
 import com.pk.redis.RedisString;
 
 import java.nio.ByteBuffer;

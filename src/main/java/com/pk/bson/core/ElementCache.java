@@ -1,6 +1,6 @@
 package com.pk.bson.core;
 
-import com.pk.bson.lang.ObjectCache;
+import com.pk.lang.ObjectCache;
 
 /**
  * Created by pkapovski on 8/14/2016.
