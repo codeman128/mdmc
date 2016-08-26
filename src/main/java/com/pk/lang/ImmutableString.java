@@ -1,5 +1,8 @@
 package com.pk.lang;
 
+import java.io.DataOutput;
+import java.io.IOException;
+
 /**
  * Created by PavelK on 8/12/2016.
  */
@@ -63,8 +66,6 @@ public class ImmutableString {
         hashCode();
     }
 
-
-
     public boolean equals(Object anObject) {
         if (this == anObject) {
             return true;
@@ -80,5 +81,9 @@ public class ImmutableString {
             }
         }
         return false;
+    }
+
+    public void write (DataOutput out) throws IOException {
+        out.write(buffer, offset, length);
     }
 }

@@ -6,13 +6,14 @@ import com.pk.lang.ImmutableString;
  * Created by PavelK on 8/26/2016.
  */
 public enum Commands {
-    SET("SET"),
-    GET("GET");
+    PING,
+    SET,
+    GET;
 
     private ImmutableString string;
 
-    Commands(String string){
-        this.string = new ImmutableString(string);
+    Commands(){
+        this.string = new ImmutableString(name());
     }
 
     public ImmutableString getString(){

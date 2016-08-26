@@ -1,12 +1,16 @@
 package com.pk.bson;
 
 
+import com.pk.bson.core.Element;
 import com.pk.bson.core.IArray;
 import com.pk.bson.core.IObject;
 import com.pk.lang.ImmutableInteger;
 import com.pk.lang.ImmutableString;
-import com.pk.redis.RedisString;
+import com.pk.redis.Commands;
+import com.pk.redis.RedisStringBuilder;
 
+import java.io.*;
+import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,7 +23,40 @@ import java.nio.file.Path;
 
 public class Test {
 
+    public static void RedisTest(){
+
+        ImmutableString REDIS_KEY = new ImmutableString("MY.KEY");
+        ImmutableString REDIS_VALUE = new ImmutableString("MY_VALUE");
+        RedisStringBuilder rs = new RedisStringBuilder(1000);
+        rs.appendCommand(Commands.PING, 2).appendString(REDIS_KEY).appendString(REDIS_VALUE);
+        System.out.println(rs);
+
+        try {
+            Socket socket = new Socket("localhost", 6379);
+            //PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            //BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            DataOutputStream out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+            DataInputStream in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+
+            rs.write(out);
+            out.flush();
+
+            //System.out.println(in.read());
+            byte[] b = new byte[1000];
+            int len = in.read(b);
+
+            System.out.println(new String(b, 0, len));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) throws Exception {
+        RedisTest();
+        System.exit(-4);
+
+
         ImmutableString KEY_double = new ImmutableString("double");
         ImmutableString KEY_double8 = new ImmutableString("double8");
         ImmutableString KEY_int32_8 = new ImmutableString("int32_8");
@@ -46,11 +83,6 @@ public class Test {
 //        ms.append(-8765);
 //        ms.append((byte)'+');
 //        System.out.println("["+ms+"] " + ms.getLength());
-
-        RedisString rs = new RedisString(1000);
-        rs.appendString(KEY_array);
-        System.out.println(rs);
-
 
 
         //TestDictionary();
