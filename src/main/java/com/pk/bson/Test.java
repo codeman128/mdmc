@@ -1,15 +1,18 @@
 package com.pk.bson;
 
 
-import com.pk.bson.core.Element;
 import com.pk.bson.core.IArray;
 import com.pk.bson.core.IObject;
 import com.pk.lang.ImmutableInteger;
 import com.pk.lang.ImmutableString;
+import com.pk.lang.MutableString;
+import com.pk.redis.Client;
 import com.pk.redis.Commands;
 import com.pk.redis.RedisStringBuilder;
 
 import java.io.*;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
@@ -28,25 +31,22 @@ public class Test {
         ImmutableString REDIS_KEY = new ImmutableString("MY.KEY");
         ImmutableString REDIS_VALUE = new ImmutableString("MY_VALUE");
         RedisStringBuilder rs = new RedisStringBuilder(1000);
-        rs.appendCommand(Commands.PING, 2).appendString(REDIS_KEY).appendString(REDIS_VALUE);
-        System.out.println(rs);
+        rs.appendCommand(Commands.SET, 2).appendString(REDIS_KEY).appendString(REDIS_VALUE);
+        //System.out.println("----> "+rs);
 
         try {
-            Socket socket = new Socket("localhost", 6379);
-            //PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            //BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            DataOutputStream out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-            DataInputStream in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+            Client client = new Client();
+            client.connect("localhost", 6379);
+            boolean result = client.SET(REDIS_KEY, REDIS_VALUE);
+            if (!result) {
+                System.out.println("false :(");
+            }
 
-            rs.write(out);
-            out.flush();
+            MutableString resultStr = new MutableString(1000);
+            client.GET(REDIS_KEY, resultStr);
+            System.out.println("GET: "+resultStr);
 
-            //System.out.println(in.read());
-            byte[] b = new byte[1000];
-            int len = in.read(b);
-
-            System.out.println(new String(b, 0, len));
         } catch (Exception e) {
             e.printStackTrace();
         }
