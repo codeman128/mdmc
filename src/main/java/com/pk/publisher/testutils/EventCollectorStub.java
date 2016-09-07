@@ -7,7 +7,6 @@ import com.pk.publisher.sd.ConnectionMetadata;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.sql.Time;
 import java.util.Date;
 
 /**
@@ -15,37 +14,37 @@ import java.util.Date;
  */
 public class EventCollectorStub implements IEventCollector {
     @Override
-    public void onConnectionAccepted(ClientConnection connection) {
+    public void onConnectionAccepted(byte[] listenerName, ClientConnection connection) {
         Socket s = connection.getSocket();
         System.out.println("New connection accepted from ["+ s.getInetAddress()+":"+s.getPort()+"] assigned to C["
                 +connection.getId()+"] F["+connection.getFeeder().getId()+"]");
     }
 
     @Override
-    public void onConnectionRejected_UnknownConsumer(String address) {
-        System.out.println("Connection Rejected - Unknown from address: "+address);
+    public void onConnectionRejected_UnknownConsumer(byte[] listenerName, String fromAddress) {
+        System.out.println("Connection Rejected - Unknown from address: "+ fromAddress);
     }
 
     @Override
-    public void onConnectionRejected_Busy(ConnectionMetadata mData) {
+    public void onConnectionRejected_Busy(byte[] listenerName, ConnectionMetadata mData) {
         System.out.println("Connection from "+mData+" Rejected - Busy");
 
     }
 
     @Override
-    public void onConnectionRejected_LimitReached(ConnectionMetadata mData) {
+    public void onConnectionRejected_LimitReached(byte[] listenerName, ConnectionMetadata mData) {
         System.out.println("Connection from "+mData +" rejected, simulations connection limit reached "+mData.getConsumer().getSimConnLimit());
     }
 
     @Override
-    public void onUnexpectedAcceptorError(Exception e) {
+    public void onUnexpectedAcceptorError(byte[] listenerName, Exception e) {
         System.out.println("onUnexpectedAcceptorError\n");
         e.printStackTrace();
     }
 
     @Override
-    public void onBindFailed(int port, IOException e) {
-        System.out.println("Bind to port "+port+" failed.");
+    public void onListenerStartFailed(byte[] name, IOException e) {
+        System.out.println("Listener "+new String(name)+" bind failed.");
         e.printStackTrace();
     }
 

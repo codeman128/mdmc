@@ -8,35 +8,68 @@ import com.pk.publisher.sd.ConnectionMetadata;
 import com.pk.publisher.sd.ConsumerManager;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
  * Created by PavelK on 5/21/2016.
  */
-public class Acceptor implements Runnable{
-    private final static String THREAD_NAME_SUFFIX = " - ACCEPTOR";
+public class Listener implements Runnable{
+    private final byte[] name;
+    private final byte[] longName;
+    private final int port;
+    private final InetAddress address;
+    private final boolean tcpNoDelay;
+    private final int maxRetry;
+    private final int sendBufferSize;
+
     private final Publisher publisher;
-    private final IPublisherConfig config;
     private final IEventCollector eventCollector;
     private final Thread thread;
     private final ConsumerManager consumerManager;
     private final ConnectionLookup  lookup = new ConnectionLookup();
+    private ServerSocket serverSocket;
 
-    private Acceptor(){
+    private Listener(){
+        port = 0;
+        address = null;
+        name = null;
+        longName = null;
+        tcpNoDelay = true;
+        maxRetry = 0;
+        sendBufferSize = 0;
+
         publisher = null;
-        config = null;
         eventCollector = null;
         thread = null;
         consumerManager = null;
     }
 
-    public Acceptor(Publisher publisher) {
+    public Listener(String name, InetAddress address, int port, boolean tcpNoDelay, int maxRetry,
+                    int sendBufferSize, Publisher publisher) {
+        this.name = name.getBytes();
+        this.port = port;
+        this.address = address;
+        this.tcpNoDelay = tcpNoDelay;
+        this.maxRetry = maxRetry;
+        this.sendBufferSize = sendBufferSize;
+        String longNameString = (name+" "+address+":"+port);
+        this.longName = longNameString.getBytes();
+
         this.publisher = publisher;
-        config = publisher.getConfig();
         eventCollector = publisher.getEventCollector();
         consumerManager = publisher.getConsumerManager();
+
+        try {
+            serverSocket = new ServerSocket(port, 1, address); //todo configure backlog
+        } catch (IOException e) {
+            eventCollector.onListenerStartFailed(longName, e);
+            System.exit(-1);
+        }
+
         thread = new Thread(this);
-        thread.setName(new String(publisher.getName())+THREAD_NAME_SUFFIX);
+        thread.setName("Listener Thread: " +longNameString);
         thread.start();
     }
 
@@ -45,35 +78,38 @@ public class Acceptor implements Runnable{
         ConnectionMetadata mData = consumerManager.getConnection(lookup);
 
         if (mData==null) {
-            eventCollector.onConnectionRejected_UnknownConsumer(socket.getInetAddress().toString());
+            eventCollector.onConnectionRejected_UnknownConsumer(longName, socket.getInetAddress().toString());
             return null;
         }
 
         if (mData.getConsumer().getConnCount()==mData.getConsumer().getSimConnLimit()) {
-            eventCollector.onConnectionRejected_LimitReached(mData);
+            eventCollector.onConnectionRejected_LimitReached(longName, mData);
             return null;
         }
-        // System.out.println("Acceptor-validate "+mData.getConsumer().getConnCount());
+        // System.out.println("Listener-validate "+mData.getConsumer().getConnCount());
         return mData;
     }
 
     @Override
     public void run() {
+
+
+
         int sndbuf_old = 0;
         int sndbuf_new = 0;
         try {
             while (true) {
                 Socket clientSocket = null;
                 try {
-                    clientSocket = publisher.getServerSocket().accept();
+                    clientSocket = serverSocket.accept();
                     clientSocket.setSoTimeout(10);
-                    clientSocket.setTcpNoDelay(config.getTcpNoDelay());
+                    clientSocket.setTcpNoDelay(tcpNoDelay);
                     sndbuf_old = clientSocket.getSendBufferSize();
-                    if (config.getSendBufferSize()>0) clientSocket.setSendBufferSize(config.getSendBufferSize());
+                    if (sendBufferSize>0) clientSocket.setSendBufferSize(sendBufferSize);
                     sndbuf_new = clientSocket.getSendBufferSize();
 
                 } catch (Exception e) {
-                    eventCollector.onUnexpectedAcceptorError(e);
+                    eventCollector.onUnexpectedAcceptorError(longName, e);
                     break;
                 }
 
@@ -86,18 +122,18 @@ public class Acceptor implements Runnable{
                     // let's try to find free slot
                     int retry = 1;
                     ClientConnection connection;
-                    while (retry < config.getAcceptorMaxRetry()) {
+                    while (retry < maxRetry) {
                         retry++;
                         connection = publisher.getAvailableConnection();
                         if (connection != null && connection.assign(clientSocket, mData)) {
-                            eventCollector.onConnectionAccepted(connection);
+                            eventCollector.onConnectionAccepted(longName, connection);
                             break;
                         }
                     }
 
                     // handle no available spot found
-                    if (retry >= config.getAcceptorMaxRetry()) {
-                        eventCollector.onConnectionRejected_Busy(mData);
+                    if (retry >= maxRetry) {
+                        eventCollector.onConnectionRejected_Busy(longName, mData);
                         closeQuietly(clientSocket);
                     }
                 }
@@ -105,6 +141,10 @@ public class Acceptor implements Runnable{
         } finally {
             ///System.out.println("\n\n\n???????????????\n\n\n");
         }
+    }
+
+    protected ServerSocket getServerSocket(){
+        return serverSocket;
     }
 
     private void closeQuietly(Socket socket){

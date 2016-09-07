@@ -12,13 +12,13 @@ import java.util.List;
  */
 public class DistributionLayer {
     private final Monitor monitor;
-    private final List<Publisher> publishers;
+    private final List<Listener> listeners = new ArrayList<>();
+    private final List<Publisher> publishers = new ArrayList<>();
     private final IEventCollector eventCollector;
     private final ConsumerManager consumerManager;
 
     private DistributionLayer(){
         monitor = null;
-        publishers = null;
         eventCollector = null;
         consumerManager = null;
     }
@@ -27,7 +27,6 @@ public class DistributionLayer {
         this.eventCollector = eventCollector;
         consumerManager = new ConsumerManager(this);
         monitor = new Monitor(100000, eventCollector);
-        publishers = new ArrayList<>();
     }
 
     public final Publisher addPublisher(byte[] name, IPublisherConfig config) {

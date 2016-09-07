@@ -4,6 +4,7 @@ import com.pk.publisher.core.ClientConnection;
 import com.pk.publisher.sd.ConnectionMetadata;
 
 import java.io.IOException;
+import java.net.InetAddress;
 
 /**
  * Created by PavelK on 5/23/2016.
@@ -11,23 +12,24 @@ import java.io.IOException;
 public interface IEventCollector {
 
 
-    /** Acceptor - New connection accepted  **/
-    void onConnectionAccepted(ClientConnection connection);
+    /** Listener - New connection accepted  **/
+    void onConnectionAccepted(byte[] listenerName, ClientConnection connection);
 
-    void onConnectionRejected_UnknownConsumer(String address);
+    void onConnectionRejected_UnknownConsumer(byte[] listenerName, String fromAddress);
 
-    /** Acceptor - Server reached maximum number of connection.
+    /** Listener - Server reached maximum number of connection.
+     * @param listenerName
      * @param mData**/
-    void onConnectionRejected_Busy(ConnectionMetadata mData);
+    void onConnectionRejected_Busy(byte[] listenerName, ConnectionMetadata mData);
 
     /** Number of simultaneous connection reached limit */
-    void onConnectionRejected_LimitReached(ConnectionMetadata mData);
+    void onConnectionRejected_LimitReached(byte[] listenerName, ConnectionMetadata mData);
 
-    /** Acceptor - Unexpected error **/
-    void onUnexpectedAcceptorError(Exception e);
+    /** Listener - Unexpected error **/
+    void onUnexpectedAcceptorError(byte[] listenerName, Exception e);
 
     /** Publisher - Bind failed, address already in use **/
-    void onBindFailed(int port, IOException e);
+    void onListenerStartFailed(byte[] name, IOException e);
 
     /** Client Connection - Connection assign error **/
     void onConnectionAssignError(ClientConnection clientConnection, ConnectionMetadata mData, IOException e);

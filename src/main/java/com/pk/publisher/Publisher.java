@@ -3,8 +3,7 @@ package com.pk.publisher;
 import com.pk.publisher.core.*;
 import com.pk.publisher.sd.ConsumerManager;
 
-import java.io.IOException;
-import java.net.ServerSocket;
+import java.net.UnknownHostException;
 
 /**
  * Created by PavelK on 5/21/2016.
@@ -14,17 +13,15 @@ public class Publisher  {
     private final IPublisherConfig config;
     private final IEventCollector eventCollector;
     private final Feeder[] feeders;
-    private final Acceptor acceptor;
+    private Listener acceptor;
     private final MessageDisruptor disruptor;
     private final ConsumerManager consumerManager;
-    private ServerSocket serverSocket;
 
     private Publisher(){
         name = null;
         config = null;
         eventCollector = null;
         feeders = null;
-        acceptor = null;
         disruptor = null;
         consumerManager = null;
     }
@@ -47,17 +44,14 @@ public class Publisher  {
         // init disruptor
         disruptor = new MessageDisruptor(this);
 
-        try {
-            serverSocket = new ServerSocket(config.getPort(), 1, config.getAddress());
-        } catch (IOException e) {
-            eventCollector.onBindFailed(config.getPort(), e);
-            System.exit(-1);
-        }
-
-
 
         // init acceptor
-        acceptor = new Acceptor(this);
+        try {
+            acceptor = new Listener("L", config.getAddress(), config.getPort(), config.getTcpNoDelay(),
+                    config.getAcceptorMaxRetry(), config.getSendBufferSize(), this);
+        } catch (UnknownHostException e) {
+            e.printStackTrace(); //todo remove
+        }
     }
 
     public byte[] getName(){
@@ -95,9 +89,7 @@ public class Publisher  {
         return feeders;
     }
 
-    protected ServerSocket getServerSocket(){
-        return serverSocket;
-    }
+
 
     public IEventCollector getEventCollector(){
         return eventCollector;
