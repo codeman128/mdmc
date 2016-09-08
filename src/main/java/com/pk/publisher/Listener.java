@@ -2,7 +2,6 @@ package com.pk.publisher;
 
 import com.pk.publisher.core.ClientConnection;
 import com.pk.publisher.core.IEventCollector;
-import com.pk.publisher.core.IPublisherConfig;
 import com.pk.publisher.sd.ConnectionLookup;
 import com.pk.publisher.sd.ConnectionMetadata;
 import com.pk.publisher.sd.ConsumerManager;
@@ -16,6 +15,7 @@ import java.net.Socket;
  * Created by PavelK on 5/21/2016.
  */
 public class Listener implements Runnable{
+    private final INewConnectionHandler handler;
     private final byte[] name;
     private final byte[] longName;
     private final int port;
@@ -32,6 +32,7 @@ public class Listener implements Runnable{
     private ServerSocket serverSocket;
 
     private Listener(){
+        handler = null;
         port = 0;
         address = null;
         name = null;
@@ -46,8 +47,9 @@ public class Listener implements Runnable{
         consumerManager = null;
     }
 
-    public Listener(String name, InetAddress address, int port, boolean tcpNoDelay, int maxRetry,
-                    int sendBufferSize, Publisher publisher) {
+    public Listener(INewConnectionHandler handler, String name, InetAddress address, int port,
+                    boolean tcpNoDelay, int maxRetry, int sendBufferSize, Publisher publisher) {
+        this.handler = handler;
         this.name = name.getBytes();
         this.port = port;
         this.address = address;
@@ -113,7 +115,7 @@ public class Listener implements Runnable{
                     break;
                 }
 
-                // validate new connection request
+                // validate new connection request --------------------------------------------------------------
                 ConnectionMetadata mData = validateNewConnection(clientSocket);
                 if (mData == null) {
                     closeQuietly(clientSocket);
@@ -137,6 +139,7 @@ public class Listener implements Runnable{
                         closeQuietly(clientSocket);
                     }
                 }
+                // validate new connection request --------------------------------------------------------------
             }
         } finally {
             ///System.out.println("\n\n\n???????????????\n\n\n");
