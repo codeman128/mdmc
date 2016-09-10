@@ -47,7 +47,7 @@ public class Publisher  {
 
         // init acceptor
         try {
-            acceptor = new Listener(null, "L", config.getAddress(), config.getPort(), config.getTcpNoDelay(),
+            acceptor = new Listener(null, config.getAddress(), config.getPort(), config.getTcpNoDelay(),
                     config.getAcceptorMaxRetry(), config.getSendBufferSize(), this);
         } catch (UnknownHostException e) {
             e.printStackTrace(); //todo remove
