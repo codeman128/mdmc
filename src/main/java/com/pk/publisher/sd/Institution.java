@@ -28,7 +28,7 @@ public class Institution {
         return name;
     }
 
-    public final byte[] getNameBytese(){
+    public final byte[] getNameBytes(){
         return nameBytes;
     }
 
@@ -40,8 +40,8 @@ public class Institution {
      * @param name Consumer name (previously known as client, usually reflect product name)
      * @param simConnLimit simultaneous connections limit
      */
-    public final Consumer addConsumer(String name, int simConnLimit){
-        Consumer c = new Consumer(this, name, simConnLimit);
+    public final Consumer addConsumer(String name, int simConnLimit, int heartbeat){
+        Consumer c = new Consumer(this, name, simConnLimit, heartbeat);
         consumers.add(c);
         return c;
     }

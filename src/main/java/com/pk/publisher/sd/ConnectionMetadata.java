@@ -22,12 +22,12 @@ public class ConnectionMetadata extends ConnectionLookup{
     /**
      * * @param heartbeat in # of ticks, if 10 and arb tick is every 50 ms heartbeat will be sent every 500 msec
      */
-    ConnectionMetadata(Consumer owner, String ip, int heartbeat) throws Exception {
+    ConnectionMetadata(Consumer owner, String ip) throws Exception {
         this.consumer = owner;
         this.ipString = ip;
         this.ipBytes = ip.getBytes();
         this.ip = ip2long(ip);
-        this.heartbeat = heartbeat;
+        this.heartbeat = owner.getHeartbeat();
         consumer.getInstitution().getManager().register(this);
     }
 

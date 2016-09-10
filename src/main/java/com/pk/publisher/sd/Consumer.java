@@ -13,6 +13,7 @@ public class Consumer {
     private final String name;
     private final byte[] nameBytes;
     private final int simConnLimit;
+    private final int heartbeat;
             final AtomicInteger simConnCounter = new AtomicInteger(0);
 
     private Consumer(){
@@ -20,16 +21,19 @@ public class Consumer {
         name = null;
         nameBytes = null;
         simConnLimit = 0;
+        heartbeat = 0;
     }
 
     /**
      * @param simConnLimit simultaneous connections limit
+     * @param heartbeat in # of ticks, if 10 and arb tick is every 50 ms heartbeat will be sent every 500 msec
      * */
-    Consumer(Institution owner, String name, int simConnLimit){
+    Consumer(Institution owner, String name, int simConnLimit, int heartbeat){
         this.owner = owner;
         this.name = name;
         this.nameBytes = name.getBytes();
         this.simConnLimit = simConnLimit;
+        this.heartbeat = heartbeat;
     }
 
     public final List<ConnectionMetadata> getConnections() {
@@ -48,11 +52,9 @@ public class Consumer {
         return nameBytes;
     }
 
-    /**
-     * @param heartbeat in # of ticks, if 10 and arb tick is every 50 ms heartbeat will be sent every 500 msec
-     **/
-     public ConnectionMetadata addConnection(String ip, int heartbeat) throws Exception {
-        final ConnectionMetadata con = new ConnectionMetadata(this, ip, heartbeat);
+
+     public ConnectionMetadata addConnection(String ip) throws Exception {
+        final ConnectionMetadata con = new ConnectionMetadata(this, ip);
         connections.add(con);
         return con;
     }
@@ -77,6 +79,10 @@ public class Consumer {
 
     public final int decConnCount() {
         return simConnCounter.decrementAndGet();
+    }
+
+    public int getHeartbeat(){
+        return heartbeat;
     }
 
 }
