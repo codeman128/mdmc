@@ -100,9 +100,12 @@ public class ClientConnection {
             msgSequenceId++;
             return true;
         } catch (IOException e) {
-            safelyCloseConnection();
-            state.set(STATE.AVAILABLE);
-            eventEmitter.onConnectionWriteError(this, mData, e);
+            try {
+                eventEmitter.onConnectionWriteError(this, mData, e);
+            } finally {
+                safelyCloseConnection();
+                state.set(STATE.AVAILABLE);
+            }
             return false;
         }
     }

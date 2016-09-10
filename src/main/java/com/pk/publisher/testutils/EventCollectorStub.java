@@ -56,7 +56,7 @@ public class EventCollectorStub implements IEventCollector {
 
     @Override
     public void onConnectionWriteError(ClientConnection clientConnection, ConnectionMetadata mData, Exception e) {
-        System.out.println("Connection Write Error, connection closed and released");
+        System.out.println("Connection Write Error, connection closed and released "+mData);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class EventCollectorStub implements IEventCollector {
                            cmd.getConsumer().getName()+ ", " +                                         // consumer name
                            cmd.getIpString()+ ", " +                                                   // consumer ip
                            (cc.getNextMsgSequenceId()-1)+", " +                                        // message sequence id
-                           message.type +", " +   // don't use until lwe support 0 alloc               // message type
+                           message.type +", " +   // don't use until we support 0 alloc                // message type
                            cc.getSentSize()+", " +                                                     // published length
 
                            (cc.getFinishTime()-message.eventTime)  +", " +                             // total Time     (in msec)
