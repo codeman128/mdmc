@@ -3,6 +3,7 @@ package com.pk.publisher.testutils;
 import com.pk.publisher.AbstractConnectionHandler;
 import com.pk.publisher.Publisher;
 import com.pk.publisher.core.IEventCollector;
+import com.pk.publisher.sd.ConnectionMetadata;
 import com.pk.publisher.sd.ConsumerManager;
 
 /**
@@ -14,9 +15,12 @@ public class TestConnectionHandler extends AbstractConnectionHandler{
         super(consumerManager, eventCollector, maxRetry);
     }
 
+    //this is just an example
+    Publisher publisher;
+
     @Override
-    public Publisher getPublisher() {
+    protected Publisher getPublisher(ConnectionMetadata mData) {
         // this method need to be overridden to dynamically find right publisher
-        return null;
+        return publisher;
     }
 }

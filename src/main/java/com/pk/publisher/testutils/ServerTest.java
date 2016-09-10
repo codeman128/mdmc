@@ -35,23 +35,33 @@ public class ServerTest {
             }
         }
 
+        // load config
         PublisherConfig config = new PublisherConfig(configPath);
+
+        // initialize consumer manager
         ConsumerManager cm = new ConsumerManager();
-        IEventCollector ec = new EventCollectorStub();
-        TestConnectionHandler handler = new TestConnectionHandler(cm, ec, config.getAcceptorMaxRetry());
-
-
-         DistributionLayer dl = new DistributionLayer(ec, handler, cm);
-
-
         Institution i1 = cm.addInstitution("EBS");
         Consumer c1 = i1.addConsumer("L1", 20); // 20 - number of simultaneously supported connection
         c1.addConnection("192.168.1.115",5); // 5 - is heartbeat in # of ticks, if arb tick is every 50 ms heartbeat will be sent every 250 msec
         c1.addConnection("10.72.2.185",5); // 5 - is heartbeat in # of ticks, if arb tick is every 50 ms heartbeat will be sent every 250 msec
 
+        // initialize event collector
+        IEventCollector ec = new EventCollectorStub();
 
+        // initialize new connection handler
+        TestConnectionHandler handler = new TestConnectionHandler(cm, ec, config.getAcceptorMaxRetry());
 
-         Publisher publisher_L2 = dl.addPublisher("L1".getBytes(), config);
+        // initialize distribution layer
+        DistributionLayer dl = new DistributionLayer(ec, handler);
+
+        // add publisher
+        Publisher publisher_L2 = dl.addPublisher("L1".getBytes(), config);
+        //this iis a hack, proper connection handler shell determine publisher based on ip..
+        handler.publisher = publisher_L2;
+
+        // add listener
+        dl.addListener(config.getAddress(), config.getPort(), config.getTcpNoDelay(), config.getSendBufferSize());
+
 
 
         long time;

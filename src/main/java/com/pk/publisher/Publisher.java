@@ -13,9 +13,7 @@ public class Publisher  {
     private final IPublisherConfig config;
     private final IEventCollector eventCollector;
     private final Feeder[] feeders;
-    private Listener acceptor;
     private final MessageDisruptor disruptor;
-    private final ConsumerManager consumerManager;
 
     private Publisher(){
         name = null;
@@ -23,15 +21,12 @@ public class Publisher  {
         eventCollector = null;
         feeders = null;
         disruptor = null;
-        consumerManager = null;
     }
 
-    public Publisher(byte[] name, IPublisherConfig config, IEventCollector eventCollector, Monitor monitor,
-                     ConsumerManager consumerManager){
+    public Publisher(byte[] name, IPublisherConfig config, IEventCollector eventCollector, Monitor monitor){
         this.name = name;
         this.config = config;
         this.eventCollector = eventCollector;
-        this.consumerManager = consumerManager;
 
 
         // init feeders
@@ -44,14 +39,6 @@ public class Publisher  {
         // init disruptor
         disruptor = new MessageDisruptor(this);
 
-
-        // init acceptor
-        try {
-            acceptor = new Listener(null, config.getAddress(), config.getPort(), config.getTcpNoDelay(),
-                    config.getAcceptorMaxRetry(), config.getSendBufferSize(), this);
-        } catch (UnknownHostException e) {
-            e.printStackTrace(); //todo remove
-        }
     }
 
     public byte[] getName(){
@@ -95,9 +82,6 @@ public class Publisher  {
         return eventCollector;
     }
 
-    public ConsumerManager getConsumerManager(){
-        return consumerManager;
-    }
 
     public void shutdown() {
         //todo implement

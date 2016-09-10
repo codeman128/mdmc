@@ -26,7 +26,7 @@ public interface IEventCollector {
     void onConnectionRejected_LimitReached(byte[] listenerName, ConnectionMetadata mData);
 
     /** Listener - Unexpected error **/
-    void onUnexpectedAcceptorError(byte[] listenerName, Exception e);
+    void onUnexpectedListenerError(byte[] listenerName, Exception e);
 
     /** Publisher - Bind failed, address already in use **/
     void onListenerStartFailed(byte[] name, IOException e);

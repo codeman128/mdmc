@@ -1,10 +1,7 @@
 package com.pk.publisher;
 
-import com.pk.publisher.core.ClientConnection;
 import com.pk.publisher.core.IEventCollector;
-import com.pk.publisher.sd.ConnectionLookup;
 import com.pk.publisher.sd.ConnectionMetadata;
-import com.pk.publisher.sd.ConsumerManager;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -15,53 +12,42 @@ import java.net.Socket;
  * Created by PavelK on 5/21/2016.
  */
 public class Listener implements Runnable{
-    private final AbstractConnectionHandler handler;
     private final byte[] name;
     private final int port;
     private final InetAddress address;
     private final boolean tcpNoDelay;
-    private final int maxRetry;
     private final int sendBufferSize;
 
-    private final Publisher publisher;
+    private final AbstractConnectionHandler handler;
     private final IEventCollector eventCollector;
     private final Thread thread;
-    private final ConsumerManager consumerManager;
-    private final ConnectionLookup  lookup = new ConnectionLookup();
     private ServerSocket serverSocket;
 
     private Listener(){
-        handler = null;
+        name = null;
         port = 0;
         address = null;
-        name = null;
         tcpNoDelay = true;
-        maxRetry = 0;
         sendBufferSize = 0;
-
-        publisher = null;
+        handler = null;
         eventCollector = null;
         thread = null;
-        consumerManager = null;
     }
 
     public Listener(AbstractConnectionHandler handler, InetAddress address, int port,
-                    boolean tcpNoDelay, int maxRetry, int sendBufferSize, Publisher publisher) {
-        this.handler = handler;
+                    boolean tcpNoDelay, int sendBufferSize, IEventCollector ec) {
+        String nameString = (address+":"+port);
+        this.name = nameString.getBytes();
         this.port = port;
         this.address = address;
         this.tcpNoDelay = tcpNoDelay;
-        this.maxRetry = maxRetry;
         this.sendBufferSize = sendBufferSize;
-        String nameString = (address+":"+port);
-        this.name = nameString.getBytes();
 
-        this.publisher = publisher;
-        eventCollector = publisher.getEventCollector();
-        consumerManager = publisher.getConsumerManager();
+        this.eventCollector = ec;
+        this.handler = handler;
 
         try {
-            serverSocket = new ServerSocket(port, 1, address); //todo configure backlog
+            serverSocket = new ServerSocket(port, 1, address); //todo configure backlog param
         } catch (IOException e) {
             eventCollector.onListenerStartFailed(name, e);
             System.exit(-1);
@@ -72,28 +58,8 @@ public class Listener implements Runnable{
         thread.start();
     }
 
-    protected ConnectionMetadata validateNewConnection(Socket socket) {
-        lookup.setIpBytes(socket.getInetAddress().getAddress());
-        ConnectionMetadata mData = consumerManager.getConnection(lookup);
-
-        if (mData==null) {
-            eventCollector.onConnectionRejected_UnknownConsumer(name, socket.getInetAddress().toString());
-            return null;
-        }
-
-        if (mData.getConsumer().getConnCount()==mData.getConsumer().getSimConnLimit()) {
-            eventCollector.onConnectionRejected_LimitReached(name, mData);
-            return null;
-        }
-        // System.out.println("Listener-validate "+mData.getConsumer().getConnCount());
-        return mData;
-    }
-
     @Override
     public void run() {
-
-
-
         int sndbuf_old = 0;
         int sndbuf_new = 0;
         try {
@@ -108,34 +74,12 @@ public class Listener implements Runnable{
                     sndbuf_new = clientSocket.getSendBufferSize();
 
                 } catch (Exception e) {
-                    eventCollector.onUnexpectedAcceptorError(name, e);
+                    eventCollector.onUnexpectedListenerError(name, e);
                     break;
                 }
 
                 // validate new connection request --------------------------------------------------------------
-                ConnectionMetadata mData = validateNewConnection(clientSocket);
-                if (mData == null) {
-                    closeQuietly(clientSocket);
-                } else {
-
-                    // let's try to find free slot
-                    int retry = 1;
-                    ClientConnection connection;
-                    while (retry < maxRetry) {
-                        retry++;
-                        connection = publisher.getAvailableConnection();
-                        if (connection != null && connection.assign(clientSocket, mData)) {
-                            eventCollector.onConnectionAccepted(name, connection);
-                            break;
-                        }
-                    }
-
-                    // handle no available spot found
-                    if (retry >= maxRetry) {
-                        eventCollector.onConnectionRejected_Busy(name, mData);
-                        closeQuietly(clientSocket);
-                    }
-                }
+                ConnectionMetadata mData = handler.handleConnection(this, clientSocket);
                 // validate new connection request --------------------------------------------------------------
             }
         } finally {

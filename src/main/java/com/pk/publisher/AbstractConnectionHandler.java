@@ -30,12 +30,12 @@ public abstract class AbstractConnectionHandler {
         this.maxRetry = maxRetry;
     }
 
-    public ConnectionMetadata handleConnection(Listener listener, Socket clientSocket){
+    public synchronized ConnectionMetadata handleConnection(Listener listener, Socket clientSocket){
         ConnectionMetadata mData = validateNewConnection(listener, clientSocket);
         if (mData == null) {
             closeQuietly(clientSocket);
         } else {
-            Publisher publisher = getPublisher();
+            Publisher publisher = getPublisher(mData);
             //todo check if publisher null +add event
 
             // let's try to find free slot
@@ -59,7 +59,7 @@ public abstract class AbstractConnectionHandler {
         return mData;
     }
 
-    public abstract Publisher getPublisher();
+    protected abstract Publisher getPublisher(ConnectionMetadata mData);
 
     protected ConnectionMetadata validateNewConnection(Listener listener,  Socket socket) {
         lookup.setIpBytes(socket.getInetAddress().getAddress());

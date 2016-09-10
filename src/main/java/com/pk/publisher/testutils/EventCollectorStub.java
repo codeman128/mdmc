@@ -37,8 +37,8 @@ public class EventCollectorStub implements IEventCollector {
     }
 
     @Override
-    public void onUnexpectedAcceptorError(byte[] listenerName, Exception e) {
-        System.out.println("onUnexpectedAcceptorError\n");
+    public void onUnexpectedListenerError(byte[] listenerName, Exception e) {
+        System.out.println("onUnexpectedListenerError\n");
         e.printStackTrace();
     }
 
