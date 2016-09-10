@@ -11,16 +11,11 @@ import java.util.Map;
  * Created by PavelK on 6/17/2016.
  */
 public class ConsumerManager {
-    private final DistributionLayer dl;
     private final List<Institution> institutions = new ArrayList<>();
     private final Map<ConnectionLookup, ConnectionMetadata> ipMap = new HashMap<>();
 
-    private ConsumerManager() {
-        dl = null;
-    }
+    public ConsumerManager() {
 
-    public ConsumerManager(DistributionLayer dl){
-        this.dl = dl;
     }
 
     public final ConnectionMetadata getConnection(ConnectionLookup cl){

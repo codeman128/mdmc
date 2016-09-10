@@ -16,17 +16,20 @@ public class DistributionLayer {
     private final List<Publisher> publishers = new ArrayList<>();
     private final IEventCollector eventCollector;
     private final ConsumerManager consumerManager;
+    private final AbstractConnectionHandler handler;
 
     private DistributionLayer(){
         monitor = null;
         eventCollector = null;
         consumerManager = null;
+        handler = null;
     }
 
-    public DistributionLayer(IEventCollector eventCollector){
+    public DistributionLayer(IEventCollector eventCollector, AbstractConnectionHandler handler, ConsumerManager cm){
         this.eventCollector = eventCollector;
-        consumerManager = new ConsumerManager(this);
+        consumerManager = cm;
         monitor = new Monitor(100000, eventCollector);
+        this.handler = handler;
     }
 
     public final Publisher addPublisher(byte[] name, IPublisherConfig config) {
