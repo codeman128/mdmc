@@ -23,6 +23,8 @@ public class Listener implements Runnable{
     private final Thread thread;
     private ServerSocket serverSocket;
 
+    private volatile boolean shutdown = false;
+
     private Listener(){
         name = null;
         port = 0;
@@ -74,16 +76,14 @@ public class Listener implements Runnable{
                     sndbuf_new = clientSocket.getSendBufferSize();
 
                 } catch (Exception e) {
-                    eventCollector.onUnexpectedListenerError(name, e);
+                    if (!shutdown) eventCollector.onUnexpectedListenerError(name, e);
                     break;
                 }
 
-                // validate new connection request --------------------------------------------------------------
                 ConnectionMetadata mData = handler.handleConnection(this, clientSocket);
-                // validate new connection request --------------------------------------------------------------
             }
         } finally {
-            ///System.out.println("\n\n\n???????????????\n\n\n");
+            eventCollector.onListenerShutdown(name);
         }
     }
 
@@ -91,14 +91,12 @@ public class Listener implements Runnable{
         return name;
     }
 
-    protected ServerSocket getServerSocket(){
-        return serverSocket;
-    }
-
-    private void closeQuietly(Socket socket){
+    public void shutdown(){
+        shutdown = true;
         try {
-            socket.close();
+            serverSocket.close();
         } catch (IOException e) {
         }
     }
+
 }

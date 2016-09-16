@@ -49,6 +49,11 @@ public class EventCollectorStub implements IEventCollector {
     }
 
     @Override
+    public void onListenerShutdown(byte[] name) {
+        System.out.println("Listener shutdown "+new String(name));
+    }
+
+    @Override
     public void onConnectionAssignError(ClientConnection clientConnection, ConnectionMetadata mData, IOException e) {
         System.out.println("Connection Assign Error");
         e.printStackTrace();

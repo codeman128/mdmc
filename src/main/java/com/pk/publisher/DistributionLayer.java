@@ -46,10 +46,16 @@ public class DistributionLayer {
     }
 
     public void shutdown() {
+        monitor.shutdown();
+
+        for (int i=0; i< listeners.size();i++) {
+            listeners.get(i).shutdown();
+        }
+
         for (int i=0; i< publishers.size();i++) {
             publishers.get(i).shutdown();
         }
-        monitor.shutdown();
+
 
     }
 

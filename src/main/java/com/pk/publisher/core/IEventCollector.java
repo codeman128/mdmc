@@ -31,6 +31,9 @@ public interface IEventCollector {
     /** Publisher - Bind failed, address already in use **/
     void onListenerStartFailed(byte[] name, IOException e);
 
+    /** Listener shutdown **/
+    void onListenerShutdown(byte[] name);
+
     /** Client Connection - Connection assign error **/
     void onConnectionAssignError(ClientConnection clientConnection, ConnectionMetadata mData, IOException e);
 
