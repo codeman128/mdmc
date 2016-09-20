@@ -18,7 +18,7 @@ public class Listener implements Runnable{
     private final boolean tcpNoDelay;
     private final int sendBufferSize;
 
-    private final AbstractConnectionHandler handler;
+    private final ConnectionHandler handler;
     private final IEventCollector eventCollector;
     private final Thread thread;
     private ServerSocket serverSocket;
@@ -36,7 +36,7 @@ public class Listener implements Runnable{
         thread = null;
     }
 
-    public Listener(AbstractConnectionHandler handler, InetAddress address, int port,
+    public Listener(ConnectionHandler handler, InetAddress address, int port,
                     boolean tcpNoDelay, int sendBufferSize, IEventCollector ec) {
         String nameString = (address+":"+port);
         this.name = nameString.getBytes();

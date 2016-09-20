@@ -12,19 +12,19 @@ import java.net.Socket;
 /**
  * Created by pkapovski on 9/8/2016.
  */
-public abstract class AbstractConnectionHandler {
+public class ConnectionHandler {
     private final IEventCollector eventCollector;
     private final ConsumerManager consumerManager;
     private final ConnectionLookup lookup = new ConnectionLookup();
     private final int maxRetry;
 
-    private AbstractConnectionHandler(){
+    private ConnectionHandler(){
         consumerManager = null;
         eventCollector = null;
         maxRetry = 0;
     }
 
-    public AbstractConnectionHandler(ConsumerManager consumerManager, IEventCollector eventCollector, int maxRetry){
+    public ConnectionHandler(ConsumerManager consumerManager, IEventCollector eventCollector, int maxRetry){
         this.consumerManager = consumerManager;
         this.eventCollector = eventCollector;
         this.maxRetry = maxRetry;
@@ -35,7 +35,7 @@ public abstract class AbstractConnectionHandler {
         if (mData == null) {
             closeQuietly(clientSocket);
         } else {
-            Publisher publisher = getPublisher(mData);
+            Publisher publisher = mData.getConsumer().getPublisher();
             //todo check if publisher null +add event
 
             // let's try to find free slot
@@ -59,7 +59,6 @@ public abstract class AbstractConnectionHandler {
         return mData;
     }
 
-    protected abstract Publisher getPublisher(ConnectionMetadata mData);
 
     protected ConnectionMetadata validateNewConnection(Listener listener,  Socket socket) {
         lookup.setIpBytes(socket.getInetAddress().getAddress());

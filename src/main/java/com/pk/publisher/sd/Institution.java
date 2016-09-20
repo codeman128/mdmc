@@ -1,5 +1,7 @@
 package com.pk.publisher.sd;
 
+import com.pk.publisher.Publisher;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +42,8 @@ public class Institution {
      * @param name Consumer name (previously known as client, usually reflect product name)
      * @param simConnLimit simultaneous connections limit
      */
-    public final Consumer addConsumer(String name, int simConnLimit, int heartbeat){
-        Consumer c = new Consumer(this, name, simConnLimit, heartbeat);
+    public final Consumer addConsumer(String name, int simConnLimit, int heartbeat, Publisher publisher){
+        Consumer c = new Consumer(this, name, simConnLimit, heartbeat, publisher);
         consumers.add(c);
         return c;
     }

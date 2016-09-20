@@ -2,7 +2,6 @@ package com.pk.publisher;
 
 import com.pk.publisher.core.IEventCollector;
 import com.pk.publisher.core.IPublisherConfig;
-import com.pk.publisher.sd.ConsumerManager;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ public class DistributionLayer {
     private final List<Listener> listeners = new ArrayList<>();
     private final List<Publisher> publishers = new ArrayList<>();
     private final IEventCollector eventCollector;
-    private final AbstractConnectionHandler handler;
+    private final ConnectionHandler handler;
 
     private DistributionLayer(){
         monitor = null;
@@ -24,7 +23,7 @@ public class DistributionLayer {
         handler = null;
     }
 
-    public DistributionLayer(IEventCollector eventCollector, AbstractConnectionHandler handler){
+    public DistributionLayer(IEventCollector eventCollector, ConnectionHandler handler){
         this.eventCollector = eventCollector;
         monitor = new Monitor(100000, eventCollector);
         this.handler = handler;

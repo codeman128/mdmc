@@ -1,7 +1,7 @@
 
 publisher.acceptor.port=8080
-publisher.acceptor.address=192.168.1.115
-##publisher.acceptor.address=10.72.2.185
+##publisher.acceptor.address=192.168.1.115
+publisher.acceptor.address=10.72.2.185
 publisher.acceptor.maxRetry=3
 publisher.disruptor.ringSize=16
 publisher.message.maxSize=204800

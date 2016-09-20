@@ -1,5 +1,7 @@
 package com.pk.publisher.sd;
 
+import com.pk.publisher.Publisher;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,6 +17,7 @@ public class Consumer {
     private final int simConnLimit;
     private final int heartbeat;
             final AtomicInteger simConnCounter = new AtomicInteger(0);
+    private Publisher publisher;
 
     private Consumer(){
         owner = null;
@@ -28,12 +31,13 @@ public class Consumer {
      * @param simConnLimit simultaneous connections limit
      * @param heartbeat in # of ticks, if 10 and arb tick is every 50 ms heartbeat will be sent every 500 msec
      * */
-    Consumer(Institution owner, String name, int simConnLimit, int heartbeat){
+    Consumer(Institution owner, String name, int simConnLimit, int heartbeat, Publisher publisher){
         this.owner = owner;
         this.name = name;
         this.nameBytes = name.getBytes();
         this.simConnLimit = simConnLimit;
         this.heartbeat = heartbeat;
+        this.publisher = publisher;
     }
 
     public final List<ConnectionMetadata> getConnections() {
@@ -84,5 +88,7 @@ public class Consumer {
     public int getHeartbeat(){
         return heartbeat;
     }
+
+    public Publisher getPublisher(){ return publisher;}
 
 }
