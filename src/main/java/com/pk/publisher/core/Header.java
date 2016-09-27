@@ -28,11 +28,12 @@ public class Header {
         addHeader(Message.TYPE.HEARTBEAT, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><rates_update type=\"heartbeat\"><sequence_number>");
     }
 
-    public final int addHeaderAndWrite(OutputStream stream, Message msg, long msgSeqId) throws IOException {
+    public final int addHeaderAndWrite(OutputStream stream, Message msg, final long msgSeqId) throws IOException {
+        final int msgTypeId = msg.type.getId();
         final byte[] mainBuffer = msg.buffer;
-        final byte[] headerBuffer = buffer[msg.type.getId()];
+        final byte[] headerBuffer = buffer[msgTypeId];
 
-        final int newLength = config.addMsgSeqId(headerBuffer, size[msg.type.getId()], msgSeqId);
+        final int newLength = config.addMsgSeqId(headerBuffer, size[msgTypeId], msgSeqId);
 
         System.arraycopy(headerBuffer, 0, mainBuffer, msg.offset-newLength, newLength);
         final int msgLength = msg.length + newLength;
