@@ -25,6 +25,7 @@ public class ClientConnection {
     private OutputStream stream;
     private long msgSequenceId;
     private int heartbeatCounter;
+    private volatile boolean closedByMonitor = false;
 
     long startTimeNano;
     long finishTimeNano;
@@ -75,6 +76,7 @@ public class ClientConnection {
     }
 
     private boolean setDate(Socket socket, ConnectionMetadata mData) {
+        this.closedByMonitor = false;
         this.socket = socket;
         this.mData = mData;
         return true;
@@ -101,10 +103,11 @@ public class ClientConnection {
             return true;
         } catch (IOException e) {
             try {
-                eventEmitter.onConnectionWriteError(this, mData, e);
+                if (!closedByMonitor) eventEmitter.onConnectionWriteError(this, mData, e);
             } finally {
                 safelyCloseConnection();
                 state.set(STATE.AVAILABLE);
+                closedByMonitor = false;
             }
             return false;
         }
@@ -161,6 +164,11 @@ public class ClientConnection {
             mData = null;
             state.set(STATE.AVAILABLE); //todo add state RELEASING
         }
+    }
+
+    public void closeByMonitor(){
+        safelyCloseConnection();
+        closedByMonitor = true;
     }
 
     public void shutdown(){

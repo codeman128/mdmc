@@ -66,9 +66,15 @@ public class EventCollectorStub implements IEventCollector {
 
     @Override
     public void onMonitorWriteTimeout(ClientConnection clientConnection, long timeNano, long timeout, Message msg) {
-        String msgName = "NULL";
-        if (msg.type!=null) msgName = msg.type.name();
-        System.out.println("Monitor - write timeout detected, stale for "+timeNano+" expected "+timeout+" when publishing "+msg.type);
+//        String msgName = "NULL";
+//        if (msg.type!=null) msgName = msg.type.name();
+//        System.out.println("Monitor - write timeout detected, stale for "+timeNano+" expected "+timeout+" when publishing "+msg.type+
+//                "\n Connection closed from: "+clientConnection.getMetadata() );
+
+        ConnectionMetadata mData = clientConnection.getMetadata();
+        System.out.println("Connection from consumer "+mData.getConsumer().getName() +"ip "+mData.getIpString() +" closed by latency monitor when publishing "+msg.type+
+        ". Took "+timeNano+" threshold "+timeout+" .");
+
     }
 
     @Override

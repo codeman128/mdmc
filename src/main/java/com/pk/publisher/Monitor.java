@@ -72,7 +72,7 @@ public class Monitor implements Runnable{
                                 if (session==prevSession && monTime==prevMonTime) {
                                     // This is to handle funny multithreading issue
                                     // Monitor calling session.safelyCloseConnection() below and continue (this will
-                                    // call socket.close(), the socket writing thread is blocker on write() which exit
+                                    // call socket.close(), the socket writing thread is blocked on write() which exit
                                     // with IOException and will call session.safelyCloseConnection() from wring thread
                                     // again etc. Monitor, however, will not wait for it and may "test" same session again
                                     // a specially if there is only one active session, will find same session and will
@@ -81,7 +81,7 @@ public class Monitor implements Runnable{
                                     eventCollector.onMonitorWriteTimeout(session, delta, feeder.getMonitorWriteTimeout(), feeder.getMonMessage());
                                     prevSession = session;
                                     prevMonTime = monTime;
-                                    session.safelyCloseConnection();
+                                    session.closeByMonitor();
                                 }
                             }  else {
                                 prevSession = null;

@@ -6,8 +6,8 @@ publisher.acceptor.maxRetry=3
 publisher.disruptor.ringSize=16
 publisher.message.maxSize=204800
 
-publisher.monitor.WriteTimeout=4
-publisher.monitor.SnapshotWriteTimeout=40
+publisher.monitor.WriteTimeout=5
+publisher.monitor.SnapshotWriteTimeout=62
 
 publisher.feeder.count=2
 publisher.feeder.connection.max=10
