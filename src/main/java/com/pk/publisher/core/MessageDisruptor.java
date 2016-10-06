@@ -9,6 +9,7 @@ import com.pk.publisher.core.IPublisherConfig;
 import com.pk.publisher.core.Message;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
@@ -18,6 +19,7 @@ public class MessageDisruptor {
     private final IPublisherConfig config;
     private final Disruptor<Message> disruptor;
     private final RingBuffer<Message> ringBuffer;
+    private final ExecutorService executor;
 
     private final EventFactory<Message> factory = new EventFactory<Message>() {
         @Override
@@ -30,11 +32,12 @@ public class MessageDisruptor {
         config = null;
         disruptor = null;
         ringBuffer = null;
+        executor = null;
     }
 
     public MessageDisruptor(Publisher publisher) {
         this.config = publisher.getConfig();
-        Executor executor = Executors.newCachedThreadPool();
+        executor = Executors.newCachedThreadPool();
         disruptor = new Disruptor<>(factory, config.getDisruptorRingSize(), executor,
                 ProducerType.SINGLE, config.getDisruptorStrategy());
 
@@ -56,4 +59,8 @@ public class MessageDisruptor {
         ringBuffer.publish(rbSequence);
     }
 
+    public void shutdown() {
+        //todo review https://groups.google.com/forum/#!topic/lmax-disruptor/URytxjgyYKo
+        executor.shutdown();
+    }
 }

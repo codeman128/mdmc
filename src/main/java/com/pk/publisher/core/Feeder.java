@@ -147,4 +147,10 @@ public final class Feeder implements EventHandler<Message> {
     public final long getMonitorWriteTimeout(){
         return monTimeout;
     }
+
+    public void shutdown() {
+        for (byte i=0; i<clients.length; i++) {
+            clients[i].shutdown();
+        }
+    }
 }

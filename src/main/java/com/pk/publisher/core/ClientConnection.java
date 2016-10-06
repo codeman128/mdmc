@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 //todo this is a session really, refactor(rename) latter
 public class ClientConnection {
-    public enum STATE {UNKNOWN, AVAILABLE, MARKED, INIT, ASSIGNED}
+    public enum STATE {UNKNOWN, AVAILABLE, MARKED, INIT, ASSIGNED, TERMINATED}
     private final AtomicReference<STATE> state = new AtomicReference<>(STATE.UNKNOWN);
     private final byte id;
     private final Feeder feeder;
@@ -161,6 +161,11 @@ public class ClientConnection {
             mData = null;
             state.set(STATE.AVAILABLE); //todo add state RELEASING
         }
+    }
+
+    public void shutdown(){
+        safelyCloseConnection();
+        state.set(STATE.TERMINATED);
     }
 
     public final Socket getSocket() {

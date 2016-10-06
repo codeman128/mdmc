@@ -84,6 +84,9 @@ public class Publisher  {
 
 
     public void shutdown() {
-        //todo implement
+        for (byte i=0; i<feeders.length; i++) {
+            feeders[i].shutdown();
+        }
+        disruptor.shutdown();
     }
 }
