@@ -14,6 +14,7 @@ public class Publisher  {
     private final IEventCollector eventCollector;
     private final Feeder[] feeders;
     private final MessageDisruptor disruptor;
+    private volatile boolean isShutdown = false;
 
     private Publisher(){
         name = null;
@@ -65,7 +66,7 @@ public class Publisher  {
     }
 
     public Message getNext(){
-        return disruptor.next();
+        return (isShutdown) ? null : disruptor.next();
     }
 
     public void publish(Message message) {
@@ -82,8 +83,29 @@ public class Publisher  {
         return eventCollector;
     }
 
+    private boolean hasBacklog() {
+        final long lastSequence = disruptor.getLastAllocSequence();
+        for (byte i=0; i<feeders.length; i++) {
+            if (lastSequence != feeders[i].getLastProcessedSequence()) return true;
+        }
+        return false;
+    }
 
     public void shutdown() {
+        if (isShutdown) return;
+        // add shutdown event
+        isShutdown = true;
+
+        long start = System.currentTimeMillis();
+        while (hasBacklog()) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (System.currentTimeMillis() - start > 5000) break;  // 5 sec
+        }
+
         for (byte i=0; i<feeders.length; i++) {
             feeders[i].shutdown();
         }

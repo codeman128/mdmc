@@ -21,8 +21,9 @@ public final class Feeder implements EventHandler<Message> {
     private final long snapshotWriteTimeout;
     private final IEventCollector eventCollector;
     private final byte[] msgBuffer;
+    private volatile long lastProcessedSequence = -1;
 
-    // monitor related values
+    // slow consumer monitor related members
     private long monTimeout;
     private Message monMessage;
     final AtomicReference<ClientConnection> monConnection = new AtomicReference<>();
@@ -108,10 +109,11 @@ public final class Feeder implements EventHandler<Message> {
      * </ul>
      **/
     @Override
-    public final void onEvent(Message msg, long l, boolean b) throws Exception {
-        // keep local copy of the message content because prefix going to be added by each feeder
+    public final void onEvent(final Message msg, final long l, final boolean b) throws Exception {
+        // keep local copy of the message content because header prefix going to be added by each feeder thread
         System.arraycopy(msg.buffer, msg.offset, msgBuffer, Message.HEADER_OFFSET, msg.length);
 
+        // slow consumer monitoring: lets use proper timeout (based on message type) for current iteration
         monMessage = msg;
         if (msg.type== Message.TYPE.SNAPSHOT) {
             monTimeout = snapshotWriteTimeout;
@@ -119,12 +121,12 @@ public final class Feeder implements EventHandler<Message> {
             monTimeout = writeTimeout;
         }
 
+        // send messages in publishing order
         for (int i=0; i< maxConnCount; i++){
             clients[pubOrder[i]].sendData(msg, msgBuffer);
         }
 
-        // todo prepare next message header
-
+        // update monitor log
         for (int i=0; i< maxConnCount; i++){
             ClientConnection cc = clients[pubOrder[i]];
             if (cc.getSentSize()>0) {
@@ -132,8 +134,12 @@ public final class Feeder implements EventHandler<Message> {
             }
         }
 
-        shuffle();
+        // lets prepare to next cycle
         monMessage = null;
+        shuffle();
+        lastProcessedSequence = msg.dSequence;
+        // todo prepare next message header
+
     }
 
     public final Publisher getPublisher(){
@@ -160,5 +166,9 @@ public final class Feeder implements EventHandler<Message> {
         for (byte i=0; i<clients.length; i++) {
             clients[i].shutdown();
         }
+    }
+
+    public long getLastProcessedSequence() {
+        return lastProcessedSequence;
     }
 }

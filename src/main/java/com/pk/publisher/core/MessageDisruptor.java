@@ -20,6 +20,7 @@ public class MessageDisruptor {
     private final Disruptor<Message> disruptor;
     private final RingBuffer<Message> ringBuffer;
     private final ExecutorService executor;
+    private volatile long lastAllocSequence = -1;
 
     private final EventFactory<Message> factory = new EventFactory<Message>() {
         @Override
@@ -50,6 +51,7 @@ public class MessageDisruptor {
         final long sequence = ringBuffer.next();
         final Message msg = ringBuffer.get(sequence);
         msg.init(sequence);
+        lastAllocSequence = sequence;
         return msg;
     }
 
@@ -62,5 +64,9 @@ public class MessageDisruptor {
     public void shutdown() {
         //todo review https://groups.google.com/forum/#!topic/lmax-disruptor/URytxjgyYKo
         executor.shutdown();
+    }
+
+    public long getLastAllocSequence() {
+        return lastAllocSequence;
     }
 }

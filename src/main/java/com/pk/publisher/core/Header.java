@@ -27,7 +27,7 @@ public class Header {
         addHeader(Message.TYPE.HEARTBEAT, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><rates_update type=\"heartbeat\"><sequence_number>                    ");
     }
 
-    public final int addHeaderAndWrite(final OutputStream stream, final Message msg, final long msgSeqId) throws IOException {
+    public final int addHeaderAndWrite(final OutputStream stream, final Message msg, final long msgSeqId, final byte[] msgBuffer) throws IOException {
         final int msgTypeId = msg.type.getId();
         final byte[] headerBuffer = buffers[msgTypeId];
         final int prefixSize = headerPrefixSize[msgTypeId];
@@ -35,13 +35,13 @@ public class Header {
         final int headerLen = config.addMsgSeqId(headerBuffer, prefixSize, msgSeqId);
 
         final int newMsgLen = msg.length + headerLen;
-        final int newMsgOff = msg.offset-headerLen;
+        final int newMsgOffset = Message.HEADER_OFFSET-headerLen;
 
-        // copy header to the messages from disruptor, overriding/modifying previous one  BUGGGGG!!!!!!!
-        System.arraycopy(headerBuffer, 0, msg.buffer, newMsgOff, headerLen);
+        // copy header to the messages from disruptor, overriding/modifying previous one
+        System.arraycopy(headerBuffer, 0, msgBuffer, newMsgOffset, headerLen);
 
         // write message buffer with header to a socket
-        stream.write(msg.buffer, newMsgOff, newMsgLen);
+        stream.write(msgBuffer, newMsgOffset, newMsgLen);
         return newMsgLen;
     }
 }

@@ -88,8 +88,9 @@ public class ClientConnection {
             feeder.monConnection.lazySet(this);
             try {
                 if (shouldAddHeader) {
-                    sentSize = header.addHeaderAndWrite(stream, msg, msgSequenceId);
+                    sentSize = header.addHeaderAndWrite(stream, msg, msgSequenceId, msgBuffer);
                 } else {
+                    // assumption: there will be no modification to message content by feeder, otherwise must use msgBuffer
                     sentSize = msg.length-msg.offset;
                     stream.write(msg.buffer, msg.offset, sentSize);
                 }
