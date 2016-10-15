@@ -82,7 +82,7 @@ public class ClientConnection {
         return true;
     }
 
-    private boolean send(Message msg) {
+    private boolean send(final Message msg, final byte[] msgBuffer) {
         startTimeNano = System.nanoTime();
         try {
             feeder.monConnection.lazySet(this);
@@ -113,19 +113,19 @@ public class ClientConnection {
         }
     }
 
-    public boolean sendData(Message msg) {
+    public boolean sendData(Message msg, byte[] msgBuffer) {
         sentSize = 0;
         switch (state.get()) {
             case ASSIGNED : {
                 if (msg.type == Message.TYPE.UPDATE) {
                     heartbeatCounter = 0;
-                    return send(msg);
+                    return send(msg, msgBuffer);
                 } else
                 if (msg.type == Message.TYPE.HEARTBEAT) {
                     heartbeatCounter++;
                     if (heartbeatCounter>=mData.getHeartbeatInterval()){
                         heartbeatCounter = 0;
-                        return send(msg);
+                        return send(msg, msgBuffer);
                     }
                 }
                 break;
@@ -135,7 +135,7 @@ public class ClientConnection {
                     msgSequenceId = 1;
                     heartbeatCounter = 0;
                     totalSent = 0;
-                    if (send(msg)) {
+                    if (send(msg, msgBuffer)) {
                         state.compareAndSet(STATE.INIT, STATE.ASSIGNED);
                         return true;
                     } else return false;

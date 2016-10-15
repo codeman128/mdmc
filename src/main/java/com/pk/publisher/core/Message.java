@@ -4,6 +4,7 @@ package com.pk.publisher.core;
  * Created by PavelK on 5/21/2016.
  */
 public class Message {
+    public static final int HEADER_OFFSET = 124;
     public enum TYPE {UNKNOWN(0), SNAPSHOT(1), UPDATE(2), HEARTBEAT(3);
         final int id;
         final byte[] byteName;

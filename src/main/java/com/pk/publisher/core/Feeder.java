@@ -20,6 +20,7 @@ public final class Feeder implements EventHandler<Message> {
     private final long writeTimeout;
     private final long snapshotWriteTimeout;
     private final IEventCollector eventCollector;
+    private final byte[] msgBuffer;
 
     // monitor related values
     private long monTimeout;
@@ -36,6 +37,7 @@ public final class Feeder implements EventHandler<Message> {
         writeTimeout = 0;
         snapshotWriteTimeout = 0;
         eventCollector = null;
+        msgBuffer = null;
     }
 
     public Feeder(byte id, Publisher publisher){
@@ -46,6 +48,7 @@ public final class Feeder implements EventHandler<Message> {
         writeTimeout = config.getMonitorWriteTimeout();
         snapshotWriteTimeout = config.getMonitorSnapshotWriteTimeout();
         eventCollector = publisher.getEventCollector();
+        msgBuffer = new byte[config.getMaxMessageSize()];
 
         // Initialize publication order
         pubOrder = new int[maxConnCount];
@@ -62,7 +65,7 @@ public final class Feeder implements EventHandler<Message> {
     }
 
     /**
-     * The Fisher–Yates shuffle, as implemented by Durstenfeld, is an in-place shuffle.
+     * The Fisherï¿½Yates shuffle, as implemented by Durstenfeld, is an in-place shuffle.
      * (see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">The "inside-out" algorithm</a>)
      **/
     protected final void shuffle(){
@@ -105,22 +108,27 @@ public final class Feeder implements EventHandler<Message> {
      * </ul>
      **/
     @Override
-    public final void onEvent(Message message, long l, boolean b) throws Exception {
-        monMessage = message;
-        if (message.type== Message.TYPE.SNAPSHOT) {
+    public final void onEvent(Message msg, long l, boolean b) throws Exception {
+        // keep local copy of the message content because prefix going to be added by each feeder
+        System.arraycopy(msg.buffer, msg.offset, msgBuffer, Message.HEADER_OFFSET, msg.length);
+
+        monMessage = msg;
+        if (msg.type== Message.TYPE.SNAPSHOT) {
             monTimeout = snapshotWriteTimeout;
         } else {
             monTimeout = writeTimeout;
         }
 
         for (int i=0; i< maxConnCount; i++){
-            clients[pubOrder[i]].sendData(message);
+            clients[pubOrder[i]].sendData(msg, msgBuffer);
         }
+
+        // todo prepare next message header
 
         for (int i=0; i< maxConnCount; i++){
             ClientConnection cc = clients[pubOrder[i]];
             if (cc.getSentSize()>0) {
-                eventCollector.onPublishStats(message, cc);
+                eventCollector.onPublishStats(msg, cc);
             }
         }
 
