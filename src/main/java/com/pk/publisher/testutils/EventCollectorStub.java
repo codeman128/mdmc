@@ -16,8 +16,9 @@ public class EventCollectorStub implements IEventCollector {
     @Override
     public void onConnectionAccepted(byte[] listenerName, ClientConnection connection) {
         Socket s = connection.getSocket();
-        System.out.println("New connection accepted from ["+ s.getInetAddress()+":"+s.getPort()+"] assigned to C["
-                +connection.getId()+"] F["+connection.getFeeder().getId()+"]");
+        byte[] publisherName = connection.getFeeder().getPublisher().getName();
+        System.out.println("New connection accepted by ["+new String(listenerName)+"] from ["+ s.getInetAddress()+":"+s.getPort()+
+                "] assigned to P["+new String(publisherName)+"] C["+connection.getId()+"] F["+connection.getFeeder().getId()+"]");
     }
 
     @Override
