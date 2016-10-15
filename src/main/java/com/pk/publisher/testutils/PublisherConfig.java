@@ -111,4 +111,9 @@ public class PublisherConfig implements IPublisherConfig {
     public boolean isPerfLogEnabled() {
         return true;
     }
+
+    @Override
+    public int getGracefulShutdownInterval() {
+        return 3000;
+    }
 }

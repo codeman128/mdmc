@@ -46,6 +46,9 @@ public interface IEventCollector {
     /** Monitor shutdown event **/
     void onMonitorShutdown();
 
+    /** PublisherShutdownStarted */
+    void onPublisherShutdownStarted(byte[] name);
+
     /** Monitor - Unknown Exception */
     void onMonitorException(Exception e);
 

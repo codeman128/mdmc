@@ -93,8 +93,8 @@ public class Publisher  {
 
     public void shutdown() {
         if (isShutdown) return;
-        // add shutdown event
         isShutdown = true;
+        eventCollector.onPublisherShutdownStarted(name);
 
         long start = System.currentTimeMillis();
         while (hasBacklog()) {
@@ -103,7 +103,7 @@ public class Publisher  {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (System.currentTimeMillis() - start > 5000) break;  // 5 sec
+            if (System.currentTimeMillis() - start > config.getGracefulShutdownInterval()) break;
         }
 
         for (byte i=0; i<feeders.length; i++) {

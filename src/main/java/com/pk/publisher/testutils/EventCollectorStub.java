@@ -83,6 +83,11 @@ public class EventCollectorStub implements IEventCollector {
     }
 
     @Override
+    public void onPublisherShutdownStarted(byte[] name) {
+        System.out.println("Publisher "+new String(name)+" shutdown started");
+    }
+
+    @Override
     public void onMonitorException(Exception e) {
         System.out.println("Monitor - Exception "+e.getMessage());
         e.printStackTrace();

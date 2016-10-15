@@ -11,30 +11,29 @@ import java.net.UnknownHostException;
  */
 public interface IPublisherConfig {
     int getPort();
+    int getAcceptorMaxRetry();
+    /** Nagle's Algorithm **/
+    boolean getTcpNoDelay();
+    int getSendBufferSize();
+    InetAddress getAddress() throws UnknownHostException;
+    boolean isPerfLogEnabled();
+
     int getFeederCount();
     int getMaxClientConnection();
-    int getAcceptorMaxRetry();
 
     int getMonitorWriteTimeout();
     int getMonitorSnapshotWriteTimeout();
 
 
-    int getDisruptorRingSize();
-
     int getMaxMessageSize();
+    int getDisruptorRingSize();
+    WaitStrategy getDisruptorStrategy();
 
     /** Return - new offset **/
     int addMsgSeqId(byte[] buffer, int offset, long id);
 
-    /** Nagle's Algorithm **/
-    boolean getTcpNoDelay();
-    int getSendBufferSize();
-
     boolean shouldAddHeader();
 
-    WaitStrategy getDisruptorStrategy();
-
-    InetAddress getAddress() throws UnknownHostException;
-
-    boolean isPerfLogEnabled();
+    /** Graceful shutdown interval in milliseconds */
+    int getGracefulShutdownInterval();
 }
