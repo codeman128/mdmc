@@ -39,6 +39,11 @@ public class PublisherConfig implements IPublisherConfig {
     }
 
     @Override
+    public byte[] getName() {
+        return "SAMPLE PRODUCT NAME".getBytes();
+    }
+
+    @Override
     public int getFeederCount() {
         return Integer.parseInt(properties.getProperty("publisher.feeder.count", "2"));
     }

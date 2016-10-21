@@ -24,9 +24,9 @@ public class Publisher  {
         disruptor = null;
     }
 
-    public Publisher(byte[] name, IPublisherConfig config, IEventCollector eventCollector, Monitor monitor){
-        this.name = name;
+    public Publisher(IPublisherConfig config, IEventCollector eventCollector, Monitor monitor){
         this.config = config;
+        this.name = config.getName();
         this.eventCollector = eventCollector;
 
 

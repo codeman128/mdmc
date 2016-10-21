@@ -30,8 +30,8 @@ public class DistributionLayer {
         this.handler = handler;
     }
 
-    public final Publisher addPublisher(byte[] name, IPublisherConfig config) {
-        Publisher p = new Publisher(name, config, eventCollector, monitor);
+    public final Publisher addPublisher(IPublisherConfig config) {
+        Publisher p = new Publisher(config, eventCollector, monitor);
         publishers.add(p);
         return p;
     }
