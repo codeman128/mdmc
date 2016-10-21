@@ -27,6 +27,9 @@ public class ClientConnection {
     private int heartbeatCounter;
     private volatile boolean closedByMonitor = false;
 
+    private int snapshotWriteTimeout;
+    private int updateWriteTimeout;
+
     long startTimeNano;
     long finishTimeNano;
     long finishTime;
@@ -60,12 +63,14 @@ public class ClientConnection {
         return mData;
     }
 
-    public final boolean assign(Socket socket, ConnectionMetadata mData){
+    public final boolean assign(Socket socket, ConnectionMetadata mData, int snapshotWriteTimeout, int updateWriteTimeout){
         if (!state.compareAndSet(STATE.AVAILABLE, STATE.MARKED)) return false;
         if (!setDate(socket, mData)) return false;
         try {
             if (!mData.registerSession(this)) throw new IOException("Register session unexpected error");
             stream = socket.getOutputStream();
+            this.snapshotWriteTimeout = snapshotWriteTimeout;
+            this.updateWriteTimeout = updateWriteTimeout;
         } catch (IOException e) {
             eventEmitter.onConnectionAssignError(this, mData, e);
             safelyCloseConnection();

@@ -1,6 +1,7 @@
 package com.pk.publisher;
 
 import com.pk.publisher.core.IEventCollector;
+import com.pk.publisher.core.IListenerConfig;
 import com.pk.publisher.core.IPublisherConfig;
 
 import java.net.InetAddress;
@@ -35,8 +36,8 @@ public class DistributionLayer {
         return p;
     }
 
-    public final void addListener(InetAddress address, int port, boolean tcpNoDelay, int sendBufferSize){
-        listeners.add(new Listener(handler, address, port, tcpNoDelay, sendBufferSize, eventCollector));
+    public final void addListener(IListenerConfig config){
+        listeners.add(new Listener(config));
     }
 
 

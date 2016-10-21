@@ -18,7 +18,7 @@ public class EventCollectorStub implements IEventCollector {
         Socket s = connection.getSocket();
         byte[] publisherName = connection.getFeeder().getPublisher().getName();
         System.out.println("New connection accepted by ["+new String(listenerName)+"] from ["+ s.getInetAddress()+":"+s.getPort()+
-                "] assigned to P["+new String(publisherName)+"] C["+connection.getId()+"] F["+connection.getFeeder().getId()+"]");
+                "] assigned to P["+new String(publisherName)+"] F["+connection.getFeeder().getId()+"] C["+connection.getId()+"]");
     }
 
     @Override
@@ -98,7 +98,7 @@ public class EventCollectorStub implements IEventCollector {
     public void onPublishStats(Message message, ClientConnection cc) {
         ConnectionMetadata cmd = cc.getMetadata();
         //if (cmd == null) return;
-        /**/
+        /*
         System.out.println((new Date(message.eventTime)).toString()+ ", " +                            // arb time with ms
                            cc.getFeeder().getId()+"_"+cc.getId()+", " +                                 // feeder + connection id
                            cmd.getConsumer().getName()+ ", " +                                         // consumer name

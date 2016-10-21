@@ -44,7 +44,9 @@ public class ConnectionHandler {
             while (retry < maxRetry) {
                 retry++;
                 connection = publisher.getAvailableConnection();
-                if (connection != null && connection.assign(clientSocket, mData)) {
+                if (connection != null && connection.assign(clientSocket, mData,
+                        listener.getConfig().getSnapshotWriteTimeout(),
+                        listener.getConfig().getUpdateWriteTimeout())) {
                     eventCollector.onConnectionAccepted(listener.getName(), connection);
                     break;
                 }

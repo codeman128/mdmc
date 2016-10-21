@@ -4,6 +4,7 @@ import com.pk.publisher.ConnectionHandler;
 import com.pk.publisher.DistributionLayer;
 import com.pk.publisher.Publisher;
 import com.pk.publisher.core.IEventCollector;
+import com.pk.publisher.core.IListenerConfig;
 import com.pk.publisher.core.Message;
 import com.pk.publisher.sd.Consumer;
 import com.pk.publisher.sd.ConsumerManager;
@@ -12,6 +13,8 @@ import com.pk.publisher.testutils.ClientTest;
 import com.pk.publisher.testutils.EventCollectorStub;
 import com.pk.publisher.testutils.PublisherConfig;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 
 /**
@@ -48,6 +51,60 @@ public class ServerTest {
         // initialize new connection handler
         ConnectionHandler handler = new ConnectionHandler(cm, ec, config.getAcceptorMaxRetry());
 
+        // initiate listener config
+        IListenerConfig lConfig = new IListenerConfig() {
+            @Override
+            public InetAddress getAddress() {
+                try {
+                    return config.getAddress();
+                } catch (UnknownHostException e) {
+                    // todo this need to be checked during configuration validation.
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            public int getPort() {
+                return config.getPort();
+            }
+
+            @Override
+            public ConnectionHandler getConnectionHandler() {
+                return handler;
+            }
+
+            @Override
+            public boolean getTcpNoDelay() {
+                return config.getTcpNoDelay();
+            }
+
+            @Override
+            public int getSendBufferSize() {
+                return config.getSendBufferSize();
+            }
+
+            @Override
+            public IEventCollector getEventCollector() {
+                return ec;
+            }
+
+            @Override
+            public int getSnapshotWriteTimeout() {
+                return config.getMonitorSnapshotWriteTimeout();
+            }
+
+            @Override
+            public int getUpdateWriteTimeout() {
+                return config.getMonitorWriteTimeout();
+            }
+
+            @Override
+            public int getBacklog() {
+                return 1;
+            }
+        };
+
         // initialize distribution layer
         DistributionLayer dl = new DistributionLayer(ec, handler);
 
@@ -62,7 +119,7 @@ public class ServerTest {
 
 
         // add listener
-        dl.addListener(config.getAddress(), config.getPort(), config.getTcpNoDelay(), config.getSendBufferSize());
+        dl.addListener(lConfig);
 
 
 
