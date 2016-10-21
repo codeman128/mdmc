@@ -76,12 +76,12 @@ public class ServerTest {
 
             @Override
             public boolean getTcpNoDelay() {
-                return config.getTcpNoDelay();
+                return true;
             }
 
             @Override
             public int getSendBufferSize() {
-                return config.getSendBufferSize();
+                return 0;
             }
 
             @Override

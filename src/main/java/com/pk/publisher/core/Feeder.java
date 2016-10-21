@@ -17,8 +17,6 @@ public final class Feeder implements EventHandler<Message> {
     private final int[] pubOrder;
     private final ClientConnection[] clients;
     private final int maxConnCount;
-    private final long writeTimeout;
-    private final long snapshotWriteTimeout;
     private final IEventCollector eventCollector;
     private final byte[] msgBuffer;
     private volatile long lastProcessedSequence = -1;
@@ -34,8 +32,6 @@ public final class Feeder implements EventHandler<Message> {
         maxConnCount = -1;
         pubOrder = null;
         clients = null;
-        writeTimeout = 0;
-        snapshotWriteTimeout = 0;
         eventCollector = null;
         msgBuffer = null;
     }
@@ -45,8 +41,6 @@ public final class Feeder implements EventHandler<Message> {
         this.publisher = publisher;
         config = publisher.getConfig();
         maxConnCount = config.getMaxClientConnection();
-        writeTimeout = config.getMonitorWriteTimeout();
-        snapshotWriteTimeout = config.getMonitorSnapshotWriteTimeout();
         eventCollector = publisher.getEventCollector();
         msgBuffer = new byte[config.getMaxMessageSize()];
 

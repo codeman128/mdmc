@@ -10,19 +10,11 @@ import java.net.UnknownHostException;
  * Created by PavelK on 5/21/2016.
  */
 public interface IPublisherConfig {
-    int getPort();
-    int getAcceptorMaxRetry();
-    /** Nagle's Algorithm **/
-    boolean getTcpNoDelay();
-    int getSendBufferSize();
-    InetAddress getAddress() throws UnknownHostException;
-    boolean isPerfLogEnabled();
+
 
     int getFeederCount();
     int getMaxClientConnection();
 
-    int getMonitorWriteTimeout();
-    int getMonitorSnapshotWriteTimeout();
 
 
     int getMaxMessageSize();

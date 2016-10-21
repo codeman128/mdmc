@@ -33,7 +33,7 @@ public class PublisherConfig implements IPublisherConfig {
         snapshotTick =Integer.parseInt(properties.getProperty("publisher.test.snapshotIntervalInTicks"));
     }
 
-    @Override
+
     public int getPort() {
         return Integer.parseInt(properties.getProperty("publisher.acceptor.port", "8080"));
     }
@@ -48,17 +48,17 @@ public class PublisherConfig implements IPublisherConfig {
         return Integer.parseInt(properties.getProperty("publisher.feeder.connection.max", "2"));
     }
 
-    @Override
+
     public int getAcceptorMaxRetry() {
         return Integer.parseInt(properties.getProperty("publisher.acceptor.maxRetry", "3"));
     }
 
-    @Override
+
     public int getMonitorWriteTimeout() {
         return Integer.parseInt(properties.getProperty("publisher.monitor.WriteTimeout", "10"))*1000000;
     }
 
-    @Override
+
     public int getMonitorSnapshotWriteTimeout() {
         return Integer.parseInt(properties.getProperty("publisher.monitor.SnapshotWriteTimeout", "25"))*1000000;
     }
@@ -81,16 +81,6 @@ public class PublisherConfig implements IPublisherConfig {
     }
 
     @Override
-    public boolean getTcpNoDelay() {
-        return false;
-    }
-
-    @Override
-    public int getSendBufferSize() {
-        return 0;
-    }
-
-    @Override
     public boolean shouldAddHeader() {
         return true;
     }
@@ -102,14 +92,9 @@ public class PublisherConfig implements IPublisherConfig {
         //new BusySpinWaitStrategy();
     }
 
-    @Override
+
     public InetAddress getAddress() throws UnknownHostException {
         return InetAddress.getByName(properties.getProperty("publisher.acceptor.address"));
-    }
-
-    @Override
-    public boolean isPerfLogEnabled() {
-        return true;
     }
 
     @Override

@@ -11,12 +11,13 @@ public interface IListenerConfig {
     InetAddress getAddress();
     int getPort();
     ConnectionHandler getConnectionHandler();
+    /** Nagle's Algorithm **/
     boolean getTcpNoDelay();
     int getSendBufferSize();
     IEventCollector getEventCollector();
     int getSnapshotWriteTimeout();
     int getUpdateWriteTimeout();
 
-    /** requested maximum length of the queue of incoming connections */
+    /** requested maximum length of the queue of incoming connections **/
     int getBacklog();
 }
