@@ -227,4 +227,11 @@ public class ClientConnection {
     public final long getTotalSent(){
         return totalSent;
     }
+
+    public int getMonitorWriteTimeout() {
+        if (feeder.getMonMessage().type== Message.TYPE.SNAPSHOT) {
+            return snapshotWriteTimeout;
+        } else return updateWriteTimeout;
+    }
+
 }

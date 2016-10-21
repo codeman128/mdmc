@@ -24,7 +24,6 @@ public final class Feeder implements EventHandler<Message> {
     private volatile long lastProcessedSequence = -1;
 
     // slow consumer monitor related members
-    private long monTimeout;
     private Message monMessage;
     final AtomicReference<ClientConnection> monConnection = new AtomicReference<>();
 
@@ -115,11 +114,6 @@ public final class Feeder implements EventHandler<Message> {
 
         // slow consumer monitoring: lets use proper timeout (based on message type) for current iteration
         monMessage = msg;
-        if (msg.type== Message.TYPE.SNAPSHOT) {
-            monTimeout = snapshotWriteTimeout;
-        } else {
-            monTimeout = writeTimeout;
-        }
 
         // send messages in publishing order
         for (int i=0; i< maxConnCount; i++){
@@ -156,10 +150,6 @@ public final class Feeder implements EventHandler<Message> {
 
     public final Message getMonMessage(){
         return monMessage;
-    }
-
-    public final long getMonitorWriteTimeout(){
-        return monTimeout;
     }
 
     public void shutdown() {

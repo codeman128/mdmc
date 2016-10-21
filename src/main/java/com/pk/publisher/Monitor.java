@@ -3,6 +3,7 @@ package com.pk.publisher;
 import com.pk.publisher.core.ClientConnection;
 import com.pk.publisher.core.Feeder;
 import com.pk.publisher.core.IEventCollector;
+import com.pk.publisher.core.Message;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,7 @@ public class Monitor implements Runnable{
 
 
         try {
+            int monTimeout;
             while (!exitFlag) {
                 for (int i = 0; i < feeders.size(); i++) {
                     try {
@@ -59,6 +61,7 @@ public class Monitor implements Runnable{
                         session = feeder.getMonConnection();
                         if (session != null && ((session.getState()== ClientConnection.STATE.ASSIGNED)||
                                                 (session.getState()== ClientConnection.STATE.INIT))) {
+                            monTimeout = session.getMonitorWriteTimeout();
                             now = System.nanoTime();
                             monTime = session.getStartTimeNano();
                             delta = now - monTime;
@@ -67,7 +70,7 @@ public class Monitor implements Runnable{
                             if (delta < 0 || delta > 1000000000L) { //<0 or >1 sec
                                 feeder.getMonConnection().setStartTimeNano(now);
                             } else
-                            if (delta > feeder.getMonitorWriteTimeout() && monTime != 0) {
+                            if (delta > monTimeout && monTime != 0) {
 
                                 if (session==prevSession && monTime==prevMonTime) {
                                     // This is to handle funny multithreading issue
@@ -78,7 +81,7 @@ public class Monitor implements Runnable{
                                     // a specially if there is only one active session, will find same session and will
                                     // try to close it again... we will simply ignore it until it will be cleared off.
                                 } else {
-                                    eventCollector.onMonitorWriteTimeout(session, delta, feeder.getMonitorWriteTimeout(), feeder.getMonMessage());
+                                    eventCollector.onMonitorWriteTimeout(session, delta, monTimeout, feeder.getMonMessage());
                                     prevSession = session;
                                     prevMonTime = monTime;
                                     session.closeByMonitor();
