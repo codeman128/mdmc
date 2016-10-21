@@ -40,7 +40,6 @@ public class DistributionLayer {
         listeners.add(new Listener(config));
     }
 
-
     public Monitor getMonitor(){
         return monitor;
     }
