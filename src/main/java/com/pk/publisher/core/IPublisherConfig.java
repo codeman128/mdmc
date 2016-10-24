@@ -16,7 +16,9 @@ public interface IPublisherConfig {
     int getMaxClientConnection();
 
     int getMaxMessageSize();
+
     int getDisruptorRingSize();
+
     WaitStrategy getDisruptorStrategy();
 
     /** Return - new offset **/

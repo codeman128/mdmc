@@ -98,7 +98,7 @@ public class EventCollectorStub implements IEventCollector {
     public void onPublishStats(Message message, ClientConnection cc) {
         ConnectionMetadata cmd = cc.getMetadata();
         //if (cmd == null) return;
-        /*
+        /**/
         System.out.println((new Date(message.eventTime)).toString()+ ", " +                            // arb time with ms
                            cc.getFeeder().getId()+"_"+cc.getId()+", " +                                 // feeder + connection id
                            cmd.getConsumer().getName()+ ", " +                                         // consumer name
@@ -114,5 +114,8 @@ public class EventCollectorStub implements IEventCollector {
                            (double)(cc.getFinishTimeNano()-cc.getStartTimeNano())/1000000              // write time
 
         );/**/
+
+
+
     }
 }

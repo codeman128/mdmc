@@ -21,6 +21,8 @@ public final class Feeder implements EventHandler<Message> {
     private final byte[] msgBuffer;
     private volatile long lastProcessedSequence = -1;
 
+    private final FeederLogEntry fle = new FeederLogEntry(100+256*100);
+
     // slow consumer monitor related members
     private Message monMessage;
     final AtomicReference<ClientConnection> monConnection = new AtomicReference<>();
@@ -110,9 +112,13 @@ public final class Feeder implements EventHandler<Message> {
         monMessage = msg;
 
         // send messages in publishing order
+        short msgSentCount = 0; // represents number of messages (or clients that was served) in this iteration
         for (int i=0; i< maxConnCount; i++){
-            clients[pubOrder[i]].sendData(msg, msgBuffer);
+            if (clients[pubOrder[i]].sendData(msg, msgBuffer)) msgSentCount++;
         }
+
+        fle.build(msg, msgSentCount, pubOrder, clients);
+        //todo persist to binary perf mon log, should replace the below
 
         // update monitor log
         for (int i=0; i< maxConnCount; i++){
