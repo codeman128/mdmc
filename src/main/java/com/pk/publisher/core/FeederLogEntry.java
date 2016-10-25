@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 public class FeederLogEntry {
 
     /**
-     * The Long deflator allows to reduce number of bytes required to store long time values if they are monotonically
+     * The Long Deflater allows to reduce number of bytes required to store long time values if they are monotonically
      * increment. If delta (between previously stored and current value) does not exceeds 4 bytes - delta will be
      * returned, if delta is > Integer.MAX_VALUE, delta will loose precision in 3 orders of magnitude and delta will be
      * returned as negative values.
@@ -20,10 +20,10 @@ public class FeederLogEntry {
      *
      * Assumptions:
      *      This is not universal solution, it's used for high-frequency/low-latency logging, so intervals are really in
-     *      nanow, and not in millis, so in most of the cases precision won't be lost, and in rare cases it's ok to switch
+     *      nanos, and not in millis, so in most of the cases precision won't be lost, and in rare cases it's ok to switch
      *      to micro if interval is to long.
      * */
-    private class LongDeflator{
+    private class LongDeflater {
         private long base;
 
         public void reset(long base) {
@@ -47,8 +47,8 @@ public class FeederLogEntry {
     protected final ByteBuffer bb;
     protected int size;
 
-    protected final LongDeflator nanoDeflator = new LongDeflator();
-    protected final LongDeflator msecDeflator = new LongDeflator();
+    protected final LongDeflater nanoDeflater = new LongDeflater();
+    protected final LongDeflater msecDeflater = new LongDeflater();
 
 
 
@@ -83,8 +83,8 @@ public class FeederLogEntry {
         bb.putInt(msg.length-msg.offset); // message size without header
 
 
-        msecDeflator.reset(msg.captureTime);
-        nanoDeflator.reset(msg.publishNano);
+        msecDeflater.reset(msg.captureTime);
+        nanoDeflater.reset(msg.publishNano);
         int ccReference;
         for (int i=0; i< pubOrder.length; i++){
             ccReference = pubOrder[i];
@@ -92,9 +92,9 @@ public class FeederLogEntry {
             if (cc.getSentSize()>0) {
                 bb.put((byte)ccReference); // back to int & 0xFF
                 bb.putInt((int) (cc.getNextMsgSequenceId() - 1));
-                bb.putInt(nanoDeflator.deflate(cc.getStartTimeNano()));
-                bb.putInt(nanoDeflator.deflate(cc.getFinishTimeNano()));
-                bb.putInt(msecDeflator.deflate(cc.getFinishTime()));
+                bb.putInt(nanoDeflater.deflate(cc.getStartTimeNano()));
+                bb.putInt(nanoDeflater.deflate(cc.getFinishTimeNano()));
+                bb.putInt(msecDeflater.deflate(cc.getFinishTime()));
 
                 if (msg.type== Message.TYPE.SNAPSHOT){
                     // add source destination info
