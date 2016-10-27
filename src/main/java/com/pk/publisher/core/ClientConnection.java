@@ -30,6 +30,9 @@ public class ClientConnection {
     private int snapshotWriteTimeout;
     private int updateWriteTimeout;
 
+    private long encodedClientAddress;
+    private long encodedServerAddress;
+
     long startTimeNano;
     long finishTimeNano;
     long finishTime;
@@ -63,10 +66,13 @@ public class ClientConnection {
         return mData;
     }
 
-    public final boolean assign(Socket socket, ConnectionMetadata mData, int snapshotWriteTimeout, int updateWriteTimeout){
+    public final boolean assign(Socket socket, ConnectionMetadata mData, int snapshotWriteTimeout,
+                                int updateWriteTimeout){
         if (!state.compareAndSet(STATE.AVAILABLE, STATE.MARKED)) return false;
         if (!setDate(socket, mData)) return false;
         try {
+            encodedClientAddress = Utils.encodeAddress(socket.getInetAddress(), socket.getPort());
+            encodedServerAddress = Utils.encodeAddress(socket.getLocalAddress(), socket.getLocalPort());
             if (!mData.registerSession(this)) throw new IOException("Register session unexpected error");
             stream = socket.getOutputStream();
             this.snapshotWriteTimeout = snapshotWriteTimeout;
@@ -165,6 +171,8 @@ public class ClientConnection {
             } finally {
                 socket = null;
                 if (mData != null) mData.unregisterSession(this);
+                encodedClientAddress = 0;
+                encodedServerAddress = 0;
             }
         } finally {
             mData = null;
@@ -234,4 +242,11 @@ public class ClientConnection {
         } else return updateWriteTimeout;
     }
 
+    public final long getEncodedClientAddress() {
+        return encodedClientAddress;
+    }
+
+    public final long getEncodedServerAddress() {
+        return encodedServerAddress;
+    }
 }

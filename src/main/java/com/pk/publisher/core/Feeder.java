@@ -21,7 +21,7 @@ public final class Feeder implements EventHandler<Message> {
     private final byte[] msgBuffer;
     private volatile long lastProcessedSequence = -1;
 
-    private final FeederLogEntry fle = new FeederLogEntry(100+256*100);
+    private final FeederLogEntry fle;
 
     // slow consumer monitor related members
     private Message monMessage;
@@ -36,12 +36,14 @@ public final class Feeder implements EventHandler<Message> {
         clients = null;
         eventCollector = null;
         msgBuffer = null;
+        fle = null;
     }
 
     public Feeder(byte id, Publisher publisher){
         this.id = id;
         this.publisher = publisher;
         config = publisher.getConfig();
+        fle = new FeederLogEntry(100+256*100+config.getMaxMessageSize());
         maxConnCount = config.getMaxClientConnection();
         eventCollector = publisher.getEventCollector();
         msgBuffer = new byte[config.getMaxMessageSize()];

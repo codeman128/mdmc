@@ -88,7 +88,6 @@ public class FeederLogEntry {
         msecDeflater.reset(msg.captureTime);
         nanoDeflater.reset(msg.publishNano);
         int ccReference;
-        long address;
         for (int i=0; i< pubOrder.length; i++){
             ccReference = pubOrder[i];
             ClientConnection cc = clients[ccReference];
@@ -101,8 +100,8 @@ public class FeederLogEntry {
 
                 if (msg.type== Message.TYPE.SNAPSHOT){
                     bb.put((byte)(cc.getMetadata().getConsumer().getNameBytes().length));
-                    // add client info long - 8 bytes: 6 bytes IP + 2 bytes port   encoded address
-                    // add listener info long - 8 bytes: 6 bytes IP + 2 bytes port
+                    bb.putLong(cc.getEncodedClientAddress());
+                    bb.putLong(cc.getEncodedServerAddress());
                 }
             }
         }
