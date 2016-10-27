@@ -72,20 +72,23 @@ public class FeederLogEntry {
         size = bb.position();
 
         if (msgCount==0) return;
+
         // this was not an empty iteration
         int sizeOffset = size;
+        int msgSize = msg.length-msg.offset;
         bb.putInt(0); // reserve space for size field
 
         // put message metadata
         bb.putLong(msg.captureNano);
         bb.putLong(msg.captureTime);
         bb.putLong(msg.publishNano);
-        bb.putInt(msg.length-msg.offset); // message size without header
+        bb.putInt(msgSize); // message size without header
 
 
         msecDeflater.reset(msg.captureTime);
         nanoDeflater.reset(msg.publishNano);
         int ccReference;
+        long address;
         for (int i=0; i< pubOrder.length; i++){
             ccReference = pubOrder[i];
             ClientConnection cc = clients[ccReference];
@@ -97,15 +100,19 @@ public class FeederLogEntry {
                 bb.putInt(msecDeflater.deflate(cc.getFinishTime()));
 
                 if (msg.type== Message.TYPE.SNAPSHOT){
-                    // add source destination info
+                    bb.put((byte)(cc.getMetadata().getConsumer().getNameBytes().length));
+                    // add client info long - 8 bytes: 6 bytes IP + 2 bytes port   encoded address
+                    // add listener info long - 8 bytes: 6 bytes IP + 2 bytes port
                 }
             }
+        }
+        // Add snapshot itself, just once if at least user got it in this iteration. Size we already put earlier.
+        if (msg.type== Message.TYPE.SNAPSHOT){
+            bb.put(msg.getBuffer(),msg.offset, msgSize);
         }
         size = bb.position();
         bb.putInt(sizeOffset, size);
         //System.out.println("MsgType:"+msg.type+"  Size: "+size+"   entries:"+msgCount);
     }
-
-
 
 }

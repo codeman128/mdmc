@@ -1,6 +1,7 @@
 package com.pk.publisher;
 
 import com.pk.publisher.core.IListenerConfig;
+import com.pk.publisher.core.Utils;
 import com.pk.publisher.sd.ConnectionMetadata;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ public class Listener implements Runnable{
     private final Thread thread;
     private ServerSocket serverSocket;
     private volatile boolean shutdown = false;
+    private long encodedAddress;
 
     private Listener(){
         config = null;
@@ -25,10 +27,9 @@ public class Listener implements Runnable{
 
     public Listener(IListenerConfig config) {
         this.config = config;
-        String nameString = (config.getAddress()+":"+config.getPort());
-        this.name = nameString.getBytes();
-
-
+        encodedAddress = Utils.encodeAddress(config.getAddress(), config.getPort());
+        String nameString = Utils.decodeAddress(encodedAddress);
+        name = nameString.getBytes();
         try {
             serverSocket = new ServerSocket(config.getPort(), config.getBacklog(), config.getAddress());
         } catch (IOException e) {
@@ -84,4 +85,7 @@ public class Listener implements Runnable{
         }
     }
 
+    public long getEncodedAddress(){
+        return encodedAddress;
+    }
 }
