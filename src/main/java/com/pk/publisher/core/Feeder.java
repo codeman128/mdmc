@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created by PavelK on 5/21/2016.
+ *
  */
 public final class Feeder implements EventHandler<Message> {
     private final byte id;
@@ -20,6 +21,8 @@ public final class Feeder implements EventHandler<Message> {
     private final IEventCollector eventCollector;
     private final byte[] msgBuffer;
     private volatile long lastProcessedSequence = -1;
+    private final Object productLog;
+    private final Object feederLog;
 
     private final FeederLogEntry fle;
 
@@ -37,12 +40,16 @@ public final class Feeder implements EventHandler<Message> {
         eventCollector = null;
         msgBuffer = null;
         fle = null;
+        productLog = null;
+        feederLog = null;
     }
 
-    public Feeder(byte id, Publisher publisher){
+    public Feeder(byte id, Publisher publisher, Object productLog, Object feederLog){
         this.id = id;
         this.publisher = publisher;
         config = publisher.getConfig();
+        this.productLog = productLog;
+        this.feederLog = feederLog;
         fle = new FeederLogEntry(100+256*100+config.getMaxMessageSize());
         maxConnCount = config.getMaxClientConnection();
         eventCollector = publisher.getEventCollector();
@@ -63,7 +70,7 @@ public final class Feeder implements EventHandler<Message> {
     }
 
     /**
-     * The Fisher�Yates shuffle, as implemented by Durstenfeld, is an in-place shuffle.
+     * The Fisher-Yates shuffle, as implemented by Durstenfeld, is an in-place shuffle.
      * (see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">The "inside-out" algorithm</a>)
      **/
     protected final void shuffle(){
@@ -119,22 +126,27 @@ public final class Feeder implements EventHandler<Message> {
             if (clients[pubOrder[i]].sendData(msg, msgBuffer)) msgSentCount++;
         }
 
+        // Log feeder data
         fle.build(msg, msgSentCount, pubOrder, clients);
-        //todo persist to binary perf mon log, should replace the below
+        eventCollector.logFeederData(feederLog, fle);
 
-        // update monitor log
+        // Persist product delta updates by "first" (id=0) feeder only
+        if (msg.type==Message.TYPE.UPDATE && getId()==0 ) {
+            eventCollector.logProductDelta(productLog, msg.eventTime, msg.buffer, msg.offset, msg.length);
+        }
+
+        // todo remove ---------------------------------
         for (int i=0; i< maxConnCount; i++){
             ClientConnection cc = clients[pubOrder[i]];
             if (cc.getSentSize()>0) {
                 eventCollector.onPublishStats(msg, cc);
             }
-        }
+        } // -------------------------------------------
 
         // lets prepare to next cycle
         monMessage = null;
         shuffle();
         lastProcessedSequence = msg.dSequence;
-        // todo prepare next message header
 
     }
 
@@ -158,6 +170,7 @@ public final class Feeder implements EventHandler<Message> {
         for (byte i=0; i<clients.length; i++) {
             clients[i].shutdown();
         }
+        eventCollector.closeLogger(feederLog);
     }
 
     public long getLastProcessedSequence() {

@@ -15,6 +15,7 @@ public class Publisher  {
     private final Feeder[] feeders;
     private final MessageDisruptor disruptor;
     private volatile boolean isShutdown = false;
+    private final Object productLogger;
 
     private Publisher(){
         name = null;
@@ -22,18 +23,19 @@ public class Publisher  {
         eventCollector = null;
         feeders = null;
         disruptor = null;
+        productLogger = null;
     }
 
     public Publisher(IPublisherConfig config, IEventCollector eventCollector, Monitor monitor){
         this.config = config;
         this.name = config.getName();
         this.eventCollector = eventCollector;
-
+        this.productLogger = eventCollector.createProductLogger(name+"_DELTA");
 
         // init feeders
         feeders = new Feeder[config.getFeederCount()];
         for (byte i=0; i<feeders.length; i++) {
-            feeders[i] = new Feeder(i, this);
+            feeders[i] = new Feeder(i, this, productLogger, eventCollector.createFeederLogger(name+".f"+i));
             monitor.register(feeders[i]);
         }
 
@@ -110,5 +112,6 @@ public class Publisher  {
             feeders[i].shutdown();
         }
         disruptor.shutdown();
+        eventCollector.closeLogger(productLogger);
     }
 }

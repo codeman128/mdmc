@@ -1,6 +1,7 @@
 package com.pk.publisher.testutils;
 
 import com.pk.publisher.core.ClientConnection;
+import com.pk.publisher.core.FeederLogEntry;
 import com.pk.publisher.core.IEventCollector;
 import com.pk.publisher.core.Message;
 import com.pk.publisher.sd.ConnectionMetadata;
@@ -12,7 +13,34 @@ import java.util.Date;
 /**
  * Created by pkapovski on 5/26/2016.
  */
-public class EventCollectorStub implements IEventCollector {
+public class EventCollectorStub implements IEventCollector<Object> {
+
+    @Override
+    public  Object createProductLogger(String productName) {
+        return null;
+    }
+
+    @Override
+    public Object createFeederLogger(String feederName) {
+        return null;
+    }
+
+    @Override
+    public void closeLogger(Object logger) {
+
+    }
+
+    @Override
+    public void logProductDelta(Object logger, long arbTime, byte[] buffer, int offset, int size) {
+
+    }
+
+    @Override
+    public void logFeederData(Object logger, FeederLogEntry fle) {
+
+    }
+
+
     @Override
     public void onConnectionAccepted(byte[] listenerName, ClientConnection connection) {
         Socket s = connection.getSocket();
@@ -51,7 +79,7 @@ public class EventCollectorStub implements IEventCollector {
 
     @Override
     public void onListenerShutdown(byte[] name) {
-        System.out.println("Listener shutdown "+new String(name));
+        System.out.println("Listener shutdown " + new String(name));
     }
 
     @Override
@@ -62,7 +90,7 @@ public class EventCollectorStub implements IEventCollector {
 
     @Override
     public void onConnectionWriteError(ClientConnection clientConnection, ConnectionMetadata mData, Exception e) {
-        System.out.println("Connection Write Error, connection closed and released "+mData);
+        System.out.println("Connection Write Error, connection closed and released " + mData);
     }
 
     @Override

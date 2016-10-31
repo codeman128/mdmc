@@ -9,7 +9,23 @@ import java.net.InetAddress;
 /**
  * Created by PavelK on 5/23/2016.
  */
-public interface IEventCollector {
+public interface IEventCollector<L> {
+
+    /** Create binary log per product/publisher that will hold delta updates */
+    L createProductLogger(String productName);
+
+    /** Create binary log per feeder that will hold feeder activity  */
+    L createFeederLogger(String feederName);
+
+    /** Closes logger */
+    void closeLogger(L logger);
+
+    /** Log product delta updates */
+    void logProductDelta(L logger, long arbTime, byte[] buffer, int offset, int size);
+
+    /** log feeder activity */
+    void logFeederData(Object logger, FeederLogEntry fle);
+
 
 
     /** Listener - New connection accepted  **/
@@ -54,5 +70,7 @@ public interface IEventCollector {
 
     /** Stats */
     void onPublishStats(Message message, ClientConnection cc);
+
+
 
 }
