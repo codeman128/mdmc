@@ -18,6 +18,7 @@ public class Consumer {
     private final int heartbeat;
             final AtomicInteger simConnCounter = new AtomicInteger(0);
     private Publisher publisher;
+    private final byte[] longName;
 
     private Consumer(){
         owner = null;
@@ -25,6 +26,7 @@ public class Consumer {
         nameBytes = null;
         simConnLimit = 0;
         heartbeat = 0;
+        longName = null;
     }
 
     /**
@@ -38,6 +40,7 @@ public class Consumer {
         this.simConnLimit = simConnLimit;
         this.heartbeat = heartbeat;
         this.publisher = publisher;
+        this.longName = (name+"@"+owner.getName()).getBytes();
     }
 
     public final List<ConnectionMetadata> getConnections() {
@@ -91,4 +94,7 @@ public class Consumer {
 
     public Publisher getPublisher(){ return publisher;}
 
+    public byte[] getLongName() {
+        return longName;
+    }
 }
