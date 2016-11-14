@@ -52,7 +52,7 @@ public class Monitor implements Runnable{
 
 
         try {
-            int monTimeout;
+            long monTimeout;
             while (!exitFlag) {
                 for (int i = 0; i < feeders.size(); i++) {
                     try {
@@ -61,7 +61,7 @@ public class Monitor implements Runnable{
                         session = feeder.getMonConnection();
                         if (session != null && ((session.getState()== ClientConnection.STATE.ASSIGNED)||
                                                 (session.getState()== ClientConnection.STATE.INIT))) {
-                            monTimeout = session.getMonitorWriteTimeout();
+                            monTimeout = session.getMonitorWriteTimeout()*1000;
                             now = System.nanoTime();
                             monTime = session.getStartTimeNano();
                             delta = now - monTime;
