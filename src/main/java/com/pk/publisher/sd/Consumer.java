@@ -94,7 +94,7 @@ public class Consumer {
 
     public Publisher getPublisher(){ return publisher;}
 
-    public byte[] getLongName() {
+    public byte[] getLongNameBytes() {
         return longName;
     }
 }
