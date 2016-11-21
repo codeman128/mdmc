@@ -23,6 +23,7 @@ public final class Feeder implements EventHandler<Message> {
     private volatile long lastProcessedSequence = -1;
     private final Object productLog;
     private final Object feederLog;
+    private final long latencyFloor;
 
     private final FeederLogEntry fle;
 
@@ -42,6 +43,7 @@ public final class Feeder implements EventHandler<Message> {
         fle = null;
         productLog = null;
         feederLog = null;
+        latencyFloor = 0;
     }
 
     public Feeder(byte id, Publisher publisher, Object productLog, Object feederLog){
@@ -54,6 +56,7 @@ public final class Feeder implements EventHandler<Message> {
         maxConnCount = config.getMaxClientConnection();
         eventCollector = publisher.getEventCollector();
         msgBuffer = new byte[config.getMaxMessageSize()];
+        latencyFloor = config.getLatencyFloor();
 
         // Initialize publication order
         pubOrder = new int[maxConnCount];
@@ -103,6 +106,25 @@ public final class Feeder implements EventHandler<Message> {
         return null;
     }
 
+    private final void applyLatencyFloor(Message msg){
+        // Latency Floor (busy wait !!)
+        long target;
+        if (latencyFloor >0) {
+            // positive value - apply latency floor of MDS processing
+            target = msg.captureNano+latencyFloor*1000;
+            while (target >= System.nanoTime());
+        } else
+        if (latencyFloor <0) {
+            // negative value - apply latency floor on ARB tick time
+            target = System.nanoTime();
+            long latency =  (System.currentTimeMillis()-msg.eventTime);
+            if (latency < latencyFloor) {
+                target = target + (latencyFloor-latency)*1000000;
+                while (target >= System.nanoTime());
+            }
+        }
+    }
+
     /**
      * Disruptor Event Handler
      * <ul>
@@ -119,6 +141,10 @@ public final class Feeder implements EventHandler<Message> {
 
         // slow consumer monitoring: lets use proper timeout (based on message type) for current iteration
         monMessage = msg;
+
+        if (latencyFloor!=0) {
+            applyLatencyFloor(msg);
+        }
 
         // send messages in publishing order
         short msgSentCount = 0; // represents number of messages (or clients that was served) in this iteration

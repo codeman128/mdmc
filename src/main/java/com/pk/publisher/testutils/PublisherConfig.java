@@ -106,4 +106,9 @@ public class PublisherConfig implements IPublisherConfig {
     public int getGracefulShutdownInterval() {
         return 3000;
     }
+
+    @Override
+    public long getLatencyFloor() {
+        return 100;
+    }
 }

@@ -28,4 +28,7 @@ public interface IPublisherConfig {
 
     /** Graceful shutdown interval in milliseconds */
     int getGracefulShutdownInterval();
+
+    /** Latency floor 0 - default/disabled, positive value - mds latency floor in micros, negative supported but not documented arb tick latency floor subject to clock synchronization */
+    long getLatencyFloor();
 }
