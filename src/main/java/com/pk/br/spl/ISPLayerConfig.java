@@ -1,4 +1,4 @@
-package com.pk.br.sp;
+package com.pk.br.spl;
 
 /**
  * Created by pkapovski on 4/30/2017.

@@ -1,8 +1,8 @@
 package com.pk.br.test;
 
-import com.pk.br.sp.ServiceLayer;
-import com.pk.br.sp.ServiceProvider;
-import com.pk.br.sp.ServiceProviderCluster;
+import com.pk.br.spl.ServiceLayer;
+import com.pk.br.spl.ServiceProvider;
+import com.pk.br.spl.ServiceProviderCluster;
 
 /**
  * Created by pkapovski on 4/30/2017.

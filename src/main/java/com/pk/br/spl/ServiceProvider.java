@@ -1,7 +1,6 @@
-package com.pk.br.sp;
+package com.pk.br.spl;
 
 import com.pk.br.Message;
-import com.sun.org.apache.bcel.internal.generic.RETURN;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -43,6 +42,6 @@ public class ServiceProvider {
     }
 
     public void sendMessage(Message msg){
-        //if (sp.getVersion()==session.getSPSVersion())
+        //if (spl.getVersion()==session.getSPSVersion())
     }
 }
