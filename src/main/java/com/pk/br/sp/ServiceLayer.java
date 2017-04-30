@@ -1,6 +1,7 @@
 package com.pk.br.sp;
 
 
+import com.pk.br.session.Session;
 import com.pk.br.session.SessionID;
 
 /**
@@ -8,14 +9,17 @@ import com.pk.br.session.SessionID;
  */
 public class ServiceLayer {
     private int clusterCounter = 0;
+    private final ISPLayerConfig config;
     private final ServiceProviderCluster[] clusters = new ServiceProviderCluster[16];
     private final IServiceLayerEventCollector ec;
 
     private ServiceLayer() {
         ec = null;
+        config = null;
     }
 
-    public ServiceLayer(IServiceLayerEventCollector eventCollector){
+    public ServiceLayer(ISPLayerConfig config, IServiceLayerEventCollector eventCollector){
+        this.config = config;
         ec = eventCollector;
     }
 
@@ -25,10 +29,16 @@ public class ServiceLayer {
     }
 
     /** Returns Service Provider for session */
-    public final ServiceProvider getServiceProvider(SessionID session) {        //todo add error handling
-        ServiceProviderCluster cluster = clusters[session.getSPCluster()];
-        return cluster.getServiceProvider(session.getSPId());
+    public final ServiceProvider getServiceProvider(SessionID sid) {
+        ServiceProviderCluster cluster = clusters[sid.getSPCluster()];
+        return cluster.getServiceProvider(sid.getSPId());
     }
+
+    /** Will implement routing logic */
+    public final ServiceProvider getServiceProvider(Session session) {
+        return null;
+    }
+
 
 }
 
