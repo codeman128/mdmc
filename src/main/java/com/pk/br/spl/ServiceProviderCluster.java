@@ -5,13 +5,13 @@ package com.pk.br.spl;
  * Created by PavelK on 4/29/2017.
  */
 public class ServiceProviderCluster {
-    private final ServiceLayer sLayer;
+    private final ServiceProviderLayer spl;
 
     private int spCounter = 0;
     private final ServiceProvider[] sps = new ServiceProvider[255];
 
-    public ServiceProviderCluster(ServiceLayer sLayer) {
-        this.sLayer = sLayer;
+    public ServiceProviderCluster(ServiceProviderLayer sLayer) {
+        spl = sLayer;
     }
 
     final int register(ServiceProvider sp){

@@ -7,18 +7,18 @@ import com.pk.br.session.SessionID;
 /**
  * Created by PavelK on 4/29/2017.
  */
-public class ServiceLayer {
+public class ServiceProviderLayer {
     private int clusterCounter = 0;
     private final ISPLayerConfig config;
     private final ServiceProviderCluster[] clusters = new ServiceProviderCluster[16];
-    private final IServiceLayerEventCollector ec;
+    private final ISPLayerEventCollector ec;
 
-    private ServiceLayer() {
+    private ServiceProviderLayer() {
         ec = null;
         config = null;
     }
 
-    public ServiceLayer(ISPLayerConfig config, IServiceLayerEventCollector eventCollector){
+    public ServiceProviderLayer(ISPLayerConfig config, ISPLayerEventCollector eventCollector){
         this.config = config;
         ec = eventCollector;
     }

@@ -1,6 +1,6 @@
 package com.pk.br.test;
 
-import com.pk.br.spl.ServiceLayer;
+import com.pk.br.spl.ServiceProviderLayer;
 import com.pk.br.spl.ServiceProvider;
 import com.pk.br.spl.ServiceProviderCluster;
 
@@ -8,11 +8,11 @@ import com.pk.br.spl.ServiceProviderCluster;
  * Created by pkapovski on 4/30/2017.
  */
 public class Service2 {
-    private ServiceLayer sLayer;
+    private ServiceProviderLayer sLayer;
 
 
     public void init(){
-        sLayer = new ServiceLayer(new SPLConfig(), new SPLEventCollectorStub());
+        sLayer = new ServiceProviderLayer(new SPLConfig(), new SPLEventCollectorStub());
 
         ServiceProviderCluster cluster0 = new ServiceProviderCluster(sLayer);
         ServiceProvider sp00 = new ServiceProvider(cluster0);
