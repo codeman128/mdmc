@@ -9,16 +9,16 @@ import com.pk.br.session.SessionID;
  */
 public class ServiceProviderLayer {
     private int clusterCounter = 0;
-    private final ISPLayerConfig config;
+    private final ISPLConfig config;
     private final ServiceProviderCluster[] clusters = new ServiceProviderCluster[16];
-    private final ISPLayerEventCollector ec;
+    private final ISPLEventCollector ec;
 
     private ServiceProviderLayer() {
         ec = null;
         config = null;
     }
 
-    public ServiceProviderLayer(ISPLayerConfig config, ISPLayerEventCollector eventCollector){
+    public ServiceProviderLayer(ISPLConfig config, ISPLEventCollector eventCollector){
         this.config = config;
         ec = eventCollector;
     }

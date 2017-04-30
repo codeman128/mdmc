@@ -6,12 +6,14 @@ package com.pk.br.spl;
  */
 public class ServiceProviderCluster {
     private final ServiceProviderLayer spl;
+    private final SPLClusterHandler handler;
 
     private int spCounter = 0;
     private final ServiceProvider[] sps = new ServiceProvider[255];
 
     public ServiceProviderCluster(ServiceProviderLayer sLayer) {
         spl = sLayer;
+        handler = new SPLClusterHandler(this);
     }
 
     final int register(ServiceProvider sp){
