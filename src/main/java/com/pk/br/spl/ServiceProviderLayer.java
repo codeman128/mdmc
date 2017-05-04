@@ -12,20 +12,31 @@ public class ServiceProviderLayer {
     private final ISPLConfig config;
     private final ServiceProviderCluster[] clusters = new ServiceProviderCluster[16];
     private final ISPLEventCollector ec;
+    private final String compIdSuffix;
 
     private ServiceProviderLayer() {
         ec = null;
         config = null;
+        compIdSuffix = null;
     }
 
-    public ServiceProviderLayer(ISPLConfig config, ISPLEventCollector eventCollector){
+    public ServiceProviderLayer(ISPLConfig config, ISPLEventCollector eventCollector, String compIdSuffix){
         this.config = config;
-        ec = eventCollector;
+        this.ec = eventCollector;
+        this.compIdSuffix = compIdSuffix;
     }
 
     final int register(ServiceProviderCluster spc){
         clusters[clusterCounter] = spc;
         return  clusterCounter++;
+    }
+
+    final String getCompIdSuffix() {
+        return compIdSuffix;
+    }
+
+    final ISPLEventCollector getEventCollector(){
+        return ec;
     }
 
     /** Returns Service Provider for session */

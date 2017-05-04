@@ -7,7 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 
 
-public class SessionID {
+public class
+        SessionID {
     private static AtomicInteger counter = new AtomicInteger(0);
     public static Fragment INSTANCE_ID     = new Fragment(0x0FFFFFFFFFFFFFFFL, "INSTANCE_ID    ");
     public static Fragment CYCLIC_COUNTER  = new Fragment(0xF0000FFFFFFFFFFFL, "CYCLIC_COUNTER ");
